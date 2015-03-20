@@ -19,26 +19,26 @@ class Competition(models.Model):
     season = models.ForeignKey('Season')
     community = models.ForeignKey('Community')
 
-class Team(models.model):
+class Team(models.Model):
     name = models.CharField(max_length=20)
     spanish_league = models.BooleanField(default=True)
     uefa_league = models.BooleanField(default=False)
     champions_league = models.BooleanField(default=False)
     kings_cup = models.BooleanField(default=False)
 
-class MatchDay(models.model):
+class MatchDay(models.Model):
     number = models.IntegerField()
     start_date = models.DateTimeField()
     season = models.ForeignKey('Season')
 
-class Match(models.model):
-    home_team = models.ForeignKey('Team')
-    foreign_team = models.ForeignKey('Team')
+class Match(models.Model):
+    home_team = models.ForeignKey('Team', related_name='home_team')
+    foreign_team = models.ForeignKey('Team', related_name='foreign_team')
     match_day = models.ForeignKey('MatchDay')
     home_goals = models.IntegerField(default=None)
-    foreign_goals = models.IntegreField(default=None)
+    foreign_goals = models.IntegerField(default=None)
 
-class Player(models.model):
+class Player(models.Model):
     name = models.CharField(max_length=50)
 
 class PlayerBelongsToTeam(models.Model):
@@ -65,7 +65,7 @@ class Bet(models.Model):
 class GoalsBet(models.Model):
     user_profile = models.ForeignKey('UserProfile')
     match_day = models.ForeignKey('MatchDay')
-    forward = models.ForeignKey('Player')
-    midfield = models.ForeignKey('Player')
-    defense = modls.ForeignKey('Player')
+    forward = models.ForeignKey('Player', related_name='forward')
+    midfield = models.ForeignKey('Player', related_name='midfield')
+    defense = models.ForeignKey('Player', related_name='defense')
 
