@@ -5,3 +5,6 @@
 *~
 .project
 .pydevproject
+.DS_Store
+wsgi/static/grappelli
+wsgi/static/admin

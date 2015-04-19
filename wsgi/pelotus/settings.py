@@ -82,7 +82,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(PROJECT_DIR, '..', 'static')
+#STATIC_ROOT = os.path.join(PROJECT_DIR, '..', 'static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -94,11 +94,13 @@ STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Additional locations of static files
-STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
+if 'OPENSHIFT_REPO_DIR' not in os.environ:
+    STATICFILES_DIRS = (
+        os.path.join('/Users/memaldi/proyectos/pelotus/pelotus/wsgi/static'),
+    )
+else:
+    STATIC_ROOT =  os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'static')
+
 
 # List of finder classes that know how to find static files in
 # various locations.
