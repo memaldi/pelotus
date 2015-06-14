@@ -96,7 +96,7 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 # Additional locations of static files
 if 'OPENSHIFT_REPO_DIR' not in os.environ:
     STATICFILES_DIRS = (
-        os.path.join('/Users/memaldi/proyectos/pelotus/pelotus/wsgi/static'),
+        os.path.join('/Users/memaldi/virtualenvs/pelotus/pelotus/wsgi/static'),
     )
 else:
     STATIC_ROOT =  os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'static')
