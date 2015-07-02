@@ -5,11 +5,17 @@ from core.models import *
 admin.site.register(Season)
 admin.site.register(Community)
 admin.site.register(Competition)
-admin.site.register(Team)
+#admin.site.register(Team)
 admin.site.register(MatchDay)
 admin.site.register(Match)
 admin.site.register(Player)
 admin.site.register(PlayerBelongsToTeam)
 admin.site.register(UserProfile)
+admin.site.register(UserAdministration)
 admin.site.register(Bet)
 admin.site.register(GoalsBet)
+
+@admin.register(Team)
+class TeamAdmin(admin.ModelAdmin):
+	list_display = ('name','spanish_league', 'champions_league', 'uefa_league', 'kings_cup',)
+	search_fields = ['name']

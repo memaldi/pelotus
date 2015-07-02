@@ -26,6 +26,9 @@ class Team(models.Model):
     champions_league = models.BooleanField(default=False)
     kings_cup = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ['name']
+
 class MatchDay(models.Model):
     number = models.IntegerField()
     start_date = models.DateTimeField()
