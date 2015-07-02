@@ -18,7 +18,8 @@ urlpatterns = patterns('',
     url(r'^join/', CreateView.as_view(
     							template_name='core/join.html',
     							form_class=UserCreateForm,
-    							success_url="/")),
+    							success_url="/registration/community/")),
+    url(r'^registration/community/', 'core.views.registration_community', name='registration_community'),
     # Uncomment the next line to enable the admin:
     (r'^grappelli/', include('grappelli.urls')),
     (r'^admin/', include(admin.site.urls)),

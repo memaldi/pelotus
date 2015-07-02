@@ -11,8 +11,8 @@ class Season(models.Model):
 
 # A group of users playing to Pelotus
 class Community(models.Model):
-    name = models.CharField(max_length=20)
-    description = models.CharField(max_length=100)
+    name = models.CharField(max_length=20, unique=True)
+    description = models.TextField(max_length=200)
 
 # Each instances of a Season with a Community
 class Competition(models.Model):
