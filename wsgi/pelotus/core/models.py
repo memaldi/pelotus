@@ -54,7 +54,12 @@ class PlayerBelongsToTeam(models.Model):
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User)
-    communities = models.ForeignKey('Community')
+    communities = models.ManyToManyField(Community, through='UserAdministration')
+
+class UserAdministration(models.Model):
+    user_profile = models.ForeignKey(UserProfile)
+    community = models.ForeignKey(Community)
+    is_admin = models.BooleanField(default=False)
 
 class Bet(models.Model):
     user_profile = models.ForeignKey('UserProfile')
