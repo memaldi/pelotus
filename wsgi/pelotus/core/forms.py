@@ -19,6 +19,15 @@ class UserCreateForm(UserCreationForm):
         return user
 
 class CommunityForm(ModelForm):
+    #name = forms.CharField(required=True)
+
     class Meta:
         model = Community
         fields = ['name', 'description']
+
+    # def save(self, commit=True):
+    #     community = super(CommunityForm, self).save(commit=False)
+    #     community.name = self.cleaned_data["name"]
+    #     if commit:
+    #         community.save()
+    #     return community

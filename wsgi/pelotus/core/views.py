@@ -16,5 +16,10 @@ def registration_community(request):
 		return render(request, 'core/registration_community.html', context)
 	elif request.method == 'POST':
 		f = CommunityForm(request.POST)
-		new_community = f.save()
-		return render(request, 'userpanel/community_dashboard.html')
+		if f.is_valid():
+			new_community = f.save()
+			return render(request, 'userpanel/community_dashboard.html')
+		else:
+			print f
+			context = {'community_form': f}
+			return render(request, 'core/registration_community.html', context)
