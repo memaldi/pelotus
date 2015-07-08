@@ -20,6 +20,9 @@ class Community(models.Model):
     name = models.CharField(max_length=20, unique=True)
     description = models.TextField(max_length=200)
 
+    def __str__(self):              # __unicode__ on Python 2
+        return self.name
+
 # Each instances of a Season with a Community
 class Competition(models.Model):
     season = models.ForeignKey('Season')
@@ -34,8 +37,11 @@ class Match(models.Model):
     home_team = models.ForeignKey('Team', related_name='home_team')
     foreign_team = models.ForeignKey('Team', related_name='foreign_team')
     match_day = models.ForeignKey('MatchDay')
-    home_goals = models.IntegerField(default=None)
-    foreign_goals = models.IntegerField(default=None)
+    home_goals = models.IntegerField(default=None, blank=True, null=True)
+    foreign_goals = models.IntegerField(default=None, blank=True, null=True)
+
+    def __str__(self):              # __unicode__ on Python 2
+        return '%s - %s (Match day %s)' % (self.home_team.name, self.foreign_team.name, self.match_day.number)
 
 class Player(models.Model):
     name = models.CharField(max_length=50)
@@ -81,23 +87,23 @@ class PlayerBelongsToTeam(models.Model):
     )
     position = models.CharField(max_length=2, choices=POSITION_CHOICES, default='GK')
 
-class UserProfile(models.Model):
-    user = models.ForeignKey(User)
-    communities = models.ManyToManyField(Community, through='UserAdministration')
+# class UserProfile(models.Model):
+#     user = models.ForeignKey(User)
+#     competitions = models.ManyToManyField(Competition, through='UserAdministration')
 
 class UserAdministration(models.Model):
-    user_profile = models.ForeignKey(UserProfile)
-    community = models.ForeignKey(Community)
+    user = models.ForeignKey(User)
+    competition = models.ForeignKey(Competition)
     is_admin = models.BooleanField(default=False)
 
 class Bet(models.Model):
-    user_profile = models.ForeignKey('UserProfile')
+    user = models.ForeignKey(User)
     match = models.ForeignKey('Match')
     home_goals = models.IntegerField()
     foreign_goals = models.IntegerField()
 
 class GoalsBet(models.Model):
-    user_profile = models.ForeignKey('UserProfile')
+    user = models.ForeignKey(User)
     match_day = models.ForeignKey('MatchDay')
     forward = models.ForeignKey('Player', related_name='forward')
     midfield = models.ForeignKey('Player', related_name='midfield')
