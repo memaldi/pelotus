@@ -33,6 +33,14 @@ class MatchDay(models.Model):
     start_date = models.DateTimeField()
     season = models.ForeignKey('Season')
 
+    def __str__(self):
+        return str(self.number)
+
+class PlayerGoal(models.Model):
+    player = models.ForeignKey('Player')
+    match_day = models.ForeignKey('MatchDay')
+    goals = models.IntegerField()
+
 class Match(models.Model):
     home_team = models.ForeignKey('Team', related_name='home_team')
     foreign_team = models.ForeignKey('Team', related_name='foreign_team')
@@ -42,6 +50,9 @@ class Match(models.Model):
 
     def __str__(self):              # __unicode__ on Python 2
         return '%s - %s (Match day %s)' % (self.home_team.name, self.foreign_team.name, self.match_day.number)
+
+    def result(self):
+        return '%s - %s' % (self.home_goals, self.foreign_goals)
 
 class Player(models.Model):
     name = models.CharField(max_length=50)

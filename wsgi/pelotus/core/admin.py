@@ -48,15 +48,24 @@ class CommunityAdmin(admin.ModelAdmin):
 	search_fields = ['name', 'description']
 	inlines = (CompetitionAdmin,)
 
-class MatchAdmin(admin.TabularInline):
+class MatchAdminTabular(admin.TabularInline):
 	model = Match
 	extra = 10
+
+class PlayerGoalAdmin(admin.TabularInline):
+	model = PlayerGoal
+	extra = 5
+
+# @admin.register(Match)
+# class MatchAdmin(admin.ModelAdmin):
+# 	list_display = ('home_team', 'foreign_team', 'match_day', 'result')
+# 	inlines = (PlayerGoalAdmin,)
 
 @admin.register(MatchDay)
 class MatchDayAdmin(admin.ModelAdmin):
 	list_display = ('number', 'start_date', 'season',)
 	list_display_links = ('number', 'start_date')
-	inlines = (MatchAdmin,)
+	inlines = (MatchAdminTabular, PlayerGoalAdmin)
 
 class UserAdministrationAdmin(admin.TabularInline):
 	model = UserAdministration
@@ -70,3 +79,6 @@ class CompetitionsAdmin(admin.ModelAdmin):
 @admin.register(Bet)
 class BetAdmin(admin.ModelAdmin):
 	list_display = ('user', 'match', 'home_goals', 'foreign_goals')
+
+class GoalsBet(admin.ModelAdmin):
+	list_display = ('user', )
