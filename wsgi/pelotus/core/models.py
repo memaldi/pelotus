@@ -119,3 +119,18 @@ class GoalsBet(models.Model):
     forward = models.ForeignKey('Player', related_name='forward')
     midfield = models.ForeignKey('Player', related_name='midfield')
     defense = models.ForeignKey('Player', related_name='defense')
+
+class GlobalBet(models.Model):
+    deadline = models.DateTimeField()
+    user = models.ForeignKey(User)
+    winter_champion = models.ForeignKey('Team', related_name='winter_champion')
+    kings_cup_champion = models.ForeignKey('Team', related_name='kings_cup_champion')
+    league_champion = models.ForeignKey('Team', related_name='league_champion')
+    uefa_champion = models.ForeignKey('Team', related_name='uefa_champion')
+    champions_league_champion = models.ForeignKey('Team', related_name='champions_league_champion')
+
+    champions_positions = models.ManyToManyField('Team', related_name='champions_positions')
+    uefa_positions = models.ManyToManyField('Team', related_name='uefa_positions')
+    demotion_positions = models.ManyToManyField('Team', related_name='demotion_positions')
+
+    best_goalkeeper = models.ForeignKey('Player')

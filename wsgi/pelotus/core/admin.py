@@ -80,5 +80,10 @@ class CompetitionsAdmin(admin.ModelAdmin):
 class BetAdmin(admin.ModelAdmin):
 	list_display = ('user', 'match', 'home_goals', 'foreign_goals')
 
-class GoalsBet(admin.ModelAdmin):
-	list_display = ('user', )
+@admin.register(GoalsBet)
+class GoalsBetAdmin(admin.ModelAdmin):
+	list_display = ('user', 'match_day', 'forward', 'midfield', 'defense')
+
+@admin.register(GlobalBet)
+class GlobalBetAdmin(admin.ModelAdmin):
+	list_display = ('user',)
