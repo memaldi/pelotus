@@ -1,0 +1,35 @@
+{% extends "core/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+  <div class="page-header">
+    <h1>Match day {{match_day.number}}</h1>
+  </div>
+
+  <form class="form-horizontal" action="/userpanel/match-day/{{match_day.number}}" method="post">
+    {% csrf_token %}
+    <table class="table table-striped">
+      <tbody>
+        {% for match in formset %}
+          <tr>
+            {% for key, value in match.fields.home_team.choices %}
+              {% if key == match.home_team.value %}
+                <td><label for="{{match.home_team.id_for_label}}">{{value}}</label></td>
+                <td><input type="email" class="form-control" id="{{match.home_team.id_for_label}}"></td>
+                <td style="text-align:center">-</td>
+              {% endif %}
+
+              {% if key == match.foreign_team.value %}
+                <td><input type="email" class="form-control" id="{{match.foreign_team.id_for_label}}"></td>
+                <td><label for="{{match.home_team.id_for_label}}">{{value}}</label></td>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </form>
+
+
+{% endblock %}

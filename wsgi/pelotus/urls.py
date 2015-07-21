@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     							form_class=UserCreateForm,
     							success_url="/registration/community/")),
     url(r'^registration/community/', 'core.views.registration_community', name='registration_community'),
+    url(r'^userpanel/match-day/(?P<number>\d+)$', 'userpanel.views.match_day', name='match_day'),
     # Uncomment the next line to enable the admin:
     (r'^grappelli/', include('grappelli.urls')),
     (r'^admin/', include(admin.site.urls)),
