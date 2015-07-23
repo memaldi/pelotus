@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     							template_name='core/join.html',
     							form_class=UserCreateForm,
     							success_url="/registration/community/")),
+    url(r'^login/', 'core.views.login', name='login'),
     url(r'^registration/community/', 'core.views.registration_community', name='registration_community'),
     url(r'^userpanel/match-day/(?P<number>\d+)$', 'userpanel.views.match_day', name='match_day'),
     # Uncomment the next line to enable the admin:
