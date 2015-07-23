@@ -110,8 +110,9 @@ class UserAdministration(models.Model):
 class Bet(models.Model):
     user = models.ForeignKey(User)
     match = models.ForeignKey('Match')
-    home_goals = models.IntegerField()
-    foreign_goals = models.IntegerField()
+    match_day = models.ForeignKey('MatchDay')
+    home_goals = models.IntegerField(null=True)
+    foreign_goals = models.IntegerField(null=True)
 
 class GoalsBet(models.Model):
     user = models.ForeignKey(User)
