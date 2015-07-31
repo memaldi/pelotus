@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from core.forms import CommunityForm
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login as auth_login
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
@@ -21,7 +21,7 @@ def registration_community(request):
 		f = CommunityForm(request.POST)
 		if f.is_valid():
 			new_community = f.save()
-			return render(request, 'userpanel/community_dashboard.html')
+			return render(request, '/userpanel/community_dashboard.html')
 		else:
 			context = {'community_form': f}
 			return render(request, 'core/registration_community.html', context)
@@ -33,8 +33,14 @@ def login(request):
 		return render(request, 'core/login.html', context)
 	elif request.method == 'POST':
 		login_form = AuthenticationForm(data=request.POST)
+		print request.POST.get('next')
 		if login_form.is_valid():
-			return HttpResponseRedirect(request.build_absolute_uri(reverse('userpanel.views.dashboard')))
+			username = login_form.data['username']
+			password = login_form.data['password']
+			user = authenticate(username=username, password=password)
+			if user.is_active:
+				auth_login(request, user)
+				return redirect(request.POST.get('next','/userpanel/community_dashboard.html'))
 		else:
 			context = {'form': login_form}
 			return render(request, 'core/login.html', context)
