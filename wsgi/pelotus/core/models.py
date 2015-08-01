@@ -36,6 +36,11 @@ class MatchDay(models.Model):
     def __str__(self):
         return str(self.number)
 
+    def date_limit_reached(self):
+        if datetime.datetime.now() > self.start_date:
+            return True
+        return False
+
 class PlayerGoal(models.Model):
     player = models.ForeignKey('Player')
     match_day = models.ForeignKey('MatchDay')
