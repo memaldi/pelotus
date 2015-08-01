@@ -55,7 +55,7 @@ def community_dashboard(request, competition_id):
         context = {}
         context['competition'] = competition
 
-        user_point_dict = {}
+        user_list = []
         for user_administration in competition.useradministration_set.all():
             user_points = 0
             for bet in Bet.objects.filter(user=user_administration.user, competition=competition):
@@ -68,8 +68,12 @@ def community_dashboard(request, competition_id):
                         user_points += 5
                     elif bet.home_goals == bet.foreign_goals and bet.match.home_goals == bet.match.foreign_goals:
                         user_points += 5
-            user_point_dict[user_administration.user] = user_points
-        context['user_point_dict'] = user_point_dict
+
+            user_dict = {}
+            user_dict['user'] = user_administration.user
+            user_dict['points'] = user_points
+            user_list.append(user_dict)
+        context['user_list'] = user_list
 
         next_match_day = MatchDay.objects.filter(season=competition.season, start_date__gt=datetime.datetime.now()).first()
         context['next_match_day'] = next_match_day
