@@ -64,6 +64,9 @@ class Match(models.Model):
     def __str__(self):              # __unicode__ on Python 2
         return '%s - %s (Match day %s)' % (self.home_team.name, self.foreign_team.name, self.match_day.number)
 
+    def __unicode__(self):
+        return u'{} - {} (Match day {})'.format(self.home_team.name, self.foreign_team.name, self.match_day.number)
+
     def result(self):
         return '%s - %s' % (self.home_goals, self.foreign_goals)
 
@@ -102,6 +105,9 @@ class TeamInSeason(models.Model):
     def __str__(self):              # __unicode__ on Python 2
         return self.team.name
 
+    def __unicode__(self):
+        return u"{}".format(self.team.name)
+
 class PlayerBelongsToTeam(models.Model):
     player = models.ForeignKey('Player')
     team_in_season = models.ForeignKey('TeamInSeason')
@@ -127,6 +133,7 @@ class Bet(models.Model):
     user = models.ForeignKey(User)
     match = models.ForeignKey('Match')
     match_day = models.ForeignKey('MatchDay')
+    competition = models.ForeignKey('Competition')
     home_goals = models.IntegerField(null=True)
     foreign_goals = models.IntegerField(null=True)
 
