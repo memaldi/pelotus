@@ -15,6 +15,11 @@ class Season(models.Model):
     def __str__(self):              # __unicode__ on Python 2
         return self.name
 
+    def is_current(self):
+        if self.start_date <= datetime.date.today() and self.end_date >= datetime.date.today():
+            return True
+        return False
+
 # A group of users playing to Pelotus
 class Community(models.Model):
     name = models.CharField(max_length=20, unique=True)
@@ -32,6 +37,9 @@ class MatchDay(models.Model):
     number = models.IntegerField()
     start_date = models.DateTimeField()
     season = models.ForeignKey('Season')
+
+    class Meta:
+        ordering = ['number']
 
     def __str__(self):
         return str(self.number)
@@ -66,7 +74,7 @@ class Player(models.Model):
         return self.name
 
 class Team(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=30)
 
     def current_season(self):
         return self.teaminseason_set.filter(season__start_date__lte=datetime.date.today(), season__end_date__gte=datetime.date.today()).first().season.name
@@ -77,6 +85,9 @@ class Team(models.Model):
 
     def __str__(self):              # __unicode__ on Python 2
         return self.name
+
+    def __unicode__(self):
+        return u"{}".format(self.name)
 
 class TeamInSeason(models.Model):
     team = models.ForeignKey('Team')

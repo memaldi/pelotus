@@ -7,7 +7,9 @@
   </div>
   <form class="form-horizontal" action="/login/" method="post">
     {% csrf_token %}
-    <input type="hidden" name="next" value="{{ request.GET.next }}" />
+    {% if request.GET.next %}
+      <input type="hidden" name="next" value="{{ request.GET.next }}" />
+    {% endif %}
     {% if form.non_field_errors %}
       <div class="alert alert-danger" role="alert">
         {% for error in form.non_field_errors %}
