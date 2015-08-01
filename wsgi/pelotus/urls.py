@@ -3,6 +3,8 @@ from django.views.generic.edit import CreateView
 #from django.contrib.auth.forms import UserCreationForm
 from core.forms import UserCreateForm
 
+import autocomplete_light
+autocomplete_light.autodiscover()
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -21,8 +23,10 @@ urlpatterns = patterns('',
     							success_url="/registration/community/")),
     url(r'^login/', 'core.views.login', name='login'),
     url(r'^registration/community/', 'core.views.registration_community', name='registration_community'),
+    url(r'^registration/join-community/', 'core.views.join_community', name='join_community'),
     url(r'^userpanel/match-day/(?P<id>\d+)$', 'userpanel.views.match_day', name='match_day'),
     # Uncomment the next line to enable the admin:
     (r'^grappelli/', include('grappelli.urls')),
     (r'^admin/', include(admin.site.urls)),
+    url(r'^autocomplete/', include('autocomplete_light.urls')),
 )

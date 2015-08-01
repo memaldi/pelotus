@@ -98,6 +98,7 @@ if 'OPENSHIFT_REPO_DIR' not in os.environ:
     STATICFILES_DIRS = (
         os.path.join('/Users/memaldi/virtualenvs/pelotus/pelotus/wsgi/static'),
     )
+    #STATIC_ROOT = os.path.join('/Users/memaldi/virtualenvs/pelotus/pelotus/wsgi/static')
 else:
     STATIC_ROOT =  os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'static')
 
@@ -161,6 +162,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'core',
     'adminpanel',
+    'autocomplete_light',
 )
 
 # A sample logging configuration. The only tangible logging

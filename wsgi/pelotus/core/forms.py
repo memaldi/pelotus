@@ -3,6 +3,7 @@ from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from core.models import Community
+import autocomplete_light
 
 class UserCreateForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -31,3 +32,21 @@ class CommunityForm(ModelForm):
     #     if commit:
     #         community.save()
     #     return community
+
+class CommunitySearchForm(autocomplete_light.ModelForm):
+    class Meta:
+        model = Community
+        fields = ['name']
+        widgets = {
+            'name': autocomplete_light.TextWidget('CommunityAutocomplete'),
+        }
+
+    def clean(self):
+        cleaned_data = super(CommunitySearchForm, self).clean()
+        name = cleaned_data.get("name")
+
+        community = Community.objects.filter(name=name).all()
+        if len(community) == 0:
+            raise forms.ValidationError('Community "%s" does not exist!' % name)
+            
+        return cleaned_data

@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from core.forms import CommunityForm
+from core.forms import CommunityForm, CommunitySearchForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login as auth_login
 from django.http import HttpResponseRedirect
@@ -15,7 +15,8 @@ def home(request):
 def registration_community(request):
 	if request.method == 'GET':
 		community_form = CommunityForm()
-		context = {'community_form': community_form}
+		community_search_form = CommunitySearchForm()
+		context = {'community_form': community_form, 'community_search_form': community_search_form}
 		return render(request, 'core/registration_community.html', context)
 	elif request.method == 'POST':
 		f = CommunityForm(request.POST)
@@ -44,3 +45,13 @@ def login(request):
 		else:
 			context = {'form': login_form}
 			return render(request, 'core/login.html', context)
+
+def join_community(request):
+	if request.method == 'POST':
+		community_search_form = CommunitySearchForm(request.POST)
+		if community_search_form.is_valid():
+			pass
+		else:
+			community_form = CommunityForm()
+			context = {'community_form': community_form, 'community_search_form': community_search_form}
+			return render(request, 'core/registration_community.html', context)
