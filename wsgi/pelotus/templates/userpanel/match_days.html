@@ -6,17 +6,28 @@
     <h1>{{competition.season.name}}</h1>
   </div>
 
-  {% for match_day in competition.season.matchday_set.all %}
-    {% if not forloop.counter|divisibleby:"2" %}
-      <div class="row">
-        <div class="col-xs-6" style="text-align:right"><h3><a href="/userpanel/competition/{{competition.id}}/match-day/{{match_day.id}}/">Match day {{match_day.number}}</a></h3></div>
-    {% else %}
-        <div class="col-xs-6" style="text-align:left"><h3><a href="#">Match day {{match_day.number}}</a></h3></div>
-      </div>
-    {% endif %}
-    {% if forloop.last and not forloop.counter|divisibleby:"2" %}
-      </div>
-    {% endif %}
-  {% endfor %}
+  <table class="table table-striped">
+    {% for match_day in competition.season.matchday_set.all %}
+      <tr>
+        <td>
+        </td>
+        <td>
+          Match day {{match_day.number}}
+        </td>
+        <td>
+          {{match_day.start_date}}
+        </td>
+        <td>
+          <a href="/userpanel/competition/{{competition.id}}/match-day/{{match_day.id}}/"><i class="fa fa-pencil"></i></a>
+        </td>
+        <td>
+          <a href="/userpanel/competition/{{competition.id}}/match-day/{{match_day.id}}/scorers/"><i class="fa fa-futbol-o"></i></a>
+        </td>
+        <td>
+          <a href="/userpanel/competition/{{competition.id}}/match-day/{{match_day.id}}/ranking/"><i class="fa fa-bar-chart"></i></a>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
 
 {% endblock %}
