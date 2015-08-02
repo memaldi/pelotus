@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from core.models import MatchDay, Match, Bet, UserAdministration, Competition
+from core.models import MatchDay, Match, Bet, UserAdministration, Competition, TeamInSeason, Team, Player, GoalsBet
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.decorators import login_required
+from django.template.defaultfilters import dictsortreversed
 import datetime
 
 # Create your views here.
@@ -48,6 +49,39 @@ def match_day(request, competition_id, match_day_id):
         return render(request, 'userpanel/match_day.html', context)
 
 @login_required
+def scorers(request, competition_id, match_day_id):
+    user = request.user
+    competition = Competition.objects.get(id=competition_id)
+    match_day = MatchDay.objects.get(id=match_day_id)
+    team_list = []
+    team_in_season_list = TeamInSeason.objects.filter(season=competition.season, spanish_league=True)
+    for team_in_season in team_in_season_list:
+        team_list.append(team_in_season.team)
+    team_list.sort()
+
+    goals_bet = GoalsBet.objects.filter(user=user, match_day=match_day).first()
+    print goals_bet
+    if request.method == 'POST':
+
+        if goals_bet == None:
+            goals_bet = GoalsBet(user=user, match_day=match_day)
+
+        if request.POST["defender-player"] != "None":
+            defender_player = Player.objects.get(id=int(request.POST["defender-player"]))
+            goals_bet.defense = defender_player
+        if request.POST["midfield-player"] != "None":
+            midfield_player = Player.objects.get(id=int(request.POST["midfield-player"]))
+            goals_bet.defense = midfield_player
+        if request.POST["forward-player"] != "None":
+            forward_player = Player.objects.get(id=int(request.POST["forward-player"]))
+            goals_bet.defense = forward_player
+
+        goals_bet.save()
+
+    context = {'user': user, 'competition': competition, 'match_day': match_day, 'team_list': team_list, 'goals_bet': goals_bet}
+    return render(request, 'userpanel/scorers.html', context)
+
+@login_required
 def community_dashboard(request, competition_id):
     user = request.user
     competition = Competition.objects.get(id=competition_id)
@@ -73,6 +107,20 @@ def community_dashboard(request, competition_id):
             user_dict['user'] = user_administration.user
             user_dict['points'] = user_points
             user_list.append(user_dict)
+        user_list = dictsortreversed(user_list, "points")
+        user_index = 0
+        for user_dict in user_list:
+            if (user_dict['user'] == user):
+                break
+            user_index += 1
+        lower_bound = user_index - 3
+        upper_bound = user_index + 3
+        if lower_bound < 0:
+            lower_bound = 0
+        if upper_bound >= len(user_list):
+            upper_bound = len(user_list) - 1
+
+        user_list = user_list[lower_bound:upper_bound]
         context['user_list'] = user_list
 
         next_match_day = MatchDay.objects.filter(season=competition.season, start_date__gt=datetime.datetime.now()).first()

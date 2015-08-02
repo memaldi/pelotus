@@ -82,7 +82,6 @@ class Team(models.Model):
     def current_season(self):
         return self.teaminseason_set.filter(season__start_date__lte=datetime.date.today(), season__end_date__gte=datetime.date.today()).first().season.name
 
-
     class Meta:
         ordering = ['name']
 
@@ -91,6 +90,15 @@ class Team(models.Model):
 
     def __unicode__(self):
         return u"{}".format(self.name)
+
+    def __cmp__(self, other):
+        if self.name < other.name:
+            return -1
+        elif self.name == other.name:
+            return 0
+        elif self.name > other.name:
+            return 1
+
 
 class TeamInSeason(models.Model):
     team = models.ForeignKey('Team')
@@ -140,9 +148,9 @@ class Bet(models.Model):
 class GoalsBet(models.Model):
     user = models.ForeignKey(User)
     match_day = models.ForeignKey('MatchDay')
-    forward = models.ForeignKey('Player', related_name='forward')
-    midfield = models.ForeignKey('Player', related_name='midfield')
-    defense = models.ForeignKey('Player', related_name='defense')
+    forward = models.ForeignKey('Player', related_name='forward', null=True)
+    midfield = models.ForeignKey('Player', related_name='midfield', null=True)
+    defense = models.ForeignKey('Player', related_name='defense', null=True)
 
 class GlobalBet(models.Model):
     deadline = models.DateTimeField()
