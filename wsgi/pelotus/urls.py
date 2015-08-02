@@ -10,6 +10,8 @@ autocomplete_light.autodiscover()
 from django.contrib import admin
 admin.autodiscover()
 
+from api import views
+
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'core.views.home', name='home'),
@@ -26,7 +28,9 @@ urlpatterns = patterns('',
     url(r'^registration/join-community/', 'core.views.join_community', name='join_community'),
     url(r'^userpanel/competition/(?P<competition_id>\d+)/dashboard/', 'userpanel.views.community_dashboard', name="community_dashboard"),
     url(r'^userpanel/competition/(?P<competition_id>\d+)/match-days/', 'userpanel.views.match_days', name="match_days"),
-    url(r'^userpanel/competition/(?P<competition_id>\d+)/match-day/(?P<match_day_id>\d+)/', 'userpanel.views.match_day', name='match_day'),
+    url(r'^userpanel/competition/(?P<competition_id>\d+)/match-day/(?P<match_day_id>\d+)/$', 'userpanel.views.match_day', name='match_day'),
+    url(r'^userpanel/competition/(?P<competition_id>\d+)/match-day/(?P<match_day_id>\d+)/scorers/', 'userpanel.views.scorers', name='scorers'),
+    url(r'^api/team/(?P<team_id>\d+)/season/(?P<season_id>\d+)/player/position/(?P<position>\w+)', views.GetPlayersByTeam.as_view(), name="GetPlayersByTeam"),
     # Uncomment the next line to enable the admin:
     (r'^grappelli/', include('grappelli.urls')),
     (r'^admin/', include(admin.site.urls)),
