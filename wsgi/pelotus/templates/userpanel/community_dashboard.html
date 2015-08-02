@@ -36,9 +36,9 @@
           <table class="table table-striped">
             {% for item in user_list|dictsort:"points" %}
               <tr>
-                <td style="border: none;">{{forloop.counter}}</td>
-                <td style="border: none;">{{item.user.username}}</td>
-                <td style="border: none;">{{item.points}}</ts>
+                <td style="border: none;">{% if item.user == user %}<strong>{% endif %}{{forloop.counter}}{% if item.user == user %}</strong>{% endif %}</td>
+                <td style="border: none;">{% if item.user == user %}<strong>{% endif %}{{item.user.username}}{% if item.user == user %}</strong>{% endif %}</td>
+                <td style="border: none;">{% if item.user == user %}<strong>{% endif %}{{item.points}}{% if item.user == user %}</strong>{% endif %}</td>
               </tr>
             {% endfor %}
           </table>
