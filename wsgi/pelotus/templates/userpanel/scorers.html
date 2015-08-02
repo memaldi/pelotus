@@ -75,11 +75,29 @@
       </body>
     </table>
   </form>
-
 {% endblock %}
 
 {% block scripts %}
   <script>
+    {% if goals_bet %}
+      {% if goals_teams.defense_team %}
+        $("#defender-team").val('{{goals_teams.defense_team}}');
+        getPlayers($("#defender-team")[0]);
+      {% endif %}
+
+      {% if goals_teams.midfield_team %}
+       $("#midfield-team").val('{{goals_teams.midfield_team}}');
+       getPlayers($("#midfield-team")[0]);
+      {% endif %}
+
+      {% if goals_teams.forward_team %}
+       $("#forward-team").val('{{goals_teams.forward_team}}');
+       getPlayers($("#forward-team")[0]);
+      {% endif %}
+
+    {% endif %}
+
+
     function getPlayers(selector) {
       var value = selector.value;
       var position = "";

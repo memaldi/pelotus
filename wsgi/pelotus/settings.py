@@ -163,6 +163,9 @@ INSTALLED_APPS = (
     'core',
     'adminpanel',
     'autocomplete_light',
+    'api',
+    'userpanel',
+    'rest_framework',
 )
 
 # A sample logging configuration. The only tangible logging

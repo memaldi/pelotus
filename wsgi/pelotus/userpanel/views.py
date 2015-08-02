@@ -60,25 +60,37 @@ def scorers(request, competition_id, match_day_id):
     team_list.sort()
 
     goals_bet = GoalsBet.objects.filter(user=user, match_day=match_day).first()
-    print goals_bet
     if request.method == 'POST':
-
         if goals_bet == None:
             goals_bet = GoalsBet(user=user, match_day=match_day)
 
-        if request.POST["defender-player"] != "None":
+        if request.POST.get("defender-player", "None") != "None":
             defender_player = Player.objects.get(id=int(request.POST["defender-player"]))
             goals_bet.defense = defender_player
-        if request.POST["midfield-player"] != "None":
+        if request.POST.get("midfield-player", "None") != "None":
             midfield_player = Player.objects.get(id=int(request.POST["midfield-player"]))
-            goals_bet.defense = midfield_player
-        if request.POST["forward-player"] != "None":
+            goals_bet.midfield = midfield_player
+        if request.POST.get("forward-player", "None") != "None":
             forward_player = Player.objects.get(id=int(request.POST["forward-player"]))
-            goals_bet.defense = forward_player
+            goals_bet.forward = forward_player
 
         goals_bet.save()
 
-    context = {'user': user, 'competition': competition, 'match_day': match_day, 'team_list': team_list, 'goals_bet': goals_bet}
+    goals_teams = {}
+    if goals_bet != None:
+        if goals_bet.defense != None:
+            defense_team = goals_bet.defense.playerbelongstoteam_set.get(season=competition.season).team_in_season.team
+            goals_teams["defense_team"] = defense_team.id
+
+        if goals_bet.midfield != None:
+            midfield_team = goals_bet.midfield.playerbelongstoteam_set.get(season=competition.season).team_in_season.team
+            goals_teams["midfield_team"] = midfield_team.id
+
+        if goals_bet.forward != None:
+            forward_team = goals_bet.forward.playerbelongstoteam_set.get(season=competition.season).team_in_season.team
+            goals_teams["forward_team"] = forward_team.id
+
+    context = {'user': user, 'competition': competition, 'match_day': match_day, 'team_list': team_list, 'goals_bet': goals_bet, 'goals_teams': goals_teams}
     return render(request, 'userpanel/scorers.html', context)
 
 @login_required
