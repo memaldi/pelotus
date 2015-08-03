@@ -1,5 +1,5 @@
-import autocomplete_light
-autocomplete_light.autodiscover()
+# import autocomplete_light
+# autocomplete_light.autodiscover()
 
 from django.conf.urls import patterns, include, url
 from django.views.generic.edit import CreateView
