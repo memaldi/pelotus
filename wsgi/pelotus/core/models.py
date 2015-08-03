@@ -76,6 +76,17 @@ class Player(models.Model):
     def __str__(self):              # __unicode__ on Python 2
         return self.name
 
+    def __unicode__(self):
+        return u"{}".format(self.name)
+
+    def __cmp__(self, other):
+        if self.name < other.name:
+            return -1
+        elif self.name == other.name:
+            return 0
+        elif self.name > other.name:
+            return 1
+
 class Team(models.Model):
     name = models.CharField(max_length=30)
 
@@ -153,16 +164,36 @@ class GoalsBet(models.Model):
     defense = models.ForeignKey('Player', related_name='defense', null=True)
 
 class GlobalBet(models.Model):
-    deadline = models.DateTimeField()
     user = models.ForeignKey(User)
-    winter_champion = models.ForeignKey('Team', related_name='winter_champion')
-    kings_cup_champion = models.ForeignKey('Team', related_name='kings_cup_champion')
-    league_champion = models.ForeignKey('Team', related_name='league_champion')
-    uefa_champion = models.ForeignKey('Team', related_name='uefa_champion')
-    champions_league_champion = models.ForeignKey('Team', related_name='champions_league_champion')
+    competition = models.ForeignKey('Competition')
+    winter_champion = models.ForeignKey('Team', related_name='winter_champion', null=True, blank=True)
+    kings_cup_champion = models.ForeignKey('Team', related_name='kings_cup_champion', null=True, blank=True)
+    league_champion = models.ForeignKey('Team', related_name='league_champion', null=True, blank=True)
+    uefa_champion = models.ForeignKey('Team', related_name='uefa_champion', null=True, blank=True)
+    champions_league_champion = models.ForeignKey('Team', related_name='champions_league_champion', null=True, blank=True)
 
-    champions_positions = models.ManyToManyField('Team', related_name='champions_positions')
-    uefa_positions = models.ManyToManyField('Team', related_name='uefa_positions')
-    demotion_positions = models.ManyToManyField('Team', related_name='demotion_positions')
+    champions_positions = models.ManyToManyField('Team', related_name='champions_positions', null=True, blank=True)
+    uefa_positions = models.ManyToManyField('Team', related_name='uefa_positions', null=True, blank=True)
+    demotion_positions = models.ManyToManyField('Team', related_name='demotion_positions', null=True, blank=True)
 
-    best_goalkeeper = models.ForeignKey('Player')
+    best_goalkeeper = models.ForeignKey('Player', null=True, blank=True)
+
+class GlobalResults(models.Model):
+    season = models.ForeignKey('Season')
+    deadline = models.DateTimeField()
+    winter_champion = models.ForeignKey('Team', related_name='winter_champion_result', null=True, blank=True)
+    kings_cup_champion = models.ForeignKey('Team', related_name='kings_cup_champion_result', null=True, blank=True)
+    league_champion = models.ForeignKey('Team', related_name='league_champion_result', null=True, blank=True)
+    uefa_champion = models.ForeignKey('Team', related_name='uefa_champion_result', null=True, blank=True)
+    champions_league_champion = models.ForeignKey('Team', related_name='champions_league_champion_result', null=True, blank=True)
+
+    champions_positions = models.ManyToManyField('Team', related_name='champions_positions_result', null=True, blank=True)
+    uefa_positions = models.ManyToManyField('Team', related_name='uefa_positions_result', null=True, blank=True)
+    demotion_positions = models.ManyToManyField('Team', related_name='demotion_positions_result', null=True, blank=True)
+
+    best_goalkeeper = models.ForeignKey('Player', null=True, blank=True)
+
+    def date_limit_reached(self):
+        if datetime.datetime.now() > self.deadline:
+            return True
+        return False

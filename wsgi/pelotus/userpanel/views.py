@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from core.models import MatchDay, Match, Bet, UserAdministration, Competition, TeamInSeason, Team, Player, GoalsBet
+from core.models import MatchDay, Match, Bet, UserAdministration, Competition, TeamInSeason, Team, Player, GoalsBet, GlobalResults, GlobalBet, PlayerBelongsToTeam
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import dictsortreversed
@@ -92,6 +92,100 @@ def scorers(request, competition_id, match_day_id):
 
     context = {'user': user, 'competition': competition, 'match_day': match_day, 'team_list': team_list, 'goals_bet': goals_bet, 'goals_teams': goals_teams}
     return render(request, 'userpanel/scorers.html', context)
+
+@login_required
+def global_bets(request, competition_id):
+    user = request.user
+    competition = Competition.objects.get(id=competition_id)
+    global_bet_result = GlobalResults.objects.filter(season=competition.season).first()
+
+    spanish_league_teams = []
+    for tis in TeamInSeason.objects.filter(season=competition.season, spanish_league=True):
+        spanish_league_teams.append(tis.team)
+    spanish_league_teams.sort()
+
+    kings_cup_teams = []
+    for tis in TeamInSeason.objects.filter(season=competition.season, kings_cup=True):
+        kings_cup_teams.append(tis.team)
+    kings_cup_teams.sort()
+
+    uefa_teams = []
+    for tis in TeamInSeason.objects.filter(season=competition.season, uefa_league=True):
+        uefa_teams.append(tis.team)
+    uefa_teams.sort()
+
+    champions_teams = []
+    for tis in TeamInSeason.objects.filter(season=competition.season, champions_league=True):
+        champions_teams.append(tis.team)
+    champions_teams.sort()
+
+    goalkeepers = []
+    for pbt in PlayerBelongsToTeam.objects.filter(season=competition.season, position='GK'):
+        goalkeepers.append(pbt.player)
+    goalkeepers.sort()
+
+    global_bet = GlobalBet.objects.filter(user=user, competition=competition).first()
+
+    if request.method == 'POST':
+        if global_bet == None:
+            global_bet = GlobalBet(user=user, competition=competition)
+
+        if request.POST["winter-champion"] != "None":
+            global_bet.winter_champion = Team.objects.get(id=int(request.POST["winter-champion"]))
+
+        if request.POST["league-champion"] != "None":
+            global_bet.league_champion = Team.objects.get(id=int(request.POST["league-champion"]))
+
+        if request.POST["kings-champion"] != "None":
+            global_bet.kings_cup = Team.objects.get(id=int(request.POST["kings-champion"]))
+
+        if request.POST["uefa-champion"] != "None":
+            global_bet.uefa_champion = Team.objects.get(id=int(request.POST["uefa-champion"]))
+
+        if request.POST["champions-champion"] != "None":
+            global_bet.champions_league_champion = Team.objects.get(id=int(request.POST["champions-champion"]))
+
+        global_bet.save()
+        global_bet.uefa_positions.clear()
+
+        if request.POST["uefa-position-1"] != "None":
+            global_bet.uefa_positions.add(Team.objects.get(id=int(request.POST["uefa-position-1"])))
+
+        if request.POST["uefa-position-2"] != "None":
+            global_bet.uefa_positions.add(Team.objects.get(id=int(request.POST["uefa-position-2"])))
+
+        global_bet.champions_positions.clear()
+
+        if request.POST["champions-position-1"] != "None":
+            global_bet.champions_positions.add(Team.objects.get(id=int(request.POST["champions-position-1"])))
+
+        if request.POST["champions-position-2"] != "None":
+            global_bet.champions_positions.add(Team.objects.get(id=int(request.POST["champions-position-2"])))
+
+        if request.POST["champions-position-3"] != "None":
+            global_bet.champions_positions.add(Team.objects.get(id=int(request.POST["champions-position-3"])))
+
+        global_bet.demotion_positions.clear()
+
+        if request.POST["demotion-position-1"] != "None":
+            global_bet.demotion_positions.add(Team.objects.get(id=int(request.POST["demotion-position-1"])))
+
+        if request.POST["demotion-position-2"] != "None":
+            global_bet.demotion_positions.add(Team.objects.get(id=int(request.POST["demotion-position-2"])))
+
+        if request.POST["demotion-position-3"] != "None":
+            global_bet.demotion_positions.add(Team.objects.get(id=int(request.POST["demotion-position-3"])))
+
+        if request.POST["best-goalkeeper"] != "None":
+            global_bet.best_goalkeeper = Team.objects.get(id=int(request.POST["best-goalkeeper"]))
+
+        global_bet.save()
+
+    context = {'user': user, 'competition': competition, 'global_bet_result': global_bet_result,
+               'global_bet': global_bet, 'spanish_league_teams': spanish_league_teams,
+               'kings_cup_teams': kings_cup_teams, 'uefa_teams': uefa_teams,
+               'champions_teams': champions_teams, 'goalkeepers': goalkeepers}
+    return render(request, 'userpanel/global_bets.html', context)
 
 @login_required
 def community_dashboard(request, competition_id):

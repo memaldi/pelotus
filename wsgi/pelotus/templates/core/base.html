@@ -58,7 +58,7 @@
 											<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{competition.community.name}} <span class="caret"></span></a>
 											<ul class="dropdown-menu" role="menu">
 												<li><a href="/userpanel/competition/{{competition.id}}/match-days/">Bets</a></li>
-												<li><a href="#">Global bets</a></li>
+												<li><a href="/userpanel/competition/{{competition.id}}/global-bets/">Global bets</a></li>
 												<li class="divider"></li>
 												<li><a href="#">Match days</a></li>
 												<li><a href="#">Global ranking</a></li>
@@ -113,7 +113,7 @@
 			{% include 'autocomplete_light/static.html' %}
 			<script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
 		{% block scripts %}
-			
+
 		{% endblock %}
 	</body>
 </html>

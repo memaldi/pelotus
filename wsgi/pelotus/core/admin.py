@@ -13,9 +13,14 @@ from core.models import *
 # admin.site.register(Bet)
 # admin.site.register(GoalsBet)
 
+class GlobalResults(admin.TabularInline):
+	model = GlobalResults
+	extra = 1
+
 @admin.register(Season)
 class SeasonAdmin(admin.ModelAdmin):
 	list_display = ('name', 'description', 'start_date', 'end_date')
+	inlines = (GlobalResults,)
 
 class PlayerBelongsToTeamInLine(admin.TabularInline):
 	model = PlayerBelongsToTeam
