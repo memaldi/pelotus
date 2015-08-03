@@ -188,6 +188,15 @@ def global_bets(request, competition_id):
     return render(request, 'userpanel/global_bets.html', context)
 
 @login_required
+def match_day_ranking(request, competition_id, match_day_id):
+    user = request.user
+    competition = Competition.objects.get(id=competition_id)
+    match_day = MatchDay.objects.get(id=match_day_id)
+    if request.method == 'GET':
+        context = {'user': user, 'competition': competition, 'match_day': match_day}
+        return render(request, 'userpanel/match_day_ranking.html', context)
+
+@login_required
 def community_dashboard(request, competition_id):
     user = request.user
     competition = Competition.objects.get(id=competition_id)

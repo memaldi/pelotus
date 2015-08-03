@@ -72,6 +72,11 @@ class MatchDayAdmin(admin.ModelAdmin):
 	list_display_links = ('number', 'start_date')
 	inlines = (MatchAdminTabular, PlayerGoalAdmin)
 
+	def save_model(self, request, obj, form, change):
+		super(MatchDayAdmin)
+		
+
+
 class UserAdministrationAdmin(admin.TabularInline):
 	model = UserAdministration
 	extra = 5

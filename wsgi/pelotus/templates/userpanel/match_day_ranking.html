@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% load staticfiles %}
+{% load utils %}
+
+{% block content %}
+  <div class="page-header">
+    <ol class="breadcrumb">
+      <li><a href="/userpanel/competition/{{competition.id}}/dashboard/">{{competition.community.name}}</a></li>
+      <li><a href="/userpanel/competition/{{competition.id}}/match-days/">{{competition.season.name}}</a></li>
+      <li class="active">Match day {{match_day.number}} - Ranking</li>
+    </ol>
+    <h1>Match day {{match_day.number}} <small>ranking</small></h1>
+  </div>
+
+{% endblock %}
