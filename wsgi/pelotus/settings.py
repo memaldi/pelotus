@@ -167,6 +167,8 @@ INSTALLED_APPS = (
     'api',
     'userpanel',
     'rest_framework',
+    'djcelery',
+    'kombu.transport.django',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -200,3 +202,18 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 LOGIN_URL='/login'
 
 DEFAULT_CHARSET='utf-8'
+
+BROKER_URL = 'django://'
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_CACHE_ALIAS = "default"

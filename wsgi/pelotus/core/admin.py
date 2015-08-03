@@ -1,5 +1,6 @@
 from django.contrib import admin
 from core.models import *
+from core.tasks import match_day_ranking
 
 # Register your models here.
 #admin.site.register(Season)
@@ -74,8 +75,8 @@ class MatchDayAdmin(admin.ModelAdmin):
 
 	def save_model(self, request, obj, form, change):
 		super(MatchDayAdmin)
-		
-
+		print obj
+		match_day_ranking.delay(obj.id)
 
 class UserAdministrationAdmin(admin.TabularInline):
 	model = UserAdministration
