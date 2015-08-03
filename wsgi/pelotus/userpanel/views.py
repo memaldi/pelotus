@@ -137,7 +137,7 @@ def global_bets(request, competition_id):
             global_bet.league_champion = Team.objects.get(id=int(request.POST["league-champion"]))
 
         if request.POST["kings-champion"] != "None":
-            global_bet.kings_cup = Team.objects.get(id=int(request.POST["kings-champion"]))
+            global_bet.kings_cup_champion = Team.objects.get(id=int(request.POST["kings-champion"]))
 
         if request.POST["uefa-champion"] != "None":
             global_bet.uefa_champion = Team.objects.get(id=int(request.POST["uefa-champion"]))

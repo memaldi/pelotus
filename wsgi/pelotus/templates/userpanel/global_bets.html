@@ -1,5 +1,6 @@
 {% extends "core/base.html" %}
 {% load staticfiles %}
+{% load utils %}
 
 {% block content %}
   <div class="page-header">
@@ -21,7 +22,7 @@
             <select class="form-control" name="winter-champion" id="winter-champion" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
               <option value="None"></option>
               {% for team in spanish_league_teams %}
-                <option value="{{team.id}}">{{team.name}}</option>
+                <option value="{{team.id}}" {% if team == global_bet.winter_champion %} selected {% endif %}>{{team.name}}</option>
               {% endfor %}
             </select>
           </td>
@@ -32,7 +33,7 @@
             <select class="form-control" name="league-champion" id="league-champion" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
               <option value="None"></option>
               {% for team in spanish_league_teams %}
-                <option value="{{team.id}}">{{team.name}}</option>
+                <option value="{{team.id}}" {% if team == global_bet.league_champion %} selected {% endif %}>{{team.name}}</option>
               {% endfor %}
             </select>
           </td>
@@ -43,7 +44,7 @@
             <select class="form-control" name="kings-champion" id="kings-champion" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
               <option value="None"></option>
               {% for team in kings_cup_teams %}
-                <option value="{{team.id}}">{{team.name}}</option>
+                <option value="{{team.id}}" {% if team == global_bet.kings_cup_champion %} selected {% endif %}>{{team.name}}</option>
               {% endfor %}
             </select>
           </td>
@@ -54,7 +55,7 @@
             <select class="form-control" name="uefa-champion" id="uefa-champion" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
               <option value="None"></option>
               {% for team in uefa_teams %}
-                <option value="{{team.id}}">{{team.name}}</option>
+                <option value="{{team.id}}" {% if team == global_bet.uefa_champion %} selected {% endif %}>{{team.name}}</option>
               {% endfor %}
             </select>
           </td>
@@ -65,98 +66,141 @@
             <select class="form-control" name="champions-champion" id="champions-champion" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
               <option value="None"></option>
               {% for team in champions_teams %}
-                <option value="{{team.id}}">{{team.name}}</option>
+                <option value="{{team.id}}" {% if team == global_bet.champions_league_champion %} selected {% endif %}>{{team.name}}</option>
               {% endfor %}
             </select>
           </td>
         </tr>
-        <tr class="form-group">
-          <td><label for="uefa-position-1">UEFA position #1</label></td>
-          <td>
-            <select class="form-control" name="uefa-position-1" id="uefa-position-1" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
-              <option value="None"></option>
-              {% for team in spanish_league_teams %}
-                <option value="{{team.id}}">{{team.name}}</option>
-              {% endfor %}
-            </select>
-          </td>
-        </tr>
-        <tr class="form-group">
-          <td><label for="uefa-position-2">UEFA position #2</label></td>
-          <td>
-            <select class="form-control" name="uefa-position-2" id="uefa-position-2" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
-              <option value="None"></option>
-              {% for team in spanish_league_teams %}
-                <option value="{{team.id}}">{{team.name}}</option>
-              {% endfor %}
-            </select>
-          </td>
-        </tr>
-        <tr class="form-group">
-          <td><label for="champions-position-1">Champions league position #1</label></td>
-          <td>
-            <select class="form-control" name="champions-position-1" id="champions-position-1" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
-              <option value="None"></option>
-              {% for team in spanish_league_teams %}
-                <option value="{{team.id}}">{{team.name}}</option>
-              {% endfor %}
-            </select>
-          </td>
-        </tr>
-        <tr class="form-group">
-          <td><label for="champions-position-2">Champions league position #2</label></td>
-          <td>
-            <select class="form-control" name="champions-position-2" id="champions-position-2" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
-              <option value="None"></option>
-              {% for team in spanish_league_teams %}
-                <option value="{{team.id}}">{{team.name}}</option>
-              {% endfor %}
-            </select>
-          </td>
-        </tr>
-        <tr class="form-group">
-          <td><label for="champions-position-3">Champions league position #3</label></td>
-          <td>
-            <select class="form-control" name="champions-position-3" id="champions-position-3" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
-              <option value="None"></option>
-              {% for team in spanish_league_teams %}
-                <option value="{{team.id}}">{{team.name}}</option>
-              {% endfor %}
-            </select>
-          </td>
-        </tr>
-        <tr class="form-group">
-          <td><label for="demotion-position-1">Demotion position #1</label></td>
-          <td>
-            <select class="form-control" name="demotion-position-1" id="demotion-position-1" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
-              <option value="None"></option>
-              {% for team in spanish_league_teams %}
-                <option value="{{team.id}}">{{team.name}}</option>
-              {% endfor %}
-            </select>
-          </td>
-        </tr><tr class="form-group">
-          <td><label for="demotion-position-2">Demotion position #2</label></td>
-          <td>
-            <select class="form-control" name="demotion-position-2" id="demotion-position-2" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
-              <option value="None"></option>
-              {% for team in spanish_league_teams %}
-                <option value="{{team.id}}">{{team.name}}</option>
-              {% endfor %}
-            </select>
-          </td>
-        </tr>
-        <tr class="form-group">
-          <td><label for="demotion-position-3">Demotion position #3</label></td>
-          <td>
-            <select class="form-control" name="demotion-position-3" id="demotion-position-3" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
-              <option value="None"></option>
-              {% for team in spanish_league_teams %}
-                <option value="{{team.id}}">{{team.name}}</option>
-              {% endfor %}
-            </select>
-          </td>
-        </tr>
+        <!-- UEFA -->
+        {% for uefa_team in global_bet.uefa_positions.all %}
+          <tr class="form-group">
+            <td><label for="uefa-position-{{forloop.counter}}">UEFA position #{{forloop.counter}}</label></td>
+            <td>
+              <select class="form-control" name="uefa-position-{{forloop.counter}}" id="uefa-position-{{forloop.counter}}" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
+                <option value="None"></option>
+                {% for team in spanish_league_teams %}
+                  <option value="{{team.id}}" {% if team == uefa_team %} selected {% endif %}>{{team.name}}</option>
+                {% endfor %}
+              </select>
+            </td>
+          </tr>
+          {% if forloop.last %}
+            {% for i in forloop.counter|get_two_range %}
+            <tr class="form-group">
+              <td><label for="uefa-position-{{i|add:"1"}}">UEFA position #{{i|add:"1"}}</label></td>
+              <td>
+                <select class="form-control" name="uefa-position-{{i|add:"1"}}" id="uefa-position-{{i|add:"1"}}" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
+                  <option value="None"></option>
+                  {% for team in spanish_league_teams %}
+                    <option value="{{team.id}}">{{team.name}}</option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+            {% endfor %}
+          {% endif %}
+        {% empty %}
+          {% for i in 0|get_two_range %}
+          <tr class="form-group">
+            <td><label for="uefa-position-{{i|add:"1"}}">UEFA position #{{i|add:"1"}}</label></td>
+            <td>
+              <select class="form-control" name="uefa-position-{{i|add:"1"}}" id="uefa-position-{{i|add:"1"}}" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
+                <option value="None"></option>
+                {% for team in spanish_league_teams %}
+                  <option value="{{team.id}}">{{team.name}}</option>
+                {% endfor %}
+              </select>
+            </td>
+          </tr>
+          {% endfor %}
+        {% endfor %}
+        <!-- Champions -->
+        {% for champions_team in global_bet.champions_positions.all %}
+          <tr class="form-group">
+            <td><label for="champions-position-{{forloop.counter}}">Champions league position #{{forloop.counter}}</label></td>
+            <td>
+              <select class="form-control" name="champions-position-{{forloop.counter}}" id="champions-position-{{forloop.counter}}" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
+                <option value="None"></option>
+                {% for team in spanish_league_teams %}
+                  <option value="{{team.id}}" {% if team == champions_team %} selected {% endif %}>{{team.name}}</option>
+                {% endfor %}
+              </select>
+            </td>
+          </tr>
+          {% if forloop.last %}
+            {% for i in forloop.counter|get_three_range %}
+            <tr class="form-group">
+              <td><label for="champions-position-{{i|add:"1"}}">Champions league position #{{i|add:"1"}}</label></td>
+              <td>
+                <select class="form-control" name="champions-position-{{i|add:"1"}}" id="champions-position-{{i|add:"1"}}" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
+                  <option value="None"></option>
+                  {% for team in spanish_league_teams %}
+                    <option value="{{team.id}}">{{team.name}}</option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+            {% endfor %}
+          {% endif %}
+        {% empty %}
+          {% for i in 0|get_three_range %}
+          <tr class="form-group">
+            <td><label for="champions-position-{{i|add:"1"}}">Champions league position #{{i|add:"1"}}</label></td>
+            <td>
+              <select class="form-control" name="champions-position-{{i|add:"1"}}" id="champions-position-{{i|add:"1"}}" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
+                <option value="None"></option>
+                {% for team in spanish_league_teams %}
+                  <option value="{{team.id}}">{{team.name}}</option>
+                {% endfor %}
+              </select>
+            </td>
+          </tr>
+          {% endfor %}
+        {% endfor %}
+        <!-- Demotion -->
+        {% for demotion_team in global_bet.demotion_positions.all %}
+          <tr class="form-group">
+            <td><label for="demotion-position-{{forloop.counter}}">Demotion position #{{forloop.counter}}</label></td>
+            <td>
+              <select class="form-control" name="demotion-position-{{forloop.counter}}" id="demotion-position-{{forloop.counter}}" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
+                <option value="None"></option>
+                {% for team in spanish_league_teams %}
+                  <option value="{{team.id}}" {% if team == demotion_team %} selected {% endif %}>{{team.name}}</option>
+                {% endfor %}
+              </select>
+            </td>
+          </tr>
+          {% if forloop.last %}
+            {% for i in forloop.counter|get_three_range %}
+              <tr class="form-group">
+                <td><label for="demotion-position-{{i|add:"1"}}">Demotion position #{{i|add:"1"}}</label></td>
+                <td>
+                  <select class="form-control" name="demotion-position-{{i|add:"1"}}" id="demotion-position-{{i|add:"1"}}" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
+                    <option value="None"></option>
+                    {% for team in spanish_league_teams %}
+                      <option value="{{team.id}}">{{team.name}}</option>
+                    {% endfor %}
+                  </select>
+                </td>
+              </tr>
+            {% endfor %}
+          {% endif %}
+        {% empty %}
+          {% for i in 0|get_three_range %}
+            <tr class="form-group">
+              <td><label for="demotion-position-{{i|add:"1"}}">Demotion position #{{i|add:"1"}}</label></td>
+              <td>
+                <select class="form-control" name="demotion-position-{{i|add:"1"}}" id="demotion-position-{{i|add:"1"}}" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
+                  <option value="None"></option>
+                  {% for team in spanish_league_teams %}
+                    <option value="{{team.id}}">{{team.name}}</option>
+                  {% endfor %}
+                </select>
+              </td>
+            </tr>
+          {% endfor %}
+        {% endfor %}
+        <!-- -->
         <tr class="form-group">
           <td><label for="best-goalkeeper">Best goalkeeper</label></td>
           <td>
