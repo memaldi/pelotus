@@ -4,9 +4,13 @@ from core.models import MatchDay, Match, Bet, UserAdministration, Competition, T
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import dictsortreversed
+from django.core.cache import cache
+import core.utils
 import datetime
 
 # Create your views here.
+
+TIMEOUT = 259200
 
 @login_required
 def match_days(request, competition_id):
@@ -193,7 +197,17 @@ def match_day_ranking(request, competition_id, match_day_id):
     competition = Competition.objects.get(id=competition_id)
     match_day = MatchDay.objects.get(id=match_day_id)
     if request.method == 'GET':
-        context = {'user': user, 'competition': competition, 'match_day': match_day}
+        user_point_list = []
+        for ua in UserAdministration.objects.filter(competition=competition):
+            user_points = None
+            if cache.get('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id)) != None:
+                user_points = cache.get('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id))
+            else:
+                user_points = utils.get_user_match_day_points(user, match_day, competition)
+                cache.set('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id), user_points, TIMEOUT)
+            user_point_list.append({'user': ua.user, 'points': user_points})
+
+        context = {'user': user, 'competition': competition, 'match_day': match_day, 'user_point_list': user_point_list}
         return render(request, 'userpanel/match_day_ranking.html', context)
 
 @login_required

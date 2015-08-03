@@ -11,7 +11,5 @@ def match_day_ranking(match_day_id):
     competition_points = utils.match_day_ranking(match_day)
 
     for competition in competition_points:
-        print competition
-        print competition_points[competition]
         for user in competition_points[competition]:
             cache.set('competition:{}:match_day:{}:user:{}:points'.format(competition, match_day.id, user), competition_points[competition][user], TIMEOUT)
