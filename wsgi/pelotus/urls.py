@@ -1,10 +1,10 @@
+import autocomplete_light
+autocomplete_light.autodiscover()
+
 from django.conf.urls import patterns, include, url
 from django.views.generic.edit import CreateView
 #from django.contrib.auth.forms import UserCreationForm
 from core.forms import UserCreateForm
-
-import autocomplete_light
-autocomplete_light.autodiscover()
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
