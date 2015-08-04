@@ -1,0 +1,35 @@
+{% extends "core/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+  <div class="page-header">
+    <ol class="breadcrumb">
+      <li><a href="/userpanel/competition/{{competition.id}}/dashboard/">{{competition.community.name}}</a></li>
+      <li><a href="/userpanel/competition/{{competition.id}}/match-days/">{{competition.season.name}}</a></li>
+      <li class="active">Global ranking</li>
+    </ol>
+    <h1>Global Ranking</h1>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Position</th>
+        <th>User</th>
+        <th>Points</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in user_point_list|dictsortreversed:"points" %}
+        <tr>
+          <td></td>
+          <td>{% if item.user == user %}<strong>{% endif %}{{forloop.counter}}{% if item.user == user %}</strong>{% endif %}</td>
+          <td>{% if item.user == user %}<strong>{% endif %}{{item.user.username}}{% if item.user == user %}</strong>{% endif %}</td>
+          <td>{% if item.user == user %}<strong>{% endif %}{{item.points}}{% if item.user == user %}</strong>{% endif %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}

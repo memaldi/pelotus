@@ -203,12 +203,33 @@ def match_day_ranking(request, competition_id, match_day_id):
             if cache.get('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id)) != None:
                 user_points = cache.get('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id))
             else:
-                user_points = utils.get_user_match_day_points(user, match_day, competition)
+                user_points = utils.get_user_match_day_points(ua.user, match_day, competition)
             cache.set('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id), user_points, TIMEOUT)
             user_point_list.append({'user': ua.user, 'points': user_points})
 
         context = {'user': user, 'competition': competition, 'match_day': match_day, 'user_point_list': user_point_list}
         return render(request, 'userpanel/match_day_ranking.html', context)
+
+@login_required
+def global_ranking(request, competition_id):
+    user = request.user
+    competition = Competition.objects.get(id=competition_id)
+    user_point_list = []
+
+    for ua in competition.useradministration_set.all():
+        total_user_points = 0
+        for match_day in competition.season.matchday_set.all():
+            if cache.get('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id)) != None:
+                user_points = cache.get('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id))
+            else:
+                user_points = utils.get_user_match_day_points(ua.user, match_day, competition)
+            cache.set('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id), user_points, TIMEOUT)
+            total_user_points += user_points
+
+        user_point_list.append({'user': ua.user, 'points': total_user_points})
+
+    context = {'user': user, 'competition': competition, 'match_day': match_day, 'user_point_list': user_point_list}
+    return render(request, 'userpanel/global-ranking.html', context)
 
 @login_required
 def community_dashboard(request, competition_id):
