@@ -216,7 +216,7 @@ CACHES = {
 }
 if ON_OPENSHIFT:
     LOCALE_PATHS = (
-        s.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'translations'),
+        os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'translations'),
     )
 else:
     LOCALE_PATHS = (
