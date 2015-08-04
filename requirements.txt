@@ -17,3 +17,4 @@ pytz==2015.4
 redis==2.10.3
 six==1.9.0
 wsgiref==0.1.2
+psycopg2
