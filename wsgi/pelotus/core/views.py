@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from core.forms import CommunityForm, CommunitySearchForm
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from core.models import UserAdministration
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def home(request):
@@ -49,6 +50,11 @@ def login(request):
 		else:
 			context = {'form': login_form}
 			return render(request, 'core/login.html', context)
+
+@login_required
+def logout(request):
+	auth_logout(request)
+	return redirect('/')
 
 def join_community(request):
 	if request.method == 'POST':

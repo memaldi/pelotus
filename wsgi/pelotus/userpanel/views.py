@@ -5,7 +5,7 @@ from django.forms.models import inlineformset_factory
 from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import dictsortreversed
 from django.core.cache import cache
-import core.utils
+from core import utils
 import datetime
 
 # Create your views here.
@@ -204,7 +204,7 @@ def match_day_ranking(request, competition_id, match_day_id):
                 user_points = cache.get('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id))
             else:
                 user_points = utils.get_user_match_day_points(user, match_day, competition)
-                cache.set('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id), user_points, TIMEOUT)
+            cache.set('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id), user_points, TIMEOUT)
             user_point_list.append({'user': ua.user, 'points': user_points})
 
         context = {'user': user, 'competition': competition, 'match_day': match_day, 'user_point_list': user_point_list}
