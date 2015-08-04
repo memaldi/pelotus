@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
-from core.forms import CommunityForm, CommunitySearchForm
+from core.forms import CommunityForm, CommunitySearchForm, UserCreateForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from core.models import UserAdministration
 from django.contrib.auth.decorators import login_required
+from core.models import Community
+from django.contrib.auth.models import User
 
 # Create your views here.
 def home(request):
@@ -13,6 +15,24 @@ def home(request):
 
 # def join(request):
 # 	return render_to_response('core/join.html')
+
+def join(request):
+	if request.method == 'GET':
+		form = UserCreateForm()
+		context = {'form': form}
+		return render(request, 'core/join.html', context)
+	elif request.method == 'POST':
+		form = UserCreateForm(request.POST)
+		if form.is_valid():
+			user = User.objects.create_user(form.data['username'], form.data['email'], form.data['password1'])
+			user.save()
+			user = authenticate(username=form.data['username'], password=form.data['password1'])
+			if user.is_active:
+				auth_login(request, user)
+			return redirect('/registration/community/')
+		else:
+			context = {'form': form}
+			return render(request, 'core/join.html', context)
 
 def registration_community(request):
 	if request.method == 'GET':
@@ -59,8 +79,10 @@ def logout(request):
 def join_community(request):
 	if request.method == 'POST':
 		community_search_form = CommunitySearchForm(request.POST)
-		if community_search_form.is_valid():
-			return redirect(request.POST.get('next','/userpanel/community-dashboard/'))
+		print community_search_form
+		community = Community.objects.filter(name=community_search_form.data['name']).first()
+		if community != None:
+			return redirect('/userpanel/competition/%s/dashboard/' % community.id )
 		else:
 			community_form = CommunityForm()
 			context = {'community_form': community_form, 'community_search_form': community_search_form}

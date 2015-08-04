@@ -19,10 +19,7 @@ urlpatterns = patterns('',
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    url(r'^join/', CreateView.as_view(
-    							template_name='core/join.html',
-    							form_class=UserCreateForm,
-    							success_url="/registration/community/")),
+    url(r'^join/', 'core.views.join', name="join"),
     url(r'^login/', 'core.views.login', name='login'),
     url(r'^logout/', 'core.views.logout', name='logout'),
     url(r'^registration/community/', 'core.views.registration_community', name='registration_community'),
