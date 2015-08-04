@@ -209,7 +209,7 @@ if ON_OPENSHIFT:
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": "redis://:os.environ['OPENSHIFT_REDIS_DB_PASSWORD']@os.environ['OPENSHIFT_REDIS_DB_HOST']:os.environ['OPENSHIFT_REDIS_DB_PORT']/os.environ['OPENSHIFT_REDIS_DB_NAME']",
+            "LOCATION": "redis://:" + os.environ['OPENSHIFT_REDIS_DB_PASSWORD'] + "@" + os.environ['OPENSHIFT_REDIS_DB_HOST'] + ":" + os.environ['OPENSHIFT_REDIS_DB_PORT'] + "/" + os.environ['OPENSHIFT_REDIS_DB_NAME'],
             "OPTIONS": {
                 "CLIENT_CLASS": "django_redis.client.DefaultClient",
             }
