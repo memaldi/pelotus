@@ -1,0 +1,1 @@
+celery multi start worker -A celeryapp --pidfile="/tmp/celery-%n.pid" --logfile="/tmp/celery-%n.log"
