@@ -227,7 +227,7 @@ else:
     }
 if ON_OPENSHIFT:
     LOCALE_PATHS = (
-        os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'translations'),
+        os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'pelotus', 'translations'),
     )
 else:
     LOCALE_PATHS = (
