@@ -253,24 +253,33 @@ def community_dashboard(request, competition_id):
             user_point_list.append({'user': ua.user, 'points': total_user_points})
 
         user_point_list = dictsortreversed(user_point_list, 'points')
-        limited_user_point_list = []
-        user_index = 0
+        if len(user_point_list) <= 10:
+            limited_user_point_list = user_point_list
+        else:
+            limited_user_point_list = []
+            user_index = 0
 
-        for item in user_point_list:
-            if item['user'] == user:
-                break
-            user_index += 1
+            for item in user_point_list:
+                if item['user'] == user:
+                    break
+                user_index += 1
 
-        lower_bound = user_index - 5
-        if lower_bound < 0:
-            lower_bound = 0
+            lower_bound = user_index - 5
+            if lower_bound < 0:
+                lower_bound = 0
 
-        upper_bound = lower_bound + 9
-        if upper_bound >= len(user_point_list):
-            upper_bound = len(user_point_list) - 1
+            upper_bound = lower_bound + 9
+            if upper_bound >= len(user_point_list):
+                upper_bound = len(user_point_list) - 1
 
-        for i in range(lower_bound, upper_bound):
-            limited_user_point_list.append(user_point_list[i])
+            print user_index
+            print lower_bound
+            print upper_bound
+
+            for i in range(lower_bound, upper_bound):
+                print i
+                print user_point_list[i]
+                limited_user_point_list.append(user_point_list[i])
 
         context['user_list'] = limited_user_point_list
 

@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from core.models import UserAdministration
 from django.contrib.auth.decorators import login_required
-from core.models import Community
+from core.models import Community, UserAdministration, Competition
 from django.contrib.auth.models import User
 
 # Create your views here.
@@ -77,12 +77,22 @@ def logout(request):
 	return redirect('/')
 
 def join_community(request):
+	user = request.user
 	if request.method == 'POST':
 		community_search_form = CommunitySearchForm(request.POST)
 		print community_search_form
 		community = Community.objects.filter(name=community_search_form.data['name']).first()
-		if community != None:
-			return redirect('/userpanel/competition/%s/dashboard/' % community.id )
+		current_competition = None
+		for competition in Competition.objects.filter(community=community):
+			if competition.season.is_current():
+				current_competition = competition
+				break
+
+		ua = UserAdministration(user=user, competition=current_competition, is_admin=False)
+		ua.save()
+
+		if current_competition != None:
+			return redirect('/userpanel/competition/%s/dashboard/' % current_competition.id )
 		else:
 			community_form = CommunityForm()
 			context = {'community_form': community_form, 'community_search_form': community_search_form}

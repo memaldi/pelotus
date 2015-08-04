@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-04 11:29+0200\n"
+"POT-Creation-Date: 2015-08-04 16:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,7 +58,7 @@ msgstr "Únete a Pelotus"
 msgid "Step 1/2"
 msgstr "Paso 1/2"
 
-#: templates/core/join.html:64 templates/core/registration_community.html:74
+#: templates/core/join.html:73 templates/core/registration_community.html:74
 msgid "Next"
 msgstr "Siguiente"
 
@@ -104,6 +104,11 @@ msgstr "Fecha límite: %(limit_date)s"
 #: templates/userpanel/community_dashboard.html:33
 msgid "General Ranking"
 msgstr "Clasificación general"
+
+#: templates/userpanel/community_dashboard.html:33
+#, fuzzy
+msgid "full ranking"
+msgstr "clasificación completa"
 
 #: templates/userpanel/global-ranking.html:12
 msgid "Global Ranking"
@@ -215,6 +220,7 @@ msgid "ranking"
 msgstr "clasificación"
 
 #: templates/userpanel/scorers.html:10
+#, python-format
 msgid "Match day %(number)s - Scorers"
 msgstr "Jornada %(number)s - Goleadores"
 
