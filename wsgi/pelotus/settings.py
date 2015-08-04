@@ -205,15 +205,26 @@ DEFAULT_CHARSET='utf-8'
 
 BROKER_URL = 'django://'
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+if ON_OPENSHIFT:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://:os.environ['OPENSHIFT_REDIS_DB_PASSWORD']@os.environ['OPENSHIFT_REDIS_DB_HOST']:os.environ['OPENSHIFT_REDIS_DB_PORT']/os.environ['OPENSHIFT_REDIS_DB_NAME']",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
         }
     }
-}
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://127.0.0.1:6379/1",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            }
+        }
+    }
 if ON_OPENSHIFT:
     LOCALE_PATHS = (
         os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'translations'),
