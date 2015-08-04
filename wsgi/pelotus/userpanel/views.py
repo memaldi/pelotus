@@ -239,39 +239,40 @@ def community_dashboard(request, competition_id):
         context = {}
         context['competition'] = competition
 
-        user_list = []
-        for user_administration in competition.useradministration_set.all():
-            user_points = 0
-            for bet in Bet.objects.filter(user=user_administration.user, competition=competition):
-                if bet.home_goals != None and bet.foreign_goals != None and bet.match.home_goals != None and bet.match.foreign_goals != None:
-                    if bet.home_goals == bet.match.home_goals and bet.foreign_goals == bet.match.foreign_goals:
-                        user_points += 8
-                    elif bet.home_goals < bet.foreign_goals and bet.match.home_goals < bet.match.foreign_goals:
-                        user_points += 5
-                    elif bet.home_goals > bet.foreign_goals and bet.match.home_goals > bet.match.foreign_goals:
-                        user_points += 5
-                    elif bet.home_goals == bet.foreign_goals and bet.match.home_goals == bet.match.foreign_goals:
-                        user_points += 5
+        user_point_list = []
+        for ua in competition.useradministration_set.all():
+            total_user_points = 0
+            for match_day in competition.season.matchday_set.all():
+                if cache.get('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id)) != None:
+                    user_points = cache.get('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id))
+                else:
+                    user_points = utils.get_user_match_day_points(ua.user, match_day, competition)
+                cache.set('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id), user_points, TIMEOUT)
+                total_user_points += user_points
 
-            user_dict = {}
-            user_dict['user'] = user_administration.user
-            user_dict['points'] = user_points
-            user_list.append(user_dict)
-        user_list = dictsortreversed(user_list, "points")
+            user_point_list.append({'user': ua.user, 'points': total_user_points})
+
+        user_point_list = dictsortreversed(user_point_list, 'points')
+        limited_user_point_list = []
         user_index = 0
-        for user_dict in user_list:
-            if (user_dict['user'] == user):
+
+        for item in user_point_list:
+            if item['user'] == user:
                 break
             user_index += 1
-        lower_bound = user_index - 3
-        upper_bound = user_index + 3
+
+        lower_bound = user_index - 5
         if lower_bound < 0:
             lower_bound = 0
-        if upper_bound >= len(user_list):
-            upper_bound = len(user_list) - 1
 
-        user_list = user_list[lower_bound:upper_bound]
-        context['user_list'] = user_list
+        upper_bound = lower_bound + 9
+        if upper_bound >= len(user_point_list):
+            upper_bound = len(user_point_list) - 1
+
+        for i in range(lower_bound, upper_bound):
+            limited_user_point_list.append(user_point_list[i])
+
+        context['user_list'] = limited_user_point_list
 
         next_match_day = MatchDay.objects.filter(season=competition.season, start_date__gt=datetime.datetime.now()).first()
         context['next_match_day'] = next_match_day

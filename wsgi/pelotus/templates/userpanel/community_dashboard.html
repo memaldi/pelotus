@@ -34,7 +34,7 @@
         </div>
         <div class="panel-body">
           <table class="table table-striped">
-            {% for item in user_list|dictsort:"points" %}
+            {% for item in user_list %}
               <tr>
                 <td style="border: none;">{% if item.user == user %}<strong>{% endif %}{{forloop.counter}}{% if item.user == user %}</strong>{% endif %}</td>
                 <td style="border: none;">{% if item.user == user %}<strong>{% endif %}{{item.user.username}}{% if item.user == user %}</strong>{% endif %}</td>
