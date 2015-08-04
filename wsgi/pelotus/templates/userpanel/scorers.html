@@ -1,28 +1,29 @@
 {% extends "core/base.html" %}
 {% load staticfiles %}
+{% load i18n %}
 
 {% block content %}
   <div class="page-header">
     <ol class="breadcrumb">
       <li><a href="/userpanel/competition/{{competition.id}}/dashboard/">{{competition.community.name}}</a></li>
       <li><a href="/userpanel/competition/{{competition.id}}/match-days/">{{competition.season.name}}</a></li>
-      <li class="active">Match day {{match_day.number}} - Scorers</li>
+      <li class="active">{% blocktrans with match_day.number as number %}Match day {{number}} - Scorers{% endblocktrans %}</li>
     </ol>
-    <h1>Match day {{match_day.number}} <small>Scorers</small></h1>
+    <h1>{% blocktrans with match_day.number as number %}Match day {{number}}{% endblocktrans %} <small>{% trans "Scorers" %}</small></h1>
   </div>
   <form action="/userpanel/competition/{{competition.id}}/match-day/{{match_day.id}}/scorers/" method="post">
     {% csrf_token %}
     <table class="table table-striped">
       <head>
         <th></th>
-        <th>Position</th>
-        <th>Team</th>
-        <th>Player</th>
+        <th>{% trans "Position" %}</th>
+        <th>{% trans "Team" %}</th>
+        <th>{% trans "Player" %}</th>
       </head>
       <body>
         <tr>
           <td></td>
-          <td>Defender</td>
+          <td>{% trans "Defender" %}</td>
           <td>
             <select id="defender-team" onchange="getPlayers(this)">
               <option></option>
@@ -33,13 +34,13 @@
           </td>
           <td>
             <select id="defender-player" name="defender-player">
-              <option value="None">Please, select a team.</option>
+              <option value="None">{% trans "Please, select a team." %}</option>
             </select>
           </td>
         </tr>
         <tr>
           <td></td>
-          <td>Midfield</td>
+          <td>{% trans "Midfield" %}</td>
           <td>
             <select id="midfield-team" onchange="getPlayers(this)">
               <option></option>
@@ -50,13 +51,13 @@
           </td>
           <td>
             <select id="midfield-player" name="midfield-player">
-              <option value="None">Please, select a team.</option>
+              <option value="None">{% trans "Please, select a team." %}</option>
             </select>
           </td>
         </tr>
         <tr>
           <td></td>
-          <td>Forward</td>
+          <td>{% trans "Forward" %}</td>
           <td>
             <select id="forward-team" onchange="getPlayers(this)">
               <option></option>
@@ -67,7 +68,7 @@
           </td>
           <td>
             <select id="forward-player" name="forward-player">
-              <option value="None">Please, select a team.</option>
+              <option value="None">{% trans "Please, select a team." %}</option>
             </select>
           </td>
         </tr>
@@ -75,7 +76,8 @@
             <td></td>
             <td></td>
             <td></td>
-    		    <td style=""><input type="submit" class="btn btn-default" value="Submit" {% if match_day.date_limit_reached %} disabled {% endif %}></td>
+            {% trans "Submit" as submit_button %}
+    		    <td style=""><input type="submit" class="btn btn-default" value="{{submit_button}}" {% if match_day.date_limit_reached %} disabled {% endif %}></td>
         <tr>
       </body>
     </table>

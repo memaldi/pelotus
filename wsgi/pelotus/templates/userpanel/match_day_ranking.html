@@ -1,24 +1,25 @@
 {% extends "core/base.html" %}
 {% load staticfiles %}
 {% load utils %}
+{% load i18n %}
 
 {% block content %}
   <div class="page-header">
     <ol class="breadcrumb">
       <li><a href="/userpanel/competition/{{competition.id}}/dashboard/">{{competition.community.name}}</a></li>
       <li><a href="/userpanel/competition/{{competition.id}}/match-days/">{{competition.season.name}}</a></li>
-      <li class="active">Match day {{match_day.number}} - Ranking</li>
+      <li class="active">{% blocktrans with match_day.number as number %}Match day {{number}} - Ranking{% endblocktrans %}</li>
     </ol>
-    <h1>Match day {{match_day.number}} <small>ranking</small></h1>
+    <h1>{% blocktrans with match_day.number as number %}Match day {{number}}{% endblocktrans %} <small>{% trans "ranking" %}</small></h1>
   </div>
 
   <table class="table table-striped">
     <thead>
       <tr>
         <th></th>
-        <th>Position</th>
-        <th>User</th>
-        <th>Points</th>
+        <th>{% trans "Position" %}</th>
+        <th>{% trans "User" %}</th>
+        <th>{% trans "Points" %}</th>
       </tr>
     </thead>
     <tbody>

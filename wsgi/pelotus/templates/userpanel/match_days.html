@@ -1,5 +1,6 @@
 {% extends "core/base.html" %}
 {% load staticfiles %}
+{% load i18n %}
 
 {% block content %}
   <div class="page-header">
@@ -16,7 +17,7 @@
         <td>
         </td>
         <td>
-          Match day {{match_day.number}}
+          {% blocktrans with match_day.number as number %}Match day {{number}}{% endblocktrans %}
         </td>
         <td>
           {{match_day.start_date}}

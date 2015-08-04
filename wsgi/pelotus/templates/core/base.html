@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load i18n %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -51,26 +52,26 @@
 	            <div id="navbar" class="navbar-collapse collapse">
 	              <ul class="nav navbar-nav">
 									{% if user.is_authenticated and competition %}
-	                	<li class="active"><a href="/userpanel/competition/{{competition.id}}/dashboard/">Dashboard</a></li>
+	                	<li class="active"><a href="/userpanel/competition/{{competition.id}}/dashboard/">{% trans "Dashboard" %}</a></li>
 									{% endif %}
 									{% if competition %}
 	                	<li class="dropdown">
 											<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{competition.community.name}} <span class="caret"></span></a>
 											<ul class="dropdown-menu" role="menu">
-												<li><a href="/userpanel/competition/{{competition.id}}/match-days/">Match days</a></li>
-												<li><a href="/userpanel/competition/{{competition.id}}/global-bets/">Global bets</a></li>
-												<li><a href="/userpanel/competition/{{competition.id}}/global-ranking/">Global ranking</a></li>
+												<li><a href="/userpanel/competition/{{competition.id}}/match-days/">{% trans "Match days" %}</a></li>
+												<li><a href="/userpanel/competition/{{competition.id}}/global-bets/">{% trans "Global bets" %}</a></li>
+												<li><a href="/userpanel/competition/{{competition.id}}/global-ranking/">{% trans "Global ranking" %}</a></li>
 											</ul>
 										</li>
 									{% endif %}
 	              </ul>
 	              <ul class="nav navbar-nav navbar-right">
 									{% if not user.is_authenticated %}
-	              		<li><a href="/join/">Sign up</a></li>
-	              		<li><a href="/login/">Sign in</a></li>
+	              		<li><a href="/join/">{% trans "Sign up" %}</a></li>
+	              		<li><a href="/login/">{% trans "Sign in" %}</a></li>
 									{% else %}
-										<li><a href="/settings/">Settings <i class="fa fa-cog"></i></a></li>
-										<li><a href="/logout/">Sign out <i class="fa fa-sign-out"></i></a></li>
+										<li><a href="/settings/">{% trans "Settings" %} <i class="fa fa-cog"></i></a></li>
+										<li><a href="/logout/">{% trans "Sign out" %} <i class="fa fa-sign-out"></i></a></li>
 									{% endif %}
 	              </ul>
 	            </div>

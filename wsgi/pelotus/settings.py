@@ -55,11 +55,11 @@ else:
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Europe/Madrid'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-es'
 
 SITE_ID = 1
 
@@ -214,6 +214,11 @@ CACHES = {
         }
     }
 }
-
-# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-# SESSION_CACHE_ALIAS = "default"
+if ON_OPENSHIFT:
+    LOCALE_PATHS = (
+        s.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'translations'),
+    )
+else:
+    LOCALE_PATHS = (
+        '/Users/memaldi/virtualenvs/pelotus/pelotus/wsgi/pelotus/translations',
+    )

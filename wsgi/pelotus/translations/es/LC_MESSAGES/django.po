@@ -1,0 +1,248 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-08-04 11:29+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: templates/core/base.html:55
+msgid "Dashboard"
+msgstr "Panel de control"
+
+#: templates/core/base.html:61
+msgid "Match days"
+msgstr "Jornadas"
+
+#: templates/core/base.html:62 templates/userpanel/global_bets.html:11
+msgid "Global bets"
+msgstr "Pronósticos globales"
+
+#: templates/core/base.html:63 templates/userpanel/global-ranking.html:10
+msgid "Global ranking"
+msgstr "Clasificación general"
+
+#: templates/core/base.html:70
+msgid "Sign up"
+msgstr "Registro"
+
+#: templates/core/base.html:71
+msgid "Sign in"
+msgstr "Iniciar sesión"
+
+#: templates/core/base.html:73
+msgid "Settings"
+msgstr "Configuración"
+
+#: templates/core/base.html:74
+msgid "Sign out"
+msgstr "Cerrar sesión"
+
+#: templates/core/join.html:7 templates/core/registration_community.html:7
+msgid "Join Pelotus"
+msgstr "Únete a Pelotus"
+
+#: templates/core/join.html:7
+msgid "Step 1/2"
+msgstr "Paso 1/2"
+
+#: templates/core/join.html:64 templates/core/registration_community.html:74
+msgid "Next"
+msgstr "Siguiente"
+
+#: templates/core/login.html:7
+msgid "Log In"
+msgstr "Inicia sesión"
+
+#: templates/core/login.html:54 templates/core/registration_community.html:32
+msgid "Join"
+msgstr "Únete"
+
+#: templates/core/registration_community.html:7
+msgid "Step 2/2"
+msgstr "Paso 2/2"
+
+#: templates/core/registration_community.html:12
+msgid "Search Community"
+msgstr "Buscar comunidad"
+
+#: templates/core/registration_community.html:16
+msgid "Community name"
+msgstr "Nombre de la comunidad"
+
+#: templates/core/registration_community.html:39
+msgid "Create New Community"
+msgstr "Crear una nueva comunidad"
+
+#: templates/userpanel/community_dashboard.html:7
+#, python-format
+msgid "Welcome, %(username)s to %(community_name)s community!"
+msgstr "¡Bienvenido, %(username)s, a la comunidad %(community_name)s!"
+
+#: templates/userpanel/community_dashboard.html:13
+#, python-format
+msgid "Match Day %(match_day)s"
+msgstr "Jornada %(match_day)s"
+
+#: templates/userpanel/community_dashboard.html:13
+#, python-format
+msgid "Limit date: %(limit_date)s"
+msgstr "Fecha límite: %(limit_date)s"
+
+#: templates/userpanel/community_dashboard.html:33
+msgid "General Ranking"
+msgstr "Clasificación general"
+
+#: templates/userpanel/global-ranking.html:12
+msgid "Global Ranking"
+msgstr "Clasificación general"
+
+#: templates/userpanel/global-ranking.html:19
+#: templates/userpanel/match_day_ranking.html:20
+#: templates/userpanel/scorers.html:19
+msgid "Position"
+msgstr "Posición"
+
+#: templates/userpanel/global-ranking.html:20
+#: templates/userpanel/match_day_ranking.html:21
+msgid "User"
+msgstr "Usuario"
+
+#: templates/userpanel/global-ranking.html:21
+#: templates/userpanel/match_day_ranking.html:22
+msgid "Points"
+msgstr "Puntos"
+
+#: templates/userpanel/global_bets.html:13
+msgid "Global Bets"
+msgstr "Pronósticos globales"
+
+#: templates/userpanel/global_bets.html:13
+#, python-format
+msgid "limit: %(deadline)s"
+msgstr "límite: %(deadline)s"
+
+#: templates/userpanel/global_bets.html:21
+msgid "Winter champion"
+msgstr "Campeón de invierno"
+
+#: templates/userpanel/global_bets.html:32
+msgid "League champion"
+msgstr "Campeón de liga"
+
+#: templates/userpanel/global_bets.html:43
+msgid "King's cup champion"
+msgstr "Campeón de copa"
+
+#: templates/userpanel/global_bets.html:54
+msgid "UEFA league champion"
+msgstr "Campeón de la UEFA"
+
+#: templates/userpanel/global_bets.html:65
+msgid "Champions league champion"
+msgstr "Campeón de la Champions"
+
+#: templates/userpanel/global_bets.html:78
+#: templates/userpanel/global_bets.html:91
+#: templates/userpanel/global_bets.html:106
+#, python-format
+msgid "UEFA position #%(counter)s"
+msgstr "Puesto UEFA #%(counter)s"
+
+#: templates/userpanel/global_bets.html:121
+#: templates/userpanel/global_bets.html:134
+#: templates/userpanel/global_bets.html:149
+#, python-format
+msgid "Champions league position #%(counter)s"
+msgstr "Puesto Champions #%(counter)s"
+
+#: templates/userpanel/global_bets.html:164
+#: templates/userpanel/global_bets.html:177
+#: templates/userpanel/global_bets.html:192
+#, python-format
+msgid "Demotion position #%(counter)s"
+msgstr "Puesto de descenso #%(counter)s"
+
+#: templates/userpanel/global_bets.html:206
+msgid "Best goalkeeper"
+msgstr "Zamora"
+
+#: templates/userpanel/global_bets.html:218
+#: templates/userpanel/match_day.html:39 templates/userpanel/scorers.html:79
+msgid "Submit"
+msgstr "Enviar"
+
+#: templates/userpanel/match_day.html:10
+#, python-format
+msgid "Match day %(number)s - Bets"
+msgstr "Jornada %(number)s - Pronósticos"
+
+#: templates/userpanel/match_day.html:12
+#: templates/userpanel/match_day_ranking.html:13
+#: templates/userpanel/match_days.html:20 templates/userpanel/scorers.html:12
+#, python-format
+msgid "Match day %(number)s"
+msgstr "Jornada %(number)s"
+
+#: templates/userpanel/match_day.html:12
+#, python-format
+msgid "Limit: %(limit)s"
+msgstr "Fecha límite: %(limit)s"
+
+#: templates/userpanel/match_day.html:19
+msgid "Your bet have been saved correctly"
+msgstr "Tu pronóstico ha sido guardado correctamente"
+
+#: templates/userpanel/match_day_ranking.html:11
+#, python-format
+msgid "Match day %(number)s - Ranking"
+msgstr "Jornada %(number)s - Clasificación"
+
+#: templates/userpanel/match_day_ranking.html:13
+msgid "ranking"
+msgstr "clasificación"
+
+#: templates/userpanel/scorers.html:10
+msgid "Match day %(number)s - Scorers"
+msgstr "Jornada %(number)s - Goleadores"
+
+#: templates/userpanel/scorers.html:12
+msgid "Scorers"
+msgstr "Goleadores"
+
+#: templates/userpanel/scorers.html:20
+msgid "Team"
+msgstr "Equipo"
+
+#: templates/userpanel/scorers.html:21
+msgid "Player"
+msgstr "Jugador"
+
+#: templates/userpanel/scorers.html:26
+msgid "Defender"
+msgstr "Defensa"
+
+#: templates/userpanel/scorers.html:37 templates/userpanel/scorers.html:54
+#: templates/userpanel/scorers.html:71
+msgid "Please, select a team."
+msgstr "Por favor, selecciona un equipo."
+
+#: templates/userpanel/scorers.html:43
+msgid "Midfield"
+msgstr "Centrocampista"
+
+#: templates/userpanel/scorers.html:60
+msgid "Forward"
+msgstr "Delantero"
