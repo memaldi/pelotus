@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Django settings for OpenShift project.
 import imp, os
+import urlparse
 
 # a setting to determine whether we are running on OpenShift
 ON_OPENSHIFT = False
