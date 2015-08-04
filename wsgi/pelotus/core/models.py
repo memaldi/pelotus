@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 import datetime
 
 # Create your models here.
@@ -197,3 +198,9 @@ class GlobalResults(models.Model):
         if datetime.datetime.now() > self.deadline:
             return True
         return False
+
+def update_ranking(sender, instance, **kwargs):
+    from core.tasks import match_day_ranking
+    match_day_ranking.delay(instance.id)
+
+post_save.connect(update_ranking, sender=MatchDay, dispatch_uid="update_ranking_count")
