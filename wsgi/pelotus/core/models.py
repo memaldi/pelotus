@@ -100,9 +100,9 @@ class SpanishLeagueTeamsManager(models.Manager):
 
 class Team(models.Model):
     name = models.CharField(max_length=30)
-    spanish_teams = SpanishLeagueTeamsManager()
-
     objects = models.Manager()
+
+    spanish_teams = SpanishLeagueTeamsManager()
 
     def current_season(self):
         return self.teaminseason_set.filter(season__start_date__lte=datetime.date.today(), season__end_date__gte=datetime.date.today()).first().season.name
