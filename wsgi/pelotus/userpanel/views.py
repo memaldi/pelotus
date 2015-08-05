@@ -169,6 +169,10 @@ def global_bets(request, competition_id):
         if request.POST["champions-position-3"] != "None":
             global_bet.champions_positions.add(Team.objects.get(id=int(request.POST["champions-position-3"])))
 
+        if request.POST["champions-position-4"] != "None":
+            global_bet.champions_positions.add(Team.objects.get(id=int(request.POST["champions-position-4"])))
+
+
         global_bet.demotion_positions.clear()
 
         if request.POST["demotion-position-1"] != "None":

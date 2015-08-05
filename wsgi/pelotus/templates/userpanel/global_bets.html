@@ -129,7 +129,7 @@
             </td>
           </tr>
           {% if forloop.last %}
-            {% for i in forloop.counter|get_three_range %}
+            {% for i in forloop.counter|get_four_range %}
             <tr class="form-group">
               <td><label for="champions-position-{{i|add:"1"}}">{% blocktrans with i|add:"1" as counter %}Champions league position #{{counter}}{% endblocktrans %}</label></td>
               <td>
@@ -144,7 +144,7 @@
             {% endfor %}
           {% endif %}
         {% empty %}
-          {% for i in 0|get_three_range %}
+          {% for i in 0|get_four_range %}
           <tr class="form-group">
             <td><label for="champions-position-{{i|add:"1"}}">{% blocktrans with i|add:"1" as counter %}Champions league position #{{counter}}{% endblocktrans %}</label></td>
             <td>
