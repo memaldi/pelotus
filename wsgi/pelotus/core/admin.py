@@ -36,7 +36,7 @@ class TeamAdmin(admin.ModelAdmin):
 	list_display = ('name', 'current_season',)
 	search_fields = ['name']
 	inlines = (TeamInSeasonAdmin,)
-	# inlines = (PlayerBelongsToTeamInLine,)
+	list_filter = ('teaminseason__spanish_league', 'teaminseason__uefa_league', 'teaminseason__champions_league')
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):

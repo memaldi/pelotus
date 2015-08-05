@@ -76,6 +76,10 @@ class Match(models.Model):
 class Player(models.Model):
     name = models.CharField(max_length=50)
 
+    class Meta:
+        ordering = ['name']
+        verbose_name = _('Player')
+
     def __str__(self):              # __unicode__ on Python 2
         return self.name
 
@@ -105,6 +109,7 @@ class Team(models.Model):
 
     class Meta:
         ordering = ['name']
+        verbose_name = _('Team')
 
     def __str__(self):              # __unicode__ on Python 2
         return self.name

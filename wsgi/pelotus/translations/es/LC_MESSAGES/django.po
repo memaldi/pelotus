@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-05 13:50+0200\n"
+"POT-Creation-Date: 2015-08-05 17:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,6 +21,14 @@ msgstr ""
 #: core/models.py:45
 msgid "Match day"
 msgstr "Jornada"
+
+#: core/models.py:81 templates/userpanel/scorers.html:21
+msgid "Player"
+msgstr "Jugador"
+
+#: core/models.py:112 templates/userpanel/scorers.html:20
+msgid "Team"
+msgstr "Equipo"
 
 #: templates/core/base.html:55
 msgid "Dashboard"
@@ -231,14 +239,6 @@ msgstr "Jornada %(number)s - Goleadores"
 #: templates/userpanel/scorers.html:12
 msgid "Scorers"
 msgstr "Goleadores"
-
-#: templates/userpanel/scorers.html:20
-msgid "Team"
-msgstr "Equipo"
-
-#: templates/userpanel/scorers.html:21
-msgid "Player"
-msgstr "Jugador"
 
 #: templates/userpanel/scorers.html:26
 msgid "Defender"
