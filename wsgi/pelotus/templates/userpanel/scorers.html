@@ -122,7 +122,6 @@
       $("#" + player_selector).find('option').remove();
       $.getJSON("/api/team/" + value + "/season/{{competition.season.id}}/player/position/" + position + "/", function(data) {
         $.each(data, function(key, val) {
-          $("#" + player_selector).find('option').remove();
           $("#" + player_selector).append($('<option>', {
             value: val["id"],
             text: val["name"]
