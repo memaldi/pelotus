@@ -57,6 +57,7 @@ class CommunityAdmin(admin.ModelAdmin):
 class MatchAdminTabular(admin.TabularInline):
 	model = Match
 	extra = 10
+	max_num = 10
 
 class PlayerGoalAdmin(admin.TabularInline):
 	model = PlayerGoal
