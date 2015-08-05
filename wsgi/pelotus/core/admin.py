@@ -1,6 +1,7 @@
 from django.contrib import admin
 from core.models import *
 from core.tasks import match_day_ranking
+from django.forms.models import BaseInlineFormSet
 
 # Register your models here.
 #admin.site.register(Season)
@@ -54,11 +55,17 @@ class CommunityAdmin(admin.ModelAdmin):
 	search_fields = ['name', 'description']
 	inlines = (CompetitionAdmin,)
 
+
 class MatchAdminTabular(admin.TabularInline):
 	model = Match
 	extra = 10
 	max_num = 10
-	list_display = ['spanish_teams']
+	def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+		if db_field.name == 'home_team':
+			kwargs['queryset'] = Team.objects.filter(teaminseason__spanish_league=True)
+		elif db_field.name == 'foreign_team':
+			kwargs['queryset'] = Team.objects.filter(teaminseason__spanish_league=True)
+		return super(MatchAdminTabular, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 class PlayerGoalAdmin(admin.TabularInline):
 	model = PlayerGoal
