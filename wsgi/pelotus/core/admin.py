@@ -58,6 +58,7 @@ class MatchAdminTabular(admin.TabularInline):
 	model = Match
 	extra = 10
 	max_num = 10
+	list_display = ['spanish_teams']
 
 class PlayerGoalAdmin(admin.TabularInline):
 	model = PlayerGoal

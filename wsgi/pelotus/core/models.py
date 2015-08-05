@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+from django.utils.translation import ugettext as _
 import datetime
 
 # Create your models here.
@@ -41,6 +42,7 @@ class MatchDay(models.Model):
 
     class Meta:
         ordering = ['number']
+        verbose_name = _('Match day')
 
     def __str__(self):
         return str(self.number)
@@ -88,8 +90,15 @@ class Player(models.Model):
         elif self.name > other.name:
             return 1
 
+class SpanishLeagueTeamsManager(models.Manager):
+    def get_queryset(self):
+        return super(SpanishLeagueTeamsManager, self).get_queryset().filter(teaminseason__spanish_league=True)
+
 class Team(models.Model):
     name = models.CharField(max_length=30)
+    spanish_teams = SpanishLeagueTeamsManager()
+
+    objects = models.Manager()
 
     def current_season(self):
         return self.teaminseason_set.filter(season__start_date__lte=datetime.date.today(), season__end_date__gte=datetime.date.today()).first().season.name
