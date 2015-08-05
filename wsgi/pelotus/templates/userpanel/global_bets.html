@@ -208,7 +208,7 @@
             <select class="form-control" name="best-goalkeeper" id="best-goalkeeper" {% if global_bet_result.date_limit_reached %} disabled {% endif %}>
               <option value="None"></option>
               {% for player in goalkeepers %}
-                <option value="{{team.id}}">{{player.name}}</option>
+                <option value="{{player.id}}" {% if player == global_bet.best_goalkeeper %}selected{% endif %}>{{player.name}}</option>
               {% endfor %}
             </select>
           </td>

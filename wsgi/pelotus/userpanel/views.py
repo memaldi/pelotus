@@ -181,7 +181,7 @@ def global_bets(request, competition_id):
             global_bet.demotion_positions.add(Team.objects.get(id=int(request.POST["demotion-position-3"])))
 
         if request.POST["best-goalkeeper"] != "None":
-            global_bet.best_goalkeeper = Team.objects.get(id=int(request.POST["best-goalkeeper"]))
+            global_bet.best_goalkeeper = Player.objects.get(id=int(request.POST["best-goalkeeper"]))
 
         global_bet.save()
 
@@ -205,7 +205,12 @@ def match_day_ranking(request, competition_id, match_day_id):
             else:
                 user_points = utils.get_user_match_day_points(ua.user, match_day, competition)
             cache.set('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id), user_points, TIMEOUT)
-            user_point_list.append({'user': ua.user, 'points': user_points})
+
+            user_bet_list = []
+            for bet in Bet.objects.filter(match_day=match_day, user=ua.user).order_by('match__home_team__name'):
+                user_bet_list.append(bet)
+
+            user_point_list.append({'user': ua.user, 'points': user_points, 'bets': user_bet_list})
 
         context = {'user': user, 'competition': competition, 'match_day': match_day, 'user_point_list': user_point_list}
         return render(request, 'userpanel/match_day_ranking.html', context)
