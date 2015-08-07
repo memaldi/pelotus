@@ -98,7 +98,7 @@ class CompetitionsAdmin(admin.ModelAdmin):
 
 @admin.register(UserAdministration)
 class UserAdministrationAdmin(admin.ModelAdmin):
-	list_display = ('user', 'competition')
+	list_display = ('id', 'user', 'competition')
 
 @admin.register(Bet)
 class BetAdmin(admin.ModelAdmin):
