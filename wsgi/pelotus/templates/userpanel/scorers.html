@@ -109,22 +109,37 @@
       var value = selector.value;
       var position = "";
       var player_selector = "";
+      var player_id = -1;
       if (selector.id == "defender-team") {
         position = "DF";
         player_selector = "defender-player";
+        {% if goals_bet.defense %}
+          player_id = "{{goals_bet.defense.id}}";
+        {% endif %}
       } else if (selector.id == "midfield-team") {
         position = "MF";
         player_selector = "midfield-player";
+        {% if goals_bet.midfield %}
+          player_id = "{{goals_bet.midfield.id}}";
+        {% endif %}
       } else if (selector.id == "forward-team") {
         position = "FW";
         player_selector = "forward-player";
+        {% if goals_bet.forward %}
+          player_id = "{{goals_bet.forward.id}}";
+        {% endif %}
       }
       $("#" + player_selector).find('option').remove();
       $.getJSON("/api/team/" + value + "/season/{{competition.season.id}}/player/position/" + position + "/", function(data) {
         $.each(data, function(key, val) {
+          var is_selected = false;
+          if (val["id"] == player_id) {
+            is_selected = true;
+          }
           $("#" + player_selector).append($('<option>', {
             value: val["id"],
-            text: val["name"]
+            text: val["name"],
+            selected: is_selected
           }));
         });
       });
