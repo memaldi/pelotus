@@ -87,14 +87,18 @@ class MatchDayAdmin(admin.ModelAdmin):
 	# 	print obj
 	# 	match_day_ranking.delay(obj.id)
 
-class UserAdministrationAdmin(admin.TabularInline):
+class UserAdministrationAdminInline(admin.TabularInline):
 	model = UserAdministration
 	extra = 5
 
 @admin.register(Competition)
 class CompetitionsAdmin(admin.ModelAdmin):
 	list_display = ('season', 'community')
-	inlines = (UserAdministrationAdmin,)
+	inlines = (UserAdministrationAdminInline,)
+
+@admin.register(UserAdministration)
+class UserAdministrationAdmin(admin.ModelAdmin):
+	list_display = ('user', 'competition')
 
 @admin.register(Bet)
 class BetAdmin(admin.ModelAdmin):

@@ -35,6 +35,9 @@ class Competition(models.Model):
     season = models.ForeignKey('Season')
     community = models.ForeignKey('Community')
 
+    def __unicode__(self):
+        return u'{} ({})'.format(self.community.name, self.season.name)
+
 class MatchDay(models.Model):
     number = models.IntegerField()
     start_date = models.DateTimeField()
