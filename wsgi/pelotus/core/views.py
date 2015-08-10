@@ -4,7 +4,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from core.models import UserAdministration
 from django.contrib.auth.decorators import login_required
 from core.models import Community, UserAdministration, Competition
 from django.contrib.auth.models import User
@@ -88,10 +87,12 @@ def join_community(request):
 				current_competition = competition
 				break
 
-		ua = UserAdministration(user=user, competition=current_competition, is_admin=False)
-		ua.save()
-
 		if current_competition != None:
+			ua = UserAdministration.objects.filter(user=user, competition=current_competition).first()
+			if ua != None:
+				ua = UserAdministration(user=user, competition=current_competition, is_admin=False)
+				ua.save()
+				
 			return redirect('/userpanel/competition/%s/dashboard/' % current_competition.id )
 		else:
 			community_form = CommunityForm()
