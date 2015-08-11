@@ -36,40 +36,48 @@
 
   {% if match_day.date_limit_reached %}
     {% for item in user_point_list %}
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>{{item.user.username}}</th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for match in match_day.match_set.all %}
-            {% for bet in item.bets %}
-              {% if match.home_team == bet.match.home_team and match.foreign_team == bet.match.foreign_team %}
-              <tr>
-                <td>{{match.home_team.name}}</td>
-                <td>{% if bet.home_goals != None %}{{bet.home_goals}}{% endif %} {% if match.home_goals != None %}<strong>({{match.home_goals}})</strong>{% endif %}</td>
-                <td>-</td>
-                <td>{% if bet.foreign_goals != None %}{{bet.foreign_goals}}{% endif %} {% if match.foreign_goals != None %}<strong>({{match.foreign_goals}})</strong>{% endif %}</td>
-                <td>{{match.foreign_team.name}}</td>
-              </tr>
-              {% endif %}
-            {% empty %}
-              <tr>
-                <td>{{match.home_team.name}}</td>
-                <td>{% if match.home_goals != None %}<strong>({{match.home_goals}})</strong>{% endif %}</td>
-                <td>-</td>
-                <td>{% if match.foreign_goals != None %}<strong>({{match.foreign_goals}})</strong>{% endif %}</td>
-                <td>{{match.foreign_team.name}}</td>
-              </tr>
+      {% if not forloop.counter|divisibleby:"2" %}
+        <div class="row">
+      {% endif %}
+      <div class="col-md-6">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>{{item.user.username}}</th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for match in match_day.match_set.all %}
+              {% for bet in item.bets %}
+                {% if match.home_team == bet.match.home_team and match.foreign_team == bet.match.foreign_team %}
+                <tr class="{% if bet.match.home_goals != None and bet.match.foreign_goals != None and bet.match.home_goals == bet.home_goals and bet.match.foreign_goals == bet.foreign_goals %}success{% endif %}">
+                  <td>{{match.home_team.name}}</td>
+                  <td>{% if bet.home_goals != None %}{{bet.home_goals}}{% endif %} {% if match.home_goals != None %}<strong>({{match.home_goals}})</strong>{% endif %}</td>
+                  <td>-</td>
+                  <td>{% if bet.foreign_goals != None %}{{bet.foreign_goals}}{% endif %} {% if match.foreign_goals != None %}<strong>({{match.foreign_goals}})</strong>{% endif %}</td>
+                  <td>{{match.foreign_team.name}}</td>
+                </tr>
+                {% endif %}
+              {% empty %}
+                <tr>
+                  <td>{{match.home_team.name}}</td>
+                  <td>{% if match.home_goals != None %}<strong>({{match.home_goals}})</strong>{% endif %}</td>
+                  <td>-</td>
+                  <td>{% if match.foreign_goals != None %}<strong>({{match.foreign_goals}})</strong>{% endif %}</td>
+                  <td>{{match.foreign_team.name}}</td>
+                </tr>
+              {% endfor %}
             {% endfor %}
-          {% endfor %}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
+      {% if forloop.counter|divisibleby:"2" or forloop.last %}
+        </div>
+      {% endif %}
     {% endfor %}
   {% endif %}
 
