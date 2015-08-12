@@ -284,16 +284,16 @@ def community_dashboard(request, competition_id):
 
             upper_bound = lower_bound + 9
             if upper_bound >= len(user_point_list):
-                upper_bound = len(user_point_list) - 1
+                upper_bound = len(user_point_list)
+            if upper_bound - lower_bound < 10:
+                lower_bound = lower_bound -  (9 - (upper_bound - lower_bound))
 
-            print user_index
-            print lower_bound
-            print upper_bound
+                print user_index, lower_bound, upper_bound
 
             for i in range(lower_bound, upper_bound):
-                print i
-                print user_point_list[i]
-                limited_user_point_list.append(user_point_list[i])
+                user_dict = user_point_list[i]
+                user_dict['position'] = i
+                limited_user_point_list.append(user_dict)
 
         context['user_list'] = limited_user_point_list
 
