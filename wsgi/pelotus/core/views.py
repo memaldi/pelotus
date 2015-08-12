@@ -10,7 +10,16 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 def home(request):
-	return render(request, 'core/home.html')
+	user = request.user
+	current_competition = None
+	if not user.is_anonymous():
+		for ua in UserAdministration.objects.filter(user=user):
+			if ua.competition.season.is_current():
+				current_competition = ua.competition
+				break
+	print current_competition
+	context = {'user': user, 'competition': current_competition}
+	return render(request, 'core/home.html', context)
 
 # def join(request):
 # 	return render_to_response('core/join.html')
@@ -92,7 +101,7 @@ def join_community(request):
 			if ua != None:
 				ua = UserAdministration(user=user, competition=current_competition, is_admin=False)
 				ua.save()
-				
+
 			return redirect('/userpanel/competition/%s/dashboard/' % current_competition.id )
 		else:
 			community_form = CommunityForm()
