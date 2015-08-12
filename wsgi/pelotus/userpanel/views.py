@@ -189,10 +189,15 @@ def global_bets(request, competition_id):
 
         global_bet.save()
 
+    global_bet_list = []
+    if global_bet_result.date_limit_reached():
+        for gb in GlobalBet.objects.filter(competition=competition):
+            global_bet_list.append({'user': gb.user.username, 'global_bet': gb})
+
     context = {'user': user, 'competition': competition, 'global_bet_result': global_bet_result,
                'global_bet': global_bet, 'spanish_league_teams': spanish_league_teams,
                'kings_cup_teams': kings_cup_teams, 'uefa_teams': uefa_teams,
-               'champions_teams': champions_teams, 'goalkeepers': goalkeepers}
+               'champions_teams': champions_teams, 'goalkeepers': goalkeepers, 'global_bet_list': global_bet_list}
     return render(request, 'userpanel/global_bets.html', context)
 
 @login_required
