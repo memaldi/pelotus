@@ -75,11 +75,62 @@
             {% endfor %}
           </tbody>
         </table>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>{% trans "Scorers" %}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for key, goals_bet in user_scorers_dict.items %}
+              {% if key == item.user.username %}
+                {% if goals_bet.defense %}
+                  <tr>
+                    <td>{{goals_bet.defense}}</td>
+                    <td>
+                      {% for goal_key, goal_item in player_goal_dict.items %}
+                        {% if goal_key == goals_bet.defense %}
+                          {{goal_item.goals}}
+                        {% endif %}
+                      {% endfor %}
+                    </td>
+                  </tr>
+                {% endif %}
+                {% if goals_bet.midfield %}
+                  <tr>
+                    <td>{{goals_bet.midfield}}</td>
+                    <td>
+                      {% for goal_key, goal_item in player_goal_dict.items %}
+                        {% if goal_key == goals_bet.midfield %}
+                          {{goal_item.goals}}
+                        {% endif %}
+                      {% endfor %}
+                    </td>
+                  </tr>
+                {% endif %}
+                {% if goals_bet.forward %}
+                  <tr>
+                    <td>{{goals_bet.forward}}</td>
+                    <td>
+                      {% for goal_key, goal_item in player_goal_dict.items %}
+                        {% if goal_key == goals_bet.forward %}
+                          {{goal_item.goals}}
+                        {% endif %}
+                      {% endfor %}
+                    </td>
+                  </tr>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
       {% if forloop.counter|divisibleby:"2" or forloop.last %}
         </div>
       {% endif %}
     {% endfor %}
+
   {% endif %}
 
   <h3>Comments</h3>
