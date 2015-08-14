@@ -321,4 +321,14 @@ def community_dashboard(request, competition_id):
             next_match_day_bet_list.append(bet)
         context['next_match_day_bet_list'] = next_match_day_bet_list
 
+        user_scorers = GoalsBet.objects.filter(user=user, match_day=next_match_day).first()
+        context['goals_bet'] = user_scorers
+
+        player_goal_dict = {}
+
+        for pg in PlayerGoal.objects.filter(match_day=next_match_day):
+            player_goal_dict[pg.player] = pg
+
+        context['player_goal_dict'] = player_goal_dict
+
         return render(request, 'userpanel/community_dashboard.html', context)
