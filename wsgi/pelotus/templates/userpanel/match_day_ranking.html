@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% load utils %}
 {% load i18n %}
+{% load comments %}
 
 {% block content %}
   <div class="page-header">
@@ -80,5 +81,58 @@
       {% endif %}
     {% endfor %}
   {% endif %}
+
+  <h3>Comments</h3>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% get_comment_list for match_day as comment_list %}
+      {% for comment in comment_list|dictsortreversed:"submit_date" %}
+        <div class="row">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">{{comment.user}} <small>{{comment.submit_date}}</small></h3>
+            </div>
+            <div class="panel-body">
+              {{comment.comment}}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+
+      {% get_comment_form for match_day as comment_form %}
+        <form action="{% comment_form_target %}" method="post" class="form-horizontal">
+          {% csrf_token %}
+          <div class="form-group {% if comment_form.comment.errors %} has-error has-feedback {% endif %}">
+            <label for="{{comment_form.username.id_for_label}}" class="col-sm-2 control-label">{{comment_form.comment.label}}</label>
+      			<div class="col-sm-10">
+      				<textarea class="form-control" id="{{comment_form.comment.id_for_label}}" placeholder="{{comment_form.comment.label}}" name="{{comment_form.comment.html_name}}"></textarea>
+      				{% if comment_form.comment.errors %}
+      					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+        					<span id="inputError2Status" class="sr-only">(error)</span>
+        					<ul>
+        						{% for error in comment_form.comment.errors %}
+        							<li><span id="helpBlock" class="help-block">{{ error|escape }}</span></li>
+        						{% endfor %}
+        					<ul>
+      				{% endif %}
+      			</div>
+          </div>
+          <input type="hidden" name="next" value="/userpanel/competition/{{competition.id}}/match-day/{{match_day.id}}/ranking/"/>
+          <input id="id_content_type" name="content_type" type="hidden" value="core.matchday">
+          <input id="id_object_pk" name="object_pk" type="hidden" value="{{match_day.id}}">
+          <input id="url" name="url" type="hidden" value="http://foo.com/bar">
+          {{comment_form.timestamp}}
+          {{comment_form.security_hash}}
+          <div class="form-group">
+          	<div class="col-sm-offset-2 col-sm-10">
+              {% trans "Submit" as submit_button %}
+          		<input type="submit" class="btn btn-default" value="{{submit_button}}">
+          	</div>
+        	</div>
+        </form>
+    </div>
+
+  </div>
 
 {% endblock %}
