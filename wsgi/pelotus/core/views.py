@@ -75,6 +75,7 @@ def login(request):
 				for user_administration in user_administrations:
 						if user_administration.competition.season.is_current():
 							return redirect(request.POST.get('next','/userpanel/competition/%s/dashboard/' % user_administration.competition.id))
+			return redirect('/registration/community/')
 		else:
 			context = {'form': login_form}
 			return render(request, 'core/login.html', context)
