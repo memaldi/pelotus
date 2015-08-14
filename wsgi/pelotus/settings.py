@@ -171,6 +171,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'djcelery',
     'kombu.transport.django',
+    'django_comments'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -235,3 +236,6 @@ else:
     LOCALE_PATHS = (
         '/Users/memaldi/virtualenvs/pelotus/pelotus/wsgi/pelotus/translations',
     )
+
+
+SITE_ID = 1
