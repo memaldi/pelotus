@@ -3,6 +3,7 @@ from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from core.models import Community
+from django.utils.translation import ugettext as _
 import autocomplete_light
 
 class UserCreateForm(UserCreationForm):
@@ -11,6 +12,14 @@ class UserCreateForm(UserCreationForm):
     class Meta:
         model = User
         fields = ("username", "email", "password1", "password2")
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        username = self.cleaned_data.get('username')
+        if email and User.objects.filter(email=email).exclude(username=username).count():
+            raise forms.ValidationError(_('Email addresses must be unique.'))
+        return email
+
 
     def save(self, commit=True):
         user = super(UserCreateForm, self).save(commit=False)
@@ -48,5 +57,5 @@ class CommunitySearchForm(autocomplete_light.ModelForm):
         community = Community.objects.filter(name=name).all()
         if len(community) == 0:
             raise forms.ValidationError('Community "%s" does not exist!' % name)
-            
+
         return cleaned_data
