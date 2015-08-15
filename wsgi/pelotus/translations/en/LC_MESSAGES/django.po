@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-04 11:01+0200\n"
+"POT-Creation-Date: 2015-08-15 09:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,22 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: core/forms.py:20
+msgid "Email addresses must be unique."
+msgstr ""
+
+#: core/models.py:48
+msgid "Match day"
+msgstr ""
+
+#: core/models.py:84 templates/userpanel/scorers.html:21
+msgid "Player"
+msgstr ""
+
+#: core/models.py:115 templates/userpanel/scorers.html:20
+msgid "Team"
+msgstr ""
 
 #: templates/core/base.html:55
 msgid "Dashboard"
@@ -57,7 +73,7 @@ msgstr ""
 msgid "Step 1/2"
 msgstr ""
 
-#: templates/core/join.html:64 templates/core/registration_community.html:74
+#: templates/core/join.html:73 templates/core/registration_community.html:74
 msgid "Next"
 msgstr ""
 
@@ -85,23 +101,41 @@ msgstr ""
 msgid "Create New Community"
 msgstr ""
 
-#: templates/userpanel/community_dashboard.html:7
+#: templates/userpanel/community_dashboard.html:8
 #, python-format
 msgid "Welcome, %(username)s to %(community_name)s community!"
 msgstr ""
 
-#: templates/userpanel/community_dashboard.html:13
+#: templates/userpanel/community_dashboard.html:14
 #, python-format
-msgid "Match Day %(next_match_day.number)s"
+msgid "Match Day %(match_day)s"
 msgstr ""
 
-#: templates/userpanel/community_dashboard.html:13
+#: templates/userpanel/community_dashboard.html:14
 #, python-format
-msgid "Limit date: %(next_match_day.start_date)s"
+msgid "Limit date: %(limit_date)s"
 msgstr ""
 
-#: templates/userpanel/community_dashboard.html:33
+#: templates/userpanel/community_dashboard.html:31
+#: templates/userpanel/match_day_ranking.html:81
+#: templates/userpanel/scorers.html:12
+msgid "Scorers"
+msgstr ""
+
+#: templates/userpanel/community_dashboard.html:80
 msgid "General Ranking"
+msgstr ""
+
+#: templates/userpanel/community_dashboard.html:80
+msgid "full ranking"
+msgstr ""
+
+#: templates/userpanel/community_dashboard.html:141
+#: templates/userpanel/global_bets.html:283
+#: templates/userpanel/match_day.html:39
+#: templates/userpanel/match_day_ranking.html:180
+#: templates/userpanel/scorers.html:79
+msgid "Submit"
 msgstr ""
 
 #: templates/userpanel/global-ranking.html:12
@@ -109,17 +143,18 @@ msgid "Global Ranking"
 msgstr ""
 
 #: templates/userpanel/global-ranking.html:19
-#: templates/userpanel/match_day_ranking.html:19
+#: templates/userpanel/match_day_ranking.html:21
+#: templates/userpanel/scorers.html:19
 msgid "Position"
 msgstr ""
 
 #: templates/userpanel/global-ranking.html:20
-#: templates/userpanel/match_day_ranking.html:20
+#: templates/userpanel/match_day_ranking.html:22
 msgid "User"
 msgstr ""
 
 #: templates/userpanel/global-ranking.html:21
-#: templates/userpanel/match_day_ranking.html:21
+#: templates/userpanel/match_day_ranking.html:23
 msgid "Points"
 msgstr ""
 
@@ -129,97 +164,114 @@ msgstr ""
 
 #: templates/userpanel/global_bets.html:13
 #, python-format
-msgid "limit: %(global_bet_result.deadline)s"
-msgstr ""
-
-#: templates/userpanel/global_bets.html:21
-msgid "Winter champion"
+msgid "limit: %(deadline)s"
 msgstr ""
 
 #: templates/userpanel/global_bets.html:32
+#: templates/userpanel/global_bets.html:86
+msgid "Winter champion"
+msgstr ""
+
+#: templates/userpanel/global_bets.html:36
+#: templates/userpanel/global_bets.html:97
 msgid "League champion"
 msgstr ""
 
-#: templates/userpanel/global_bets.html:43
+#: templates/userpanel/global_bets.html:40
+#: templates/userpanel/global_bets.html:108
 msgid "King's cup champion"
 msgstr ""
 
-#: templates/userpanel/global_bets.html:54
-msgid "UEFA league champion"
+#: templates/userpanel/global_bets.html:44
+msgid "UEFA champion"
 msgstr ""
 
-#: templates/userpanel/global_bets.html:65
+#: templates/userpanel/global_bets.html:48
+#: templates/userpanel/global_bets.html:130
 msgid "Champions league champion"
 msgstr ""
 
-#: templates/userpanel/global_bets.html:78
+#: templates/userpanel/global_bets.html:53
+#: templates/userpanel/global_bets.html:143
+#: templates/userpanel/global_bets.html:156
+#: templates/userpanel/global_bets.html:171
 #, python-format
-msgid "UEFA position #%(forloop.counter)s"
+msgid "UEFA position #%(counter)s"
 msgstr ""
 
-#: templates/userpanel/global_bets.html:91
-#: templates/userpanel/global_bets.html:106
+#: templates/userpanel/global_bets.html:59
+#: templates/userpanel/global_bets.html:186
+#: templates/userpanel/global_bets.html:199
+#: templates/userpanel/global_bets.html:214
 #, python-format
-msgid "UEFA position #%(i|add:\"1\")s"
+msgid "Champions league position #%(counter)s"
 msgstr ""
 
-#: templates/userpanel/global_bets.html:121
+#: templates/userpanel/global_bets.html:65
+#: templates/userpanel/global_bets.html:229
+#: templates/userpanel/global_bets.html:242
+#: templates/userpanel/global_bets.html:257
 #, python-format
-msgid "Champions league position #%(forloop.counter)s"
+msgid "Demotion position #%(counter)s"
 msgstr ""
 
-#: templates/userpanel/global_bets.html:134
-#: templates/userpanel/global_bets.html:149
-#, python-format
-msgid "Champions league position #%(i|add:\"1\")s"
-msgstr ""
-
-#: templates/userpanel/global_bets.html:164
-#, python-format
-msgid "Demotion position #%(forloop.counter)s"
-msgstr ""
-
-#: templates/userpanel/global_bets.html:177
-#: templates/userpanel/global_bets.html:192
-#, python-format
-msgid "Demotion position #%(i|add:\"1\")s"
-msgstr ""
-
-#: templates/userpanel/global_bets.html:206
+#: templates/userpanel/global_bets.html:70
+#: templates/userpanel/global_bets.html:271
 msgid "Best goalkeeper"
 msgstr ""
 
-#: templates/userpanel/global_bets.html:218
-#: templates/userpanel/match_day.html:39
-msgid "Submit"
+#: templates/userpanel/global_bets.html:119
+msgid "UEFA league champion"
 msgstr ""
 
 #: templates/userpanel/match_day.html:10
 #, python-format
-msgid "Match day %(match_day.number)s - Bets"
+msgid "Match day %(number)s - Bets"
 msgstr ""
 
 #: templates/userpanel/match_day.html:12
-#: templates/userpanel/match_day_ranking.html:12
-#: templates/userpanel/match_days.html:20
+#: templates/userpanel/match_day_ranking.html:14
+#: templates/userpanel/match_days.html:20 templates/userpanel/scorers.html:12
 #, python-format
-msgid "Match day %(match_day.number)s"
+msgid "Match day %(number)s"
 msgstr ""
 
 #: templates/userpanel/match_day.html:12
 #, python-format
-msgid "Limit: %(match_day.start_date)s"
+msgid "Limit: %(limit)s"
 msgstr ""
 
 #: templates/userpanel/match_day.html:19
 msgid "Your bet have been saved correctly"
 msgstr ""
 
-#: templates/userpanel/match_day_ranking.html:10
+#: templates/userpanel/match_day_ranking.html:12
 #, python-format
-msgid "Match day %(match_day.number)s - Ranking"
+msgid "Match day %(number)s - Ranking"
 msgstr ""
 
-#: templates/userpanel/match_day_ranking.html:12
+#: templates/userpanel/match_day_ranking.html:14
 msgid "ranking"
+msgstr ""
+
+#: templates/userpanel/scorers.html:10
+#, python-format
+msgid "Match day %(number)s - Scorers"
+msgstr ""
+
+#: templates/userpanel/scorers.html:26
+msgid "Defender"
+msgstr ""
+
+#: templates/userpanel/scorers.html:37 templates/userpanel/scorers.html:54
+#: templates/userpanel/scorers.html:71
+msgid "Please, select a team."
+msgstr ""
+
+#: templates/userpanel/scorers.html:43
+msgid "Midfield"
+msgstr ""
+
+#: templates/userpanel/scorers.html:60
+msgid "Forward"
 msgstr ""

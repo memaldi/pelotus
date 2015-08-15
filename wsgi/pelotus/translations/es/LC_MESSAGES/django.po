@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-05 17:49+0200\n"
+"POT-Creation-Date: 2015-08-15 09:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,15 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: core/models.py:45
+#: core/forms.py:20
+msgid "Email addresses must be unique."
+msgstr "Ya existe un usuario con esta dirección de email."
+
+#: core/models.py:48
 msgid "Match day"
 msgstr "Jornada"
 
-#: core/models.py:81 templates/userpanel/scorers.html:21
+#: core/models.py:84 templates/userpanel/scorers.html:21
 msgid "Player"
 msgstr "Jugador"
 
-#: core/models.py:112 templates/userpanel/scorers.html:20
+#: core/models.py:115 templates/userpanel/scorers.html:20
 msgid "Team"
 msgstr "Equipo"
 
@@ -98,47 +102,61 @@ msgstr "Nombre de la comunidad"
 msgid "Create New Community"
 msgstr "Crear una nueva comunidad"
 
-#: templates/userpanel/community_dashboard.html:7
+#: templates/userpanel/community_dashboard.html:8
 #, python-format
 msgid "Welcome, %(username)s to %(community_name)s community!"
 msgstr "¡Bienvenido, %(username)s, a la comunidad %(community_name)s!"
 
-#: templates/userpanel/community_dashboard.html:13
+#: templates/userpanel/community_dashboard.html:14
 #, python-format
 msgid "Match Day %(match_day)s"
 msgstr "Jornada %(match_day)s"
 
-#: templates/userpanel/community_dashboard.html:13
+#: templates/userpanel/community_dashboard.html:14
 #, python-format
 msgid "Limit date: %(limit_date)s"
 msgstr "Fecha límite: %(limit_date)s"
 
-#: templates/userpanel/community_dashboard.html:33
+#: templates/userpanel/community_dashboard.html:31
+#: templates/userpanel/match_day_ranking.html:81
+#: templates/userpanel/scorers.html:12
+msgid "Scorers"
+msgstr "Goleadores"
+
+#: templates/userpanel/community_dashboard.html:80
 msgid "General Ranking"
 msgstr "Clasificación general"
 
-#: templates/userpanel/community_dashboard.html:33
+#: templates/userpanel/community_dashboard.html:80
 #, fuzzy
 msgid "full ranking"
 msgstr "clasificación completa"
+
+#: templates/userpanel/community_dashboard.html:141
+#: templates/userpanel/global_bets.html:283
+#: templates/userpanel/match_day.html:39
+#: templates/userpanel/match_day_ranking.html:180
+#: templates/userpanel/scorers.html:79
+msgid "Submit"
+msgstr "Enviar"
 
 #: templates/userpanel/global-ranking.html:12
 msgid "Global Ranking"
 msgstr "Clasificación general"
 
 #: templates/userpanel/global-ranking.html:19
-#: templates/userpanel/match_day_ranking.html:20
+#: templates/userpanel/match_day_ranking.html:21
 #: templates/userpanel/scorers.html:19
 msgid "Position"
 msgstr "Posición"
 
 #: templates/userpanel/global-ranking.html:20
-#: templates/userpanel/match_day_ranking.html:21
+#: templates/userpanel/match_day_ranking.html:22
 msgid "User"
 msgstr "Usuario"
 
 #: templates/userpanel/global-ranking.html:21
-#: templates/userpanel/match_day_ranking.html:22
+#: templates/userpanel/match_day_ranking.html:23
 msgid "Points"
 msgstr "Puntos"
 
@@ -151,55 +169,64 @@ msgstr "Pronósticos globales"
 msgid "limit: %(deadline)s"
 msgstr "límite: %(deadline)s"
 
-#: templates/userpanel/global_bets.html:21
+#: templates/userpanel/global_bets.html:32
+#: templates/userpanel/global_bets.html:86
 msgid "Winter champion"
 msgstr "Campeón de invierno"
 
-#: templates/userpanel/global_bets.html:32
+#: templates/userpanel/global_bets.html:36
+#: templates/userpanel/global_bets.html:97
 msgid "League champion"
 msgstr "Campeón de liga"
 
-#: templates/userpanel/global_bets.html:43
+#: templates/userpanel/global_bets.html:40
+#: templates/userpanel/global_bets.html:108
 msgid "King's cup champion"
 msgstr "Campeón de copa"
 
-#: templates/userpanel/global_bets.html:54
-msgid "UEFA league champion"
+#: templates/userpanel/global_bets.html:44
+#, fuzzy
+#| msgid "UEFA league champion"
+msgid "UEFA champion"
 msgstr "Campeón de la UEFA"
 
-#: templates/userpanel/global_bets.html:65
+#: templates/userpanel/global_bets.html:48
+#: templates/userpanel/global_bets.html:130
 msgid "Champions league champion"
 msgstr "Campeón de la Champions"
 
-#: templates/userpanel/global_bets.html:78
-#: templates/userpanel/global_bets.html:91
-#: templates/userpanel/global_bets.html:106
+#: templates/userpanel/global_bets.html:53
+#: templates/userpanel/global_bets.html:143
+#: templates/userpanel/global_bets.html:156
+#: templates/userpanel/global_bets.html:171
 #, python-format
 msgid "UEFA position #%(counter)s"
 msgstr "Puesto UEFA #%(counter)s"
 
-#: templates/userpanel/global_bets.html:121
-#: templates/userpanel/global_bets.html:134
-#: templates/userpanel/global_bets.html:149
+#: templates/userpanel/global_bets.html:59
+#: templates/userpanel/global_bets.html:186
+#: templates/userpanel/global_bets.html:199
+#: templates/userpanel/global_bets.html:214
 #, python-format
 msgid "Champions league position #%(counter)s"
 msgstr "Puesto Champions #%(counter)s"
 
-#: templates/userpanel/global_bets.html:164
-#: templates/userpanel/global_bets.html:177
-#: templates/userpanel/global_bets.html:192
+#: templates/userpanel/global_bets.html:65
+#: templates/userpanel/global_bets.html:229
+#: templates/userpanel/global_bets.html:242
+#: templates/userpanel/global_bets.html:257
 #, python-format
 msgid "Demotion position #%(counter)s"
 msgstr "Puesto de descenso #%(counter)s"
 
-#: templates/userpanel/global_bets.html:206
+#: templates/userpanel/global_bets.html:70
+#: templates/userpanel/global_bets.html:271
 msgid "Best goalkeeper"
 msgstr "Zamora"
 
-#: templates/userpanel/global_bets.html:218
-#: templates/userpanel/match_day.html:39 templates/userpanel/scorers.html:79
-msgid "Submit"
-msgstr "Enviar"
+#: templates/userpanel/global_bets.html:119
+msgid "UEFA league champion"
+msgstr "Campeón de la UEFA"
 
 #: templates/userpanel/match_day.html:10
 #, python-format
@@ -207,7 +234,7 @@ msgid "Match day %(number)s - Bets"
 msgstr "Jornada %(number)s - Pronósticos"
 
 #: templates/userpanel/match_day.html:12
-#: templates/userpanel/match_day_ranking.html:13
+#: templates/userpanel/match_day_ranking.html:14
 #: templates/userpanel/match_days.html:20 templates/userpanel/scorers.html:12
 #, python-format
 msgid "Match day %(number)s"
@@ -222,12 +249,12 @@ msgstr "Fecha límite: %(limit)s"
 msgid "Your bet have been saved correctly"
 msgstr "Tu pronóstico ha sido guardado correctamente"
 
-#: templates/userpanel/match_day_ranking.html:11
+#: templates/userpanel/match_day_ranking.html:12
 #, python-format
 msgid "Match day %(number)s - Ranking"
 msgstr "Jornada %(number)s - Clasificación"
 
-#: templates/userpanel/match_day_ranking.html:13
+#: templates/userpanel/match_day_ranking.html:14
 msgid "ranking"
 msgstr "clasificación"
 
@@ -235,10 +262,6 @@ msgstr "clasificación"
 #, python-format
 msgid "Match day %(number)s - Scorers"
 msgstr "Jornada %(number)s - Goleadores"
-
-#: templates/userpanel/scorers.html:12
-msgid "Scorers"
-msgstr "Goleadores"
 
 #: templates/userpanel/scorers.html:26
 msgid "Defender"
