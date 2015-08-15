@@ -21,9 +21,6 @@ def home(request):
 	context = {'user': user, 'competition': current_competition}
 	return render(request, 'core/home.html', context)
 
-# def join(request):
-# 	return render_to_response('core/join.html')
-
 def join(request):
 	if request.method == 'GET':
 		form = UserCreateForm()
@@ -89,17 +86,16 @@ def join_community(request):
 	user = request.user
 	if request.method == 'POST':
 		community_search_form = CommunitySearchForm(request.POST)
-		print community_search_form
 		community = Community.objects.filter(name=community_search_form.data['name']).first()
 		current_competition = None
 		for competition in Competition.objects.filter(community=community):
 			if competition.season.is_current():
 				current_competition = competition
 				break
-
+		print current_competition
 		if current_competition != None:
 			ua = UserAdministration.objects.filter(user=user, competition=current_competition).first()
-			if ua != None:
+			if ua == None:
 				ua = UserAdministration(user=user, competition=current_competition, is_admin=False)
 				ua.save()
 

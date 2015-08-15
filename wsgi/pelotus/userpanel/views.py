@@ -6,14 +6,18 @@ from django.contrib.auth.decorators import login_required
 from django.template.defaultfilters import dictsortreversed
 from django.core.cache import cache
 from core import utils
+from core.decorators import community_required
 import datetime
 
 # Create your views here.
 
 TIMEOUT = 259200
 
+
 @login_required
+@community_required
 def match_days(request, competition_id):
+    print request
     user = request.user
     if request.method == 'GET':
         competition = Competition.objects.get(id=competition_id)
@@ -21,6 +25,7 @@ def match_days(request, competition_id):
         return render(request, 'userpanel/match_days.html', context)
 
 @login_required
+@community_required
 def match_day(request, competition_id, match_day_id):
     user = request.user
     competition = Competition.objects.get(id=competition_id)
@@ -53,6 +58,7 @@ def match_day(request, competition_id, match_day_id):
         return render(request, 'userpanel/match_day.html', context)
 
 @login_required
+@community_required
 def scorers(request, competition_id, match_day_id):
     user = request.user
     competition = Competition.objects.get(id=competition_id)
@@ -98,6 +104,7 @@ def scorers(request, competition_id, match_day_id):
     return render(request, 'userpanel/scorers.html', context)
 
 @login_required
+@community_required
 def global_bets(request, competition_id):
     user = request.user
     competition = Competition.objects.get(id=competition_id)
@@ -201,6 +208,7 @@ def global_bets(request, competition_id):
     return render(request, 'userpanel/global_bets.html', context)
 
 @login_required
+@community_required
 def match_day_ranking(request, competition_id, match_day_id):
     user = request.user
     competition = Competition.objects.get(id=competition_id)
@@ -236,6 +244,7 @@ def match_day_ranking(request, competition_id, match_day_id):
         return render(request, 'userpanel/match_day_ranking.html', context)
 
 @login_required
+@community_required
 def global_ranking(request, competition_id):
     user = request.user
     competition = Competition.objects.get(id=competition_id)
@@ -257,6 +266,7 @@ def global_ranking(request, competition_id):
     return render(request, 'userpanel/global-ranking.html', context)
 
 @login_required
+@community_required
 def community_dashboard(request, competition_id):
     user = request.user
     competition = Competition.objects.get(id=competition_id)
