@@ -39,7 +39,8 @@ def match_day(request, competition_id, match_day_id):
                 bet = Bet(user=user, match=match, match_day=match_day, competition=competition)
                 bet.save()
             bet_list.append(bet)
-        context = {'user': user, 'match_day': match_day, 'bet_list': bet_list, 'competition': competition}
+        limit = match_day.start_date - datetime.timedelta(hours=3)
+        context = {'user': user, 'match_day': match_day, 'bet_list': bet_list, 'competition': competition, 'limit': limit}
         return render(request, 'userpanel/match_day.html', context)
     if request.method == 'POST':
         bet_list = []
