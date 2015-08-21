@@ -70,6 +70,8 @@ def scorers(request, competition_id, match_day_id):
         team_list.append(team_in_season.team)
     team_list.sort()
 
+    correct = None
+
     goals_bet = GoalsBet.objects.filter(user=user, match_day=match_day).first()
     if request.method == 'POST':
         if goals_bet == None:
@@ -86,6 +88,7 @@ def scorers(request, competition_id, match_day_id):
             goals_bet.forward = forward_player
 
         goals_bet.save()
+        correct = True
 
     goals_teams = {}
     if goals_bet != None:
@@ -102,6 +105,8 @@ def scorers(request, competition_id, match_day_id):
             goals_teams["forward_team"] = forward_team.id
 
     context = {'user': user, 'competition': competition, 'match_day': match_day, 'team_list': team_list, 'goals_bet': goals_bet, 'goals_teams': goals_teams}
+    if correct:
+        context['correct'] = True
     return render(request, 'userpanel/scorers.html', context)
 
 @login_required
