@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-15 11:33+0200\n"
+"POT-Creation-Date: 2015-08-21 14:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,11 +26,11 @@ msgstr "Ya existe un usuario con esta dirección de email."
 msgid "Match day"
 msgstr "Jornada"
 
-#: core/models.py:84 templates/userpanel/scorers.html:21
+#: core/models.py:84 templates/userpanel/scorers.html:31
 msgid "Player"
 msgstr "Jugador"
 
-#: core/models.py:115 templates/userpanel/scorers.html:20
+#: core/models.py:115 templates/userpanel/scorers.html:30
 msgid "Team"
 msgstr "Equipo"
 
@@ -91,6 +91,12 @@ msgstr "Inicia sesión"
 msgid "Join"
 msgstr "Únete"
 
+#: templates/core/login.html:55 templates/core/reset_password.html:7
+#: templates/core/reset_password_complete.html:7
+#: templates/core/reset_password_success.html:7
+msgid "Reset password"
+msgstr "Restablecer contraseña"
+
 #: templates/core/registration_community.html:7
 msgid "Step 2/2"
 msgstr "Paso 2/2"
@@ -106,6 +112,26 @@ msgstr "Nombre de la comunidad"
 #: templates/core/registration_community.html:39
 msgid "Create New Community"
 msgstr "Crear una nueva comunidad"
+
+#: templates/core/reset_password.html:10
+msgid ""
+"Insert the email with wich you have registered your user. A link for "
+"reseting the password is going to be sent to you."
+msgstr ""
+"Insterta el email con el que registraste tu usario. Se te enviará un enlace "
+"para poder reiniciar la contraseña."
+
+#: templates/core/reset_password.html:31
+msgid "Send link"
+msgstr "Enviar enlace"
+
+#: templates/core/reset_password_complete.html:10
+msgid "Password succesfully changed."
+msgstr "La contraseña ha sido cambiada correctamente."
+
+#: templates/core/reset_password_success.html:10
+msgid "The password has been sent to you."
+msgstr "La contraseña ha sido enviada."
 
 #: templates/userpanel/community_dashboard.html:8
 #, python-format
@@ -137,11 +163,15 @@ msgstr "Clasificación general"
 msgid "full ranking"
 msgstr "clasificación completa"
 
+#: templates/userpanel/community_dashboard.html:97
+msgid "Comments"
+msgstr "Comentarios"
+
 #: templates/userpanel/community_dashboard.html:141
 #: templates/userpanel/global_bets.html:283
 #: templates/userpanel/match_day.html:39
 #: templates/userpanel/match_day_ranking.html:180
-#: templates/userpanel/scorers.html:79
+#: templates/userpanel/scorers.html:89
 msgid "Submit"
 msgstr "Enviar"
 
@@ -151,7 +181,7 @@ msgstr "Clasificación general"
 
 #: templates/userpanel/global-ranking.html:19
 #: templates/userpanel/match_day_ranking.html:21
-#: templates/userpanel/scorers.html:19
+#: templates/userpanel/scorers.html:29
 msgid "Position"
 msgstr "Posición"
 
@@ -268,19 +298,25 @@ msgstr "clasificación"
 msgid "Match day %(number)s - Scorers"
 msgstr "Jornada %(number)s - Goleadores"
 
-#: templates/userpanel/scorers.html:26
+#: templates/userpanel/scorers.html:19
+#, fuzzy
+#| msgid "Your bet have been saved correctly"
+msgid "The scorers have been saved correctly"
+msgstr "Tu pronóstico ha sido guardado correctamente"
+
+#: templates/userpanel/scorers.html:36
 msgid "Defender"
 msgstr "Defensa"
 
-#: templates/userpanel/scorers.html:37 templates/userpanel/scorers.html:54
-#: templates/userpanel/scorers.html:71
+#: templates/userpanel/scorers.html:47 templates/userpanel/scorers.html:64
+#: templates/userpanel/scorers.html:81
 msgid "Please, select a team."
 msgstr "Por favor, selecciona un equipo."
 
-#: templates/userpanel/scorers.html:43
+#: templates/userpanel/scorers.html:53
 msgid "Midfield"
 msgstr "Centrocampista"
 
-#: templates/userpanel/scorers.html:60
+#: templates/userpanel/scorers.html:70
 msgid "Forward"
 msgstr "Delantero"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-15 11:33+0200\n"
+"POT-Creation-Date: 2015-08-21 14:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,11 +25,11 @@ msgstr ""
 msgid "Match day"
 msgstr ""
 
-#: core/models.py:84 templates/userpanel/scorers.html:21
+#: core/models.py:84 templates/userpanel/scorers.html:31
 msgid "Player"
 msgstr ""
 
-#: core/models.py:115 templates/userpanel/scorers.html:20
+#: core/models.py:115 templates/userpanel/scorers.html:30
 msgid "Team"
 msgstr ""
 
@@ -89,6 +89,12 @@ msgstr ""
 msgid "Join"
 msgstr ""
 
+#: templates/core/login.html:55 templates/core/reset_password.html:7
+#: templates/core/reset_password_complete.html:7
+#: templates/core/reset_password_success.html:7
+msgid "Reset password"
+msgstr ""
+
 #: templates/core/registration_community.html:7
 msgid "Step 2/2"
 msgstr ""
@@ -103,6 +109,24 @@ msgstr ""
 
 #: templates/core/registration_community.html:39
 msgid "Create New Community"
+msgstr ""
+
+#: templates/core/reset_password.html:10
+msgid ""
+"Insert the email with wich you have registered your user. A link for "
+"reseting the password is going to be sent to you."
+msgstr ""
+
+#: templates/core/reset_password.html:31
+msgid "Send link"
+msgstr ""
+
+#: templates/core/reset_password_complete.html:10
+msgid "Password succesfully changed."
+msgstr ""
+
+#: templates/core/reset_password_success.html:10
+msgid "The password has been sent to you."
 msgstr ""
 
 #: templates/userpanel/community_dashboard.html:8
@@ -138,7 +162,7 @@ msgstr ""
 #: templates/userpanel/global_bets.html:283
 #: templates/userpanel/match_day.html:39
 #: templates/userpanel/match_day_ranking.html:180
-#: templates/userpanel/scorers.html:79
+#: templates/userpanel/scorers.html:89
 msgid "Submit"
 msgstr ""
 
@@ -148,7 +172,7 @@ msgstr ""
 
 #: templates/userpanel/global-ranking.html:19
 #: templates/userpanel/match_day_ranking.html:21
-#: templates/userpanel/scorers.html:19
+#: templates/userpanel/scorers.html:29
 msgid "Position"
 msgstr ""
 
@@ -263,19 +287,23 @@ msgstr ""
 msgid "Match day %(number)s - Scorers"
 msgstr ""
 
-#: templates/userpanel/scorers.html:26
+#: templates/userpanel/scorers.html:19
+msgid "The scorers have been saved correctly"
+msgstr ""
+
+#: templates/userpanel/scorers.html:36
 msgid "Defender"
 msgstr ""
 
-#: templates/userpanel/scorers.html:37 templates/userpanel/scorers.html:54
-#: templates/userpanel/scorers.html:71
+#: templates/userpanel/scorers.html:47 templates/userpanel/scorers.html:64
+#: templates/userpanel/scorers.html:81
 msgid "Please, select a team."
 msgstr ""
 
-#: templates/userpanel/scorers.html:43
+#: templates/userpanel/scorers.html:53
 msgid "Midfield"
 msgstr ""
 
-#: templates/userpanel/scorers.html:60
+#: templates/userpanel/scorers.html:70
 msgid "Forward"
 msgstr ""
