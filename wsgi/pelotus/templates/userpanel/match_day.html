@@ -27,9 +27,9 @@
       {% for bet in bet_list %}
         <tr class="form-group">
           <td class="col-xs-2"><label for="home_team-bet-id-{{bet.id}}">{{ bet.match.home_team.name }}</label></td>
-          <td class="col-xs-2"><input type="number" class="form-control" name="home_team-bet-id-{{bet.id}}" {% if bet.home_goals != None %} value="{{bet.home_goals}}" {% endif %} {% if match_day.date_limit_reached %} disabled {% endif %}></td>
-          <td class="col-xs-1" style="text-align:center">-</td>
-          <td class="col-xs-2"><input type="number" class="form-control" name="foreign_team-bet-id-{{bet.id}}" {% if bet.foreign_goals != None %} value="{{bet.foreign_goals}}" {% endif %} {% if match_day.date_limit_reached %} disabled {% endif %}></td>
+          <td class="col-xs-2"><input type="number" class="form-control" style="min-width: 50px" name="home_team-bet-id-{{bet.id}}" {% if bet.home_goals != None %} value="{{bet.home_goals}}" {% endif %} {% if match_day.date_limit_reached %} disabled {% endif %}></td>
+          <td class="col-xs-1" style="text-align:center;">-</td>
+          <td class="col-xs-2"><input type="number" class="form-control" style="min-width: 50px" name="foreign_team-bet-id-{{bet.id}}" {% if bet.foreign_goals != None %} value="{{bet.foreign_goals}}" {% endif %} {% if match_day.date_limit_reached %} disabled {% endif %}></td>
           <td class="col-xs-2"><label for="foreign_team-bet-id-{{bet.id}}">{{ bet.match.foreign_team.name }}</label></td>
         </tr>
       {% endfor %}
