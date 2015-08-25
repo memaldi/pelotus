@@ -1,2 +1,2 @@
 cd $OPENSHIFT_REPO_DIR/wsgi/pelotus
-python manage.py celery worker -A celeryapp
+python manage.py celery worker -A celeryapp --settings=settings
