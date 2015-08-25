@@ -1,2 +1,2 @@
 cd $OPENSHIFT_REPO_DIR/wsgi/pelotus
-celery multi start worker -A celeryapp --pidfile="/tmp/celery-%n.pid" --logfile="/tmp/celery-%n.log"
+python manage.py celery worker -A celeryapp

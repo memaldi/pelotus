@@ -1,3 +1,0 @@
-if [ -f /tmp/celery-worker.pid ]; then
-	kill $(cat /tmp/celery-worker.pid)
-fi
