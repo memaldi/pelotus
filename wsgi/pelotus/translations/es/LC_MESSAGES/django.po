@@ -220,8 +220,6 @@ msgid "King's cup champion"
 msgstr "Campeón de copa"
 
 #: templates/userpanel/global_bets.html:44
-#, fuzzy
-#| msgid "UEFA league champion"
 msgid "UEFA champion"
 msgstr "Campeón de la UEFA"
 

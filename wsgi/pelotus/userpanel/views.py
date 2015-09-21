@@ -8,6 +8,7 @@ from django.core.cache import cache
 from core import utils
 from core.decorators import community_required
 import datetime
+import json
 
 # Create your views here.
 
@@ -39,8 +40,7 @@ def match_day(request, competition_id, match_day_id):
                 bet = Bet(user=user, match=match, match_day=match_day, competition=competition)
                 bet.save()
             bet_list.append(bet)
-        limit = match_day.start_date - datetime.timedelta(hours=3)
-        context = {'user': user, 'match_day': match_day, 'bet_list': bet_list, 'competition': competition, 'limit': limit}
+        context = {'user': user, 'match_day': match_day, 'bet_list': bet_list, 'competition': competition}
         return render(request, 'userpanel/match_day.html', context)
     if request.method == 'POST':
         bet_list = []
@@ -203,14 +203,71 @@ def global_bets(request, competition_id):
         global_bet.save()
 
     global_bet_list = []
+    global_charts = {}
+    winter_champion_chart = {}
+    league_champion_chart = {}
+    uefa_champion_chart = {}
+    kings_cup_champion_chart = {}
+    champions_league_champion_chart = {}
+
     if global_bet_result.date_limit_reached():
         for gb in GlobalBet.objects.filter(competition=competition):
+            if gb.winter_champion != None:
+                if gb.winter_champion not in winter_champion_chart:
+                    winter_champion_chart[gb.winter_champion] = 0
+                winter_champion_chart[gb.winter_champion] = winter_champion_chart[gb.winter_champion] + 1
+
+                if gb.league_champion not in league_champion_chart:
+                    league_champion_chart[gb.league_champion] = 0
+                league_champion_chart[gb.league_champion] = league_champion_chart[gb.league_champion] + 1
+
+                if gb.uefa_champion not in uefa_champion_chart:
+                    uefa_champion_chart[gb.uefa_champion] = 0
+                uefa_champion_chart[gb.uefa_champion] = uefa_champion_chart[gb.uefa_champion] + 1
+
+                if gb.kings_cup_champion not in kings_cup_champion_chart:
+                    kings_cup_champion_chart[gb.kings_cup_champion] = 0
+                kings_cup_champion_chart[gb.kings_cup_champion] = kings_cup_champion_chart[gb.kings_cup_champion] + 1
+
+                if gb.champions_league_champion not in champions_league_champion_chart:
+                    champions_league_champion_chart[gb.champions_league_champion] = 0
+                champions_league_champion_chart[gb.champions_league_champion] = champions_league_champion_chart[gb.champions_league_champion] + 1
+
+
+
             global_bet_list.append({'user': gb.user.username, 'global_bet': gb})
+
+    global_charts['winter_champion'] = []
+    for key, value in winter_champion_chart.items():
+        if key != None:
+            global_charts['winter_champion'].append([key.name, value])
+
+    global_charts['league_champion'] = []
+    for key, value in league_champion_chart.items():
+        if key != None:
+            global_charts['league_champion'].append([key.name, value])
+
+    global_charts['uefa_champion'] = []
+    for key, value in uefa_champion_chart.items():
+        if key != None:
+            global_charts['uefa_champion'].append([key.name, value])
+
+    global_charts['kings_cup_champion'] = []
+    for key, value in kings_cup_champion_chart.items():
+        if key != None:
+            global_charts['kings_cup_champion'].append([key.name, value])
+
+    global_charts['champions_league_champion'] = []
+    for key, value in champions_league_champion_chart.items():
+        if key != None:
+            global_charts['champions_league_champion'].append([key.name, value])
+
 
     context = {'user': user, 'competition': competition, 'global_bet_result': global_bet_result,
                'global_bet': global_bet, 'spanish_league_teams': spanish_league_teams,
                'kings_cup_teams': kings_cup_teams, 'uefa_teams': uefa_teams,
-               'champions_teams': champions_teams, 'goalkeepers': goalkeepers, 'global_bet_list': global_bet_list}
+               'champions_teams': champions_teams, 'goalkeepers': goalkeepers,
+               'global_bet_list': global_bet_list, 'global_charts': json.dumps(global_charts)}
     return render(request, 'userpanel/global_bets.html', context)
 
 @login_required

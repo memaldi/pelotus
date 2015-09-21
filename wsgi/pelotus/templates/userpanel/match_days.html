@@ -20,7 +20,7 @@
           {% blocktrans with match_day.number as number %}Match day {{number}}{% endblocktrans %}
         </td>
         <td>
-          {{match_day.start_date}}
+          {{match_day.date_limit}}
         </td>
         <td>
           <a href="/userpanel/competition/{{competition.id}}/match-day/{{match_day.id}}/"><i class="fa fa-pencil"></i></a>

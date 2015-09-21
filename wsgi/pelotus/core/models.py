@@ -50,6 +50,10 @@ class MatchDay(models.Model):
     def __str__(self):
         return str(self.number)
 
+    @property
+    def date_limit(self):
+        return self.start_date - datetime.timedelta(hours=3)
+
     def date_limit_reached(self):
         if datetime.datetime.now() > self.start_date - datetime.timedelta(hours=3):
             return True

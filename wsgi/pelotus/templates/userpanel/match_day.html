@@ -9,7 +9,7 @@
       <li><a href="/userpanel/competition/{{competition.id}}/match-days/">{{competition.season.name}}</a></li>
       <li class="active">{% blocktrans with match_day.number as number %}Match day {{number}} - Bets{% endblocktrans %}</li>
     </ol>
-    <h1>{% blocktrans with match_day.number as number %}Match day {{number}}{% endblocktrans %} <small>{% blocktrans with limit as limit %}Limit: {{limit}}{% endblocktrans %}</small></h1>
+    <h1>{% blocktrans with match_day.number as number %}Match day {{number}}{% endblocktrans %} <small>{% blocktrans with match_day.date_limit as limit %}Limit: {{limit}}{% endblocktrans %}</small></h1>
   </div>
 
   {% if correct %}
