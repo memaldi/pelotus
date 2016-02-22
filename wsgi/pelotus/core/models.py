@@ -224,4 +224,10 @@ def update_ranking(sender, instance, **kwargs):
     from core.tasks import match_day_ranking
     match_day_ranking.delay(instance.id)
 
+def update_global_results(sender, instance, **kwargs):
+    from core.tasks import global_ranking
+    global_ranking.delay(instance.id)
+
 post_save.connect(update_ranking, sender=MatchDay, dispatch_uid="update_ranking_count")
+post_save.connect(update_global_results, sender=GlobalResults, dispatch_uid="update_global_results_count")
+post_save.connect(update_global_results, sender=Season, dispatch_uid="update_global_results_count")
