@@ -71,10 +71,9 @@ class PlayerGoalAdmin(admin.TabularInline):
 	model = PlayerGoal
 	extra = 5
 
-# @admin.register(Match)
-# class MatchAdmin(admin.ModelAdmin):
-# 	list_display = ('home_team', 'foreign_team', 'match_day', 'result')
-# 	inlines = (PlayerGoalAdmin,)
+@admin.register(Match)
+class MatchAdmin(admin.ModelAdmin):
+	list_display = ('id', 'home_team', 'foreign_team', 'match_day', 'result')
 
 @admin.register(MatchDay)
 class MatchDayAdmin(admin.ModelAdmin):
@@ -102,7 +101,8 @@ class UserAdministrationAdmin(admin.ModelAdmin):
 
 @admin.register(Bet)
 class BetAdmin(admin.ModelAdmin):
-	list_display = ('user', 'match', 'home_goals', 'foreign_goals')
+	list_display = ('id', 'user', 'match', 'home_goals', 'foreign_goals', 'match_day')
+	list_filter = ('match_day', 'user')
 
 @admin.register(GoalsBet)
 class GoalsBetAdmin(admin.ModelAdmin):
