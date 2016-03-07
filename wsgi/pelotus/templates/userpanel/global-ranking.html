@@ -11,13 +11,14 @@
     </ol>
     <h1>{% trans "Global Ranking" %}</h1>
   </div>
-
   <table class="table table-striped">
     <thead>
       <tr>
         <th></th>
         <th>{% trans "Position" %}</th>
         <th>{% trans "User" %}</th>
+        <th>{% trans "Match days" %}</th>
+        <th>{% trans "Global" %}</th>
         <th>{% trans "Points" %}</th>
       </tr>
     </thead>
@@ -27,6 +28,8 @@
           <td></td>
           <td>{% if item.user == user %}<strong>{% endif %}{{forloop.counter}}{% if item.user == user %}</strong>{% endif %}</td>
           <td>{% if item.user == user %}<strong>{% endif %}{{item.user.username}}{% if item.user == user %}</strong>{% endif %}</td>
+          <td>{% if item.user == user %}<strong>{% endif %}{% for key, val in match_points.items %}{% if key == item.user%}{{val}}{% endif %}{% endfor %}{% if item.user == user %}</strong>{% endif %}</td>
+          <td>{% if item.user == user %}<strong>{% endif %}{% for key, val in global_points.items %}{% if key == item.user%}{{val}}{% endif %}{% endfor %}{% if item.user == user %}</strong>{% endif %}</td>
           <td>{% if item.user == user %}<strong>{% endif %}{{item.points}}{% if item.user == user %}</strong>{% endif %}</td>
         </tr>
       {% endfor %}

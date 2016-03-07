@@ -312,6 +312,10 @@ def global_ranking(request, competition_id):
     user = request.user
     competition = Competition.objects.get(id=competition_id)
     user_point_list = []
+    global_bet_points = {}
+    match_points = {}
+
+    global_results = GlobalResults.objects.filter(season=competition.season).first()
 
     for ua in competition.useradministration_set.all():
         total_user_points = 0
@@ -323,9 +327,20 @@ def global_ranking(request, competition_id):
             cache.set('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id), user_points, TIMEOUT)
             total_user_points += user_points
 
-        user_point_list.append({'user': ua.user, 'points': total_user_points})
+        global_points = 0
+        if cache.get('competiton:{}:global:user:{}:points'.format(competition.id, ua.user.id)) != None:
+            global_points = cache.get('competiton:{}:global:user:{}:points'.format(competition.id, ua.user.id))
+        else:
+            global_points = utils.get_user_global_points(ua.user, competition, global_results)
+        cache.set('competiton:{}:global:user:{}:points'.format(competition.id, ua.user.id), global_points, TIMEOUT)
+        global_bet_points[ua.user] = global_points
 
-    context = {'user': user, 'competition': competition, 'match_day': match_day, 'user_point_list': user_point_list}
+        match_points[ua.user] = total_user_points
+
+        total_user_points += global_points
+
+        user_point_list.append({'user': ua.user, 'points': total_user_points})
+    context = {'user': user, 'competition': competition, 'match_day': match_day, 'user_point_list': user_point_list, 'global_points': global_bet_points, 'match_points': match_points}
     return render(request, 'userpanel/global-ranking.html', context)
 
 @login_required

@@ -1,5 +1,5 @@
 # Util classes
-from core.models import MatchDay, Competition, Bet, GoalsBet, PlayerGoal
+from core.models import MatchDay, Competition, Bet, GoalsBet, PlayerGoal, GlobalBet
 
 
 def match_day_ranking(match_day):
@@ -42,3 +42,11 @@ def get_user_match_day_points(user, match_day, competition):
             user_points += player_goal.goals * 5
 
     return user_points
+
+def get_user_global_points(user, competition, global_results):
+    global_bet = GlobalBet.objects.filter(competition=competition, user=user).first()
+    global_points = 0
+    if global_bet.winter_champion is not None:
+        if global_bet.winter_champion == global_results.winter_champion:
+            global_points += 10
+    return global_points
