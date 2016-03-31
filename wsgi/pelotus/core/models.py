@@ -6,6 +6,7 @@ import datetime
 
 # Create your models here.
 
+
 # Season to which a community belongs
 class Season(models.Model):
     start_date = models.DateField()
@@ -18,9 +19,11 @@ class Season(models.Model):
         return self.name
 
     def is_current(self):
-        if self.start_date <= datetime.date.today() and self.end_date >= datetime.date.today():
+        if (self.start_date <= datetime.date.today() and
+                self.end_date >= datetime.date.today()):
             return True
         return False
+
 
 # A group of users playing to Pelotus
 class Community(models.Model):
@@ -30,6 +33,7 @@ class Community(models.Model):
     def __str__(self):              # __unicode__ on Python 2
         return self.name
 
+
 # Each instances of a Season with a Community
 class Competition(models.Model):
     season = models.ForeignKey('Season')
@@ -37,6 +41,7 @@ class Competition(models.Model):
 
     def __unicode__(self):
         return u'{} ({})'.format(self.community.name, self.season.name)
+
 
 class MatchDay(models.Model):
     number = models.IntegerField()
@@ -55,14 +60,17 @@ class MatchDay(models.Model):
         return self.start_date - datetime.timedelta(hours=3)
 
     def date_limit_reached(self):
-        if datetime.datetime.now() > self.start_date - datetime.timedelta(hours=3):
+        if (datetime.datetime.now() > self.start_date -
+                datetime.timedelta(hours=3)):
             return True
         return False
+
 
 class PlayerGoal(models.Model):
     player = models.ForeignKey('Player')
     match_day = models.ForeignKey('MatchDay')
     goals = models.IntegerField()
+
 
 class Match(models.Model):
     home_team = models.ForeignKey('Team', related_name='home_team')
@@ -72,13 +80,18 @@ class Match(models.Model):
     foreign_goals = models.IntegerField(default=None, blank=True, null=True)
 
     def __str__(self):              # __unicode__ on Python 2
-        return '%s - %s (Match day %s)' % (self.home_team.name, self.foreign_team.name, self.match_day.number)
+        return '%s - %s (Match day %s)' % (self.home_team.name,
+                                           self.foreign_team.name,
+                                           self.match_day.number)
 
     def __unicode__(self):
-        return u'{} - {} (Match day {})'.format(self.home_team.name, self.foreign_team.name, self.match_day.number)
+        return u'{} - {} (Match day {})'.format(self.home_team.name,
+                                                self.foreign_team.name,
+                                                self.match_day.number)
 
     def result(self):
         return '%s - %s' % (self.home_goals, self.foreign_goals)
+
 
 class Player(models.Model):
     name = models.CharField(max_length=50)
@@ -101,9 +114,12 @@ class Player(models.Model):
         elif self.name > other.name:
             return 1
 
+
 class SpanishLeagueTeamsManager(models.Manager):
     def get_queryset(self):
-        return super(SpanishLeagueTeamsManager, self).get_queryset().filter(teaminseason__spanish_league=True)
+        return super(SpanishLeagueTeamsManager, self).get_queryset().filter(
+            teaminseason__spanish_league=True)
+
 
 class Team(models.Model):
     name = models.CharField(max_length=30)
@@ -112,7 +128,9 @@ class Team(models.Model):
     spanish_teams = SpanishLeagueTeamsManager()
 
     def current_season(self):
-        return self.teaminseason_set.filter(season__start_date__lte=datetime.date.today(), season__end_date__gte=datetime.date.today()).first().season.name
+        return self.teaminseason_set.filter(
+            season__start_date__lte=datetime.date.today(),
+            season__end_date__gte=datetime.date.today()).first().season.name
 
     class Meta:
         ordering = ['name']
@@ -142,12 +160,12 @@ class TeamInSeason(models.Model):
     kings_cup = models.BooleanField(default=False)
     players = models.ManyToManyField(Player, through='PlayerBelongsToTeam')
 
-
     def __str__(self):              # __unicode__ on Python 2
         return self.team.name
 
     def __unicode__(self):
         return u"{}".format(self.team.name)
+
 
 class PlayerBelongsToTeam(models.Model):
     player = models.ForeignKey('Player')
@@ -159,16 +177,15 @@ class PlayerBelongsToTeam(models.Model):
         ('MF', 'Midfield'),
         ('FW', 'Forward'),
     )
-    position = models.CharField(max_length=2, choices=POSITION_CHOICES, default='GK')
+    position = models.CharField(max_length=2, choices=POSITION_CHOICES,
+                                default='GK')
 
-# class UserProfile(models.Model):
-#     user = models.ForeignKey(User)
-#     competitions = models.ManyToManyField(Competition, through='UserAdministration')
 
 class UserAdministration(models.Model):
     user = models.ForeignKey(User)
     competition = models.ForeignKey(Competition)
     is_admin = models.BooleanField(default=False)
+
 
 class Bet(models.Model):
     user = models.ForeignKey(User)
@@ -178,6 +195,7 @@ class Bet(models.Model):
     home_goals = models.IntegerField(null=True)
     foreign_goals = models.IntegerField(null=True)
 
+
 class GoalsBet(models.Model):
     user = models.ForeignKey(User)
     match_day = models.ForeignKey('MatchDay')
@@ -185,33 +203,61 @@ class GoalsBet(models.Model):
     midfield = models.ForeignKey('Player', related_name='midfield', null=True)
     defense = models.ForeignKey('Player', related_name='defense', null=True)
 
+
 class GlobalBet(models.Model):
     user = models.ForeignKey(User)
     competition = models.ForeignKey('Competition')
-    winter_champion = models.ForeignKey('Team', related_name='winter_champion', null=True, blank=True)
-    kings_cup_champion = models.ForeignKey('Team', related_name='kings_cup_champion', null=True, blank=True)
-    league_champion = models.ForeignKey('Team', related_name='league_champion', null=True, blank=True)
-    uefa_champion = models.ForeignKey('Team', related_name='uefa_champion', null=True, blank=True)
-    champions_league_champion = models.ForeignKey('Team', related_name='champions_league_champion', null=True, blank=True)
+    winter_champion = models.ForeignKey('Team', related_name='winter_champion',
+                                        null=True, blank=True)
+    kings_cup_champion = models.ForeignKey('Team',
+                                           related_name='kings_cup_champion',
+                                           null=True, blank=True)
+    league_champion = models.ForeignKey('Team', related_name='league_champion',
+                                        null=True, blank=True)
+    uefa_champion = models.ForeignKey('Team', related_name='uefa_champion',
+                                      null=True, blank=True)
+    champions_league_champion = models.ForeignKey(
+        'Team', related_name='champions_league_champion', null=True,
+        blank=True)
 
-    champions_positions = models.ManyToManyField('Team', related_name='champions_positions', null=True, blank=True)
-    uefa_positions = models.ManyToManyField('Team', related_name='uefa_positions', null=True, blank=True)
-    demotion_positions = models.ManyToManyField('Team', related_name='demotion_positions', null=True, blank=True)
+    champions_positions = models.ManyToManyField(
+        'Team', related_name='champions_positions', null=True, blank=True)
+    uefa_positions = models.ManyToManyField('Team',
+                                            related_name='uefa_positions',
+                                            null=True, blank=True)
+    demotion_positions = models.ManyToManyField(
+        'Team', related_name='demotion_positions', null=True, blank=True)
 
     best_goalkeeper = models.ForeignKey('Player', null=True, blank=True)
+
 
 class GlobalResults(models.Model):
     season = models.ForeignKey('Season')
     deadline = models.DateTimeField()
-    winter_champion = models.ForeignKey('Team', related_name='winter_champion_result', null=True, blank=True)
-    kings_cup_champion = models.ForeignKey('Team', related_name='kings_cup_champion_result', null=True, blank=True)
-    league_champion = models.ForeignKey('Team', related_name='league_champion_result', null=True, blank=True)
-    uefa_champion = models.ForeignKey('Team', related_name='uefa_champion_result', null=True, blank=True)
-    champions_league_champion = models.ForeignKey('Team', related_name='champions_league_champion_result', null=True, blank=True)
+    winter_champion = models.ForeignKey('Team',
+                                        related_name='winter_champion_result',
+                                        null=True, blank=True)
+    kings_cup_champion = models.ForeignKey(
+        'Team', related_name='kings_cup_champion_result', null=True,
+        blank=True)
+    league_champion = models.ForeignKey('Team',
+                                        related_name='league_champion_result',
+                                        null=True, blank=True)
+    uefa_champion = models.ForeignKey('Team',
+                                      related_name='uefa_champion_result',
+                                      null=True, blank=True)
+    champions_league_champion = models.ForeignKey(
+        'Team', related_name='champions_league_champion_result', null=True,
+        blank=True)
 
-    champions_positions = models.ManyToManyField('Team', related_name='champions_positions_result', null=True, blank=True)
-    uefa_positions = models.ManyToManyField('Team', related_name='uefa_positions_result', null=True, blank=True)
-    demotion_positions = models.ManyToManyField('Team', related_name='demotion_positions_result', null=True, blank=True)
+    champions_positions = models.ManyToManyField(
+        'Team', related_name='champions_positions_result', null=True,
+        blank=True)
+    uefa_positions = models.ManyToManyField(
+        'Team', related_name='uefa_positions_result', null=True, blank=True)
+    demotion_positions = models.ManyToManyField(
+        'Team', related_name='demotion_positions_result', null=True,
+        blank=True)
 
     best_goalkeeper = models.ForeignKey('Player', null=True, blank=True)
 
@@ -220,14 +266,19 @@ class GlobalResults(models.Model):
             return True
         return False
 
+
 def update_ranking(sender, instance, **kwargs):
     from core.tasks import match_day_ranking
     match_day_ranking.delay(instance.id)
+
 
 def update_global_results(sender, instance, **kwargs):
     from core.tasks import global_ranking
     global_ranking.delay(instance.id)
 
-post_save.connect(update_ranking, sender=MatchDay, dispatch_uid="update_ranking_count")
-post_save.connect(update_global_results, sender=GlobalResults, dispatch_uid="update_global_results_count")
-post_save.connect(update_global_results, sender=Season, dispatch_uid="update_global_results_count")
+post_save.connect(update_ranking, sender=MatchDay,
+                  dispatch_uid="update_ranking_count")
+post_save.connect(update_global_results, sender=GlobalResults,
+                  dispatch_uid="update_global_results_count")
+post_save.connect(update_global_results, sender=Season,
+                  dispatch_uid="update_global_results_count")
