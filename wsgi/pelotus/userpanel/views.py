@@ -443,7 +443,25 @@ def community_dashboard(request, competition_id):
                 cache.set('competition:{}:match_day:{}:user:{}:points'.format(competition.id, match_day.id, ua.user.id), user_points, TIMEOUT)
                 total_user_points += user_points
 
-            user_point_list.append({'user': ua.user, 'points': total_user_points})
+            if cache.get(
+                    'competiton:{}:global:user:{}:points'.format(
+                        competition.id, ua.user.id)) is not None:
+                global_points = cache.get(
+                    'competiton:{}:global:user:{}:points'.format(
+                        competition.id, ua.user.id))
+            else:
+                global_results = GlobalResults.objects.filter(
+                    season=competition.season).first()
+                global_points = utils.get_user_global_points(
+                    ua.user, competition, global_results)
+                cache.set(
+                    'competiton:{}:global:user:{}:points'.format(
+                        competition.id, ua.user.id), global_points, TIMEOUT)
+
+            total_user_points += global_points
+
+            user_point_list.append({'user': ua.user,
+                                    'points': total_user_points})
 
         user_point_list = dictsortreversed(user_point_list, 'points')
         if len(user_point_list) <= 12:
