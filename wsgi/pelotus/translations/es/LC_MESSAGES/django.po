@@ -51,7 +51,6 @@ msgid "Global ranking"
 msgstr "Clasificación general"
 
 #: templates/core/base.html:70
-#, fuzzy
 msgid "Join a community!"
 msgstr "¡Únete a una comunidad!"
 
