@@ -128,9 +128,12 @@ class Team(models.Model):
     spanish_teams = SpanishLeagueTeamsManager()
 
     def current_season(self):
-        return self.teaminseason_set.filter(
+        teaminseason_set = self.teaminseason_set.filter(
             season__start_date__lte=datetime.date.today(),
-            season__end_date__gte=datetime.date.today()).first().season.name
+            season__end_date__gte=datetime.date.today()).first()
+        if teaminseason_set is not None:
+            return teaminseason_set.season.name
+        return None
 
     class Meta:
         ordering = ['name']
