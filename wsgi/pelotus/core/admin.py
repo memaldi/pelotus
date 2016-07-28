@@ -62,9 +62,15 @@ class MatchAdminTabular(admin.TabularInline):
 	max_num = 10
 	def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
 		if db_field.name == 'home_team':
-			kwargs['queryset'] = Team.objects.filter(teaminseason__spanish_league=True)
+			kwargs['queryset'] = Team.objects.filter(
+				teaminseason__spanish_league=True,
+				teaminseason__season__start_date__lte=datetime.date.today(),
+				teaminseason__season__end_date__gte=datetime.date.today())
 		elif db_field.name == 'foreign_team':
-			kwargs['queryset'] = Team.objects.filter(teaminseason__spanish_league=True)
+			kwargs['queryset'] = Team.objects.filter(
+				teaminseason__spanish_league=True,
+				teaminseason__season__start_date__lte=datetime.date.today(),
+				teaminseason__season__end_date__gte=datetime.date.today())
 		return super(MatchAdminTabular, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 class PlayerGoalAdmin(admin.TabularInline):
