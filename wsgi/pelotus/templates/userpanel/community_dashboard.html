@@ -9,21 +9,22 @@
   </div>
   <div class="row">
     <div class="col-md-6">
+      {% if next_match_day_bet_list%}
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title">{% blocktrans with next_match_day.number as match_day %}Match Day {{match_day}}{% endblocktrans %} <small>{% blocktrans with next_match_day.date_limit as limit_date %}Limit date: {{limit_date}}{% endblocktrans %}</small></h3>
         </div>
         <div class="panel-body">
           <table class="table table-striped">
-          {% for bet in next_match_day_bet_list %}
-            <tr class="form-group {% if bet.match.home_goals != None and bet.match.foreign_goals != None and bet.match.home_goals == bet.home_goals and bet.match.foreign_goals == bet.foreign_goals %}success{% endif %}">
-              <td style="border: none;"><label for="home_team-bet-id-{{bet.id}}">{{ bet.match.home_team.name }}</label></td>
-              <td style="border: none;">{% if bet.match.home_goals != None %}{{bet.match.home_goals}}{% endif %} {% if bet.home_goals != None %}<strong>({{bet.home_goals}})</strong>{% endif %}</td>
-              <td style="text-align:center; border: none;">-</td>
-              <td style="border: none;">{% if bet.match.foreign_goals != None %}{{bet.match.foreign_goals}}{% endif %} {% if bet.foreign_goals != None %}<strong>({{bet.foreign_goals}})</strong>{% endif %}</td>
-              <td style="border: none;"><label for="foreign_team-bet-id-{{bet.id}}">{{ bet.match.foreign_team.name }}</label></td>
-            </tr>
-          {% endfor %}
+            {% for bet in next_match_day_bet_list %}
+              <tr class="form-group {% if bet.match.home_goals != None and bet.match.foreign_goals != None and bet.match.home_goals == bet.home_goals and bet.match.foreign_goals == bet.foreign_goals %}success{% endif %}">
+                <td style="border: none;"><label for="home_team-bet-id-{{bet.id}}">{{ bet.match.home_team.name }}</label></td>
+                <td style="border: none;">{% if bet.match.home_goals != None %}{{bet.match.home_goals}}{% endif %} {% if bet.home_goals != None %}<strong>({{bet.home_goals}})</strong>{% endif %}</td>
+                <td style="text-align:center; border: none;">-</td>
+                <td style="border: none;">{% if bet.match.foreign_goals != None %}{{bet.match.foreign_goals}}{% endif %} {% if bet.foreign_goals != None %}<strong>({{bet.foreign_goals}})</strong>{% endif %}</td>
+                <td style="border: none;"><label for="foreign_team-bet-id-{{bet.id}}">{{ bet.match.foreign_team.name }}</label></td>
+              </tr>
+            {% endfor %}
           </table>
           <table class="table table-striped">
             <thead>
@@ -73,6 +74,7 @@
           </table>
         </div>
       </div>
+      {% endif %}
     </div>
     <div class="col-md-6">
       <div class="panel panel-default">

@@ -497,15 +497,16 @@ def community_dashboard(request, competition_id):
         next_match_day = MatchDay.objects.filter(season=competition.season, start_date__gt=datetime.datetime.now()).first()
         context['next_match_day'] = next_match_day
 
-        match_set = next_match_day.match_set.all()
-        next_match_day_bet_list = []
-        for match in match_set:
-            bet = Bet.objects.filter(user=user, match=match, match_day=next_match_day, competition=competition).first()
-            if bet == None:
-                bet = Bet(user=user, match=match, match_day=next_match_day, competition=competition)
-                bet.save()
-            next_match_day_bet_list.append(bet)
-        context['next_match_day_bet_list'] = next_match_day_bet_list
+        if next_match_day is not None:
+            match_set = next_match_day.match_set.all()
+            next_match_day_bet_list = []
+            for match in match_set:
+                bet = Bet.objects.filter(user=user, match=match, match_day=next_match_day, competition=competition).first()
+                if bet == None:
+                    bet = Bet(user=user, match=match, match_day=next_match_day, competition=competition)
+                    bet.save()
+                next_match_day_bet_list.append(bet)
+            context['next_match_day_bet_list'] = next_match_day_bet_list
 
         user_scorers = GoalsBet.objects.filter(user=user, match_day=next_match_day).first()
         context['goals_bet'] = user_scorers
