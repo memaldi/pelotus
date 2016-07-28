@@ -53,27 +53,29 @@ def get_user_match_day_points(user, match_day, competition):
 def get_user_global_points(user, competition, global_results):
     global_bet = GlobalBet.objects.filter(competition=competition,
                                           user=user).first()
-    global_points = 0
-    if global_bet.winter_champion is not None:
-        if global_bet.winter_champion == global_results.winter_champion:
-            global_points += 10
-        if global_bet.kings_cup_champion == global_results.kings_cup_champion:
-            global_points += 10
-        if global_bet.league_champion == global_results.league_champion:
-            global_points += 10
-        if global_bet.uefa_champion == global_results.uefa_champion:
-            global_points += 10
-        if global_bet.champions_league_champion == global_results.champions_league_champion:
-            global_points += 10
-        for team in global_bet.champions_positions.all():
-            if team in global_results.champions_positions.all():
+    if global_bet is not None:
+        global_points = 0
+        if global_bet.winter_champion is not None:
+            if global_bet.winter_champion == global_results.winter_champion:
                 global_points += 10
-        for team in global_bet.uefa_positions.all():
-            if team in global_results.uefa_positions.all():
+            if global_bet.kings_cup_champion == global_results.kings_cup_champion:
                 global_points += 10
-        for team in global_bet.demotion_positions.all():
-            if team in global_results.demotion_positions.all():
+            if global_bet.league_champion == global_results.league_champion:
                 global_points += 10
-        if global_bet.best_goalkeeper == global_results.best_goalkeeper:
-            global_points += 10
-    return global_points
+            if global_bet.uefa_champion == global_results.uefa_champion:
+                global_points += 10
+            if global_bet.champions_league_champion == global_results.champions_league_champion:
+                global_points += 10
+            for team in global_bet.champions_positions.all():
+                if team in global_results.champions_positions.all():
+                    global_points += 10
+            for team in global_bet.uefa_positions.all():
+                if team in global_results.uefa_positions.all():
+                    global_points += 10
+            for team in global_bet.demotion_positions.all():
+                if team in global_results.demotion_positions.all():
+                    global_points += 10
+            if global_bet.best_goalkeeper == global_results.best_goalkeeper:
+                global_points += 10
+        return global_points
+    return 0
