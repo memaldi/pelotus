@@ -167,7 +167,10 @@ class TeamInSeason(models.Model):
         return self.team.name
 
     def __unicode__(self):
-        return u"{}".format(self.team.name)
+        return u"{} ({})".format(self.team.name, self.season.name)
+
+    class Meta:
+        ordering = ['team__name']
 
 
 class PlayerBelongsToTeam(models.Model):
