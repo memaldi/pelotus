@@ -197,9 +197,9 @@ CACHES = {
     }
 }
 # if ON_OPENSHIFT:
-#     LOCALE_PATHS = (
-#         os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'pelotus', 'translations'),
-#     )
+LOCALE_PATHS = (
+    os.path.join(PROJECT_DIR, 'translations'),
+)
 # else:
 #     LOCALE_PATHS = (
 #         '/Users/memaldi/virtualenvs/pelotus/pelotus/wsgi/pelotus/translations',
