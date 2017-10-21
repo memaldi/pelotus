@@ -21,7 +21,7 @@ DATABASES = {
         'ENGINE' : 'django.db.backends.postgresql_psycopg2',
         'NAME': 'pelotus',
         'USER': 'pelotus',
-        'PASSWORD': 'pelotus',
+        'PASSWORD': os.environ.get('PELOTUS_DB_PASS', 'pelotus'),
         'HOST': 'pelotus-db',
         'PORT': 5432,
     }
