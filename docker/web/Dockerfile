@@ -14,4 +14,4 @@ WORKDIR /src/pelotus/wsgi/pelotus
 
 COPY entrypoint.sh /src/pelotus/wsgi/pelotus
 
-ENTRYPOINT entrypoint.sh
+ENTRYPOINT /src/pelotus/wsgi/pelotus/entrypoint.sh
