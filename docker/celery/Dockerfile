@@ -12,4 +12,6 @@ RUN pip install -r requirements.txt
 
 WORKDIR /src/pelotus/wsgi/pelotus
 
-ENTRYPOINT entrypoint.sh
+COPY entrypoint.sh /src/pelotus/wsgi/pelotus
+
+ENTRYPOINT /src/pelotus/wsgi/pelotus/entrypoint.sh
