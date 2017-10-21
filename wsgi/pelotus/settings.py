@@ -3,18 +3,8 @@
 import imp, os
 import urlparse
 
-# a setting to determine whether we are running on OpenShift
-ON_OPENSHIFT = False
-if os.environ.has_key('OPENSHIFT_REPO_DIR'):
-    ON_OPENSHIFT = True
-
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
-if ON_OPENSHIFT:
-    DEBUG = bool(os.environ.get('DEBUG', True))
-    if DEBUG:
-        print("WARNING: The DEBUG environment is set to True.")
-else:
-    DEBUG = True
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = []
@@ -24,31 +14,19 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
-if ON_OPENSHIFT:
-    # os.environ['OPENSHIFT_MYSQL_DB_*'] variables can be used with databases created
-    # with rhc cartridge add (see /README in this git repo)
-    url = urlparse.urlparse(os.environ.get('OPENSHIFT_POSTGRESQL_DB_URL'))
-    DATABASES = {
-        'default': {
-            'ENGINE' : 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ['OPENSHIFT_APP_NAME'],
-            'USER': url.username,
-            'PASSWORD': url.password,
-            'HOST': url.hostname,
-            'PORT': url.port,
-        }
+# os.environ['OPENSHIFT_MYSQL_DB_*'] variables can be used with databases created
+# with rhc cartridge add (see /README in this git repo)
+DATABASES = {
+    'default': {
+        'ENGINE' : 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'pelotus',
+        'USER': 'pelotus',
+        'PASSWORD': os.environ.get('PELOTUS_DB_PASS', 'pelotus'),
+        'HOST': 'pelotus-db',
+        'PORT': 5432,
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': os.path.join(PROJECT_DIR, 'sqlite3.db'),  # Or path to database file if using sqlite3.
-            'USER': '',                      # Not used with sqlite3.
-            'PASSWORD': '',                  # Not used with sqlite3.
-            'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-            'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-        }
-    }
+}
+
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -86,7 +64,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-#STATIC_ROOT = os.path.join(PROJECT_DIR, '..', 'static')
+# STATIC_ROOT = os.path.join(PROJECT_DIR, '..', 'static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -98,13 +76,14 @@ STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Additional locations of static files
-if 'OPENSHIFT_REPO_DIR' not in os.environ:
-    STATICFILES_DIRS = (
-        os.path.join('/Users/memaldi/virtualenvs/pelotus/pelotus/wsgi/static'),
-    )
-    #STATIC_ROOT = os.path.join('/Users/memaldi/virtualenvs/pelotus/pelotus/wsgi/static')
-else:
-    STATIC_ROOT =  os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'static')
+STATICFILES_DIRS = (os.path.join(PROJECT_DIR, '..', 'static'),)
+# if 'OPENSHIFT_REPO_DIR' not in os.environ:
+#     STATICFILES_DIRS = (
+#         os.path.join('/Users/memaldi/virtualenvs/pelotus/pelotus/wsgi/static'),
+#     )
+#     #STATIC_ROOT = os.path.join('/Users/memaldi/virtualenvs/pelotus/pelotus/wsgi/static')
+# else:
+#     STATIC_ROOT =  os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'static')
 
 
 # List of finder classes that know how to find static files in
@@ -120,10 +99,10 @@ default_keys = { 'SECRET_KEY': 'vm4rl5*ymb@2&d_(gc$gb-^twq9w(u69hi--%$5xrh!xk(t%
 
 # Replace default keys with dynamic values if we are in OpenShift
 use_keys = default_keys
-if ON_OPENSHIFT:
-    imp.find_module('openshiftlibs')
-    import openshiftlibs
-    use_keys = openshiftlibs.openshift_secure(default_keys)
+# if ON_OPENSHIFT:
+#     imp.find_module('openshiftlibs')
+#     import openshiftlibs
+#     use_keys = openshiftlibs.openshift_secure(default_keys)
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = use_keys['SECRET_KEY']
@@ -208,44 +187,26 @@ DEFAULT_CHARSET='utf-8'
 
 BROKER_URL = 'django://'
 
-if ON_OPENSHIFT:
-    CACHES = {
-        "default": {
-            "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": "redis://:" + os.environ['OPENSHIFT_REDIS_DB_PASSWORD'] + "@" + os.environ['OPENSHIFT_REDIS_DB_HOST'] + ":" + os.environ['OPENSHIFT_REDIS_DB_PORT'] + "/" + os.environ['OPENSHIFT_REDIS_DB_NAME'],
-            "OPTIONS": {
-                "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            }
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://pelotus-redis:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
-else:
-    CACHES = {
-        "default": {
-            "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": "redis://127.0.0.1:6379/1",
-            "OPTIONS": {
-                "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            }
-        }
-    }
-if ON_OPENSHIFT:
-    LOCALE_PATHS = (
-        os.path.join(os.environ['OPENSHIFT_REPO_DIR'], 'wsgi', 'pelotus', 'translations'),
-    )
-else:
-    LOCALE_PATHS = (
-        '/Users/memaldi/virtualenvs/pelotus/pelotus/wsgi/pelotus/translations',
-    )
+}
+# if ON_OPENSHIFT:
+LOCALE_PATHS = (
+    os.path.join(PROJECT_DIR, 'translations'),
+)
+# else:
+#     LOCALE_PATHS = (
+#         '/Users/memaldi/virtualenvs/pelotus/pelotus/wsgi/pelotus/translations',
+#     )
 
 
 SITE_ID = 1
 
-if ON_OPENSHIFT:
-    EMAIL_USE_TLS = True
-    EMAIL_HOST = os.environ['SENDGRID_HOSTNAME']
-    EMAIL_HOST_USER = os.environ['SENDGRID_USERNAME']
-    EMAIL_HOST_PASSWORD = os.environ['SENDGRID_PASSWORD']
-    EMAIL_PORT = 587
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-    EMAIL_FILE_PATH = '/tmp/app-messages' # change this to a proper location
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = '/tmp/app-messages' # change this to a proper location
