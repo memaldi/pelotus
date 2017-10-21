@@ -1,6 +1,6 @@
 FROM python:2
 
-RUN sudo apt-get update && sudo apt-get install git
+RUN apt-get update && apt-get install git
 
 WORKDIR /src
 
