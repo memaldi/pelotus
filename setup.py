@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# This setup script belongs to the legacy Django-based Pelotus
+# project. It is retained only for reference during migration.
+
 from setuptools import setup
 
 setup(

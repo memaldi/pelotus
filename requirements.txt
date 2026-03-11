@@ -1,3 +1,4 @@
+# Legacy Django backend dependencies (kept for reference during rewrite)
 amqp==1.4.9
 anyjson==0.3.3
 billiard==3.3.0.20

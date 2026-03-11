@@ -1,78 +1,108 @@
-Django on OpenShift
-===================
+# Pelotus (Nuxt.js rewrite)
 
-This git repository helps you get up and running quickly w/ a Django
-installation on OpenShift.  The Django project name used in this repo
-is 'openshift' but you can feel free to change it.  Right now the
-backend is sqlite3 and the database runtime is found in
-`$OPENSHIFT_DATA_DIR/sqlite3.db`.
+This repository contains the Pelotus fantasy sports application. The
+original Django implementation has been rewritten as a full-stack
+JavaScript application using **Nuxt.js (Vue 3)** with a PostgreSQL
+backend and Redis for caching and background jobs.
 
-Before you push this app for the first time, you will need to change
-the [Django admin password](#admin-user-name-and-password).
-Then, when you first push this
-application to the cloud instance, the sqlite database is copied from
-`wsgi/openshift/sqlite3.db` with your newly changed login
-credentials. Other than the password change, this is the stock
-database that is created when `python manage.py syncdb` is run with
-only the admin app installed.
+## Deployment (Docker Compose)
 
-On subsequent pushes, a `python manage.py syncdb` is executed to make
-sure that any models you added are created in the DB.  If you do
-anything that requires an alter table, you could add the alter
-statements in `GIT_ROOT/.openshift/action_hooks/alter.sql` and then use
-`GIT_ROOT/.openshift/action_hooks/deploy` to execute that script (make
-sure to back up your database w/ `rhc app snapshot save` first :) )
+A `docker-compose.yml` file is provided at the repository root. Use it
+for local development or production deployment.
 
-You can also turn on the DEBUG mode for Django application using the
-`rhc env set DEBUG=True --app APP_NAME`. If you do this, you'll get
-nicely formatted error pages in browser for HTTP 500 errors.
+```bash
+# build all services
+docker-compose build
 
-Do not forget to turn this environment variable off and fully restart
-the application when you finish:
-
-```
-$ rhc env unset DEBUG
-$ rhc app stop && rhc app start
+# start the stack (web, postgres, redis)
+docker-compose up -d
 ```
 
-Running on OpenShift
---------------------
+Environment variables are loaded from `nuxt-app/.env` (copy
+`.env.example` as a starting point).
 
-Create an account at https://www.openshift.com
+### Services
 
-Install the RHC client tools if you have not already done so:
-    
-    sudo gem install rhc
-    rhc setup
+- **web** – Nuxt.js application serving both frontend and API
+- **postgres** – PostgreSQL 15 for primary data storage
+- **redis** – Redis 7 used for caching and background task queue
 
-Create a python application
+## Development
 
-    rhc app create django python-2.6
+1. Install Node.js (>=20) and npm/yarn/pnpm on your host machine.
+2. `cd nuxt-app && npm install` to install frontend dependencies.
+3. `npm run dev` to launch the development server at `http://localhost:3000`.
 
-Add this upstream repo
+4. `npm run test` to execute unit tests (Vitest).
 
-    cd django
-    git remote add upstream -m master git://github.com/openshift/django-example.git
-    git pull -s recursive -X theirs upstream master
+### Authentication API
 
-Then push the repo upstream
+The server exposes REST endpoints under `/api/auth`:
 
-    git push
+- `POST /api/auth/register` – create new user with JSON body `{ email, password, username? }`
+- `POST /api/auth/login` – obtain JWT token with `{ email, password }`
 
-Here, the [admin user name and password will be displayed](#admin-user-name-and-password), so pay
-special attention.
-	
-That's it. You can now checkout your application at:
+Use the token to authenticate further requests via `Authorization: Bearer <token>` header.
 
-    http://django-$yournamespace.rhcloud.com
+### Core API
 
-Admin user name and password
-----------------------------
-As the `git push` output scrolls by, keep an eye out for a
-line of output that starts with `Django application credentials: `. This line
-contains the generated admin password that you will need to begin
-administering your Django app. This is the only time the password
-will be displayed, so be sure to save it somewhere. You might want 
-to pipe the output of the git push to a text file so you can grep for
-the password later.
+- `GET /api/communities` – list communities
+- `GET /api/communities/{slug}` – community details and competitions
+- `POST /api/communities/{slug}` – join community (requires auth)
+- `GET /api/matchdays` – list match days
+- `GET /api/matchdays/{id}` – match day with matches
+- `GET /api/match/{id}` – match details including teams and day
+- `POST /api/bets` – create/update bet (requires auth, body `{ matchId, matchDayId, homeGoals, awayGoals }`)
+- `GET /api/bets/match/{id}` – bets for a match (user only or all)
+
+Additional endpoints are available for goals bets, global bets, rankings, and related data management.
+
+Core API updates:
+
+- `GET /api/players`, `/api/teams`, `/api/seasons`, `/api/competitions` (season filter via query)
+- Goals bets:
+  - `POST /api/goals-bets` (body `{ matchDayId, forwardId?, midfieldId?, defenseId? }`)
+  - `GET /api/goals-bets/matchday/{id}`
+- Global bets:
+  - `POST /api/global-bets` (body with competitionId + predictions)
+  - `GET /api/global-bets/competition/{id}`
+- Global results (admin use):
+  - `POST /api/global-results` to create results
+  - `GET /api/global-results/{id}`
+
+Rankings:
+- `GET /api/rankings/matchday/{id}`
+- `GET /api/rankings/global/{id}`
+
+```
+## Database
+
+The Prisma schema lives in `nuxt-app/prisma/schema.prisma` and defines
+the data model migrated from the original Django project. If you're
+continuing from an existing PostgreSQL database created by the legacy
+Django app, you can introspect it to generate an initial schema:
+
+```bash
+cd nuxt-app
+npx prisma db pull          # introspects an existing database
+npx prisma generate         # generate client
+```
+
+For new projects or after editing the schema, create migrations and
+apply them:
+
+```bash
+npx prisma migrate dev      # creates and runs a new migration
+```
+
+
+## Legacy Django
+
+The legacy Django code and templates remain in the repository for
+reference during the rewrite. The new Nuxt.js application lives under
+`nuxt-app/`.
+
+---
+
+*Older OpenShift-specific instructions have been removed.*
 

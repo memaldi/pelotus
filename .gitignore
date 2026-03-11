@@ -6,3 +6,11 @@
 .project
 .pydevproject
 .DS_Store
+
+# Node/Nuxt
+nuxt-app/node_modules
+nuxt-app/.nuxt
+nuxt-app/dist
+nuxt-app/.output
+nuxt-app/.env
+
