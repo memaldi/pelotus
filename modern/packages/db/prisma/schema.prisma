@@ -1,0 +1,264 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlayerPosition {
+  GK
+  DF
+  MF
+  FW
+}
+
+model User {
+  id         Int                  @id @default(autoincrement())
+  username   String               @unique
+  email      String               @unique
+  password   String
+  isPlatformAdmin Boolean         @default(false)
+  createdAt  DateTime             @default(now())
+  adminOf    UserAdministration[]
+  bets       Bet[]
+  goalsBets  GoalsBet[]
+  globalBets GlobalBet[]
+}
+
+model League {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(50)
+  description String   @db.VarChar(200)
+  seasons     Season[]
+}
+
+model Season {
+  id             Int             @id @default(autoincrement())
+  leagueId       Int
+  name           String          @db.VarChar(20)
+  description    String          @db.VarChar(200)
+  startDate      DateTime
+  endDate        DateTime
+  league         League          @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  competitions   Competition[]
+  matchDays      MatchDay[]
+  teams          TeamInSeason[]
+  globalResults  GlobalResults[]
+  playersInTeams PlayerBelongsToTeam[]
+
+  @@unique([leagueId, name])
+}
+
+model Community {
+  id           Int           @id @default(autoincrement())
+  name         String        @unique @db.VarChar(20)
+  description  String        @db.VarChar(200)
+  competitions Competition[]
+}
+
+model Competition {
+  id            Int                  @id @default(autoincrement())
+  seasonId      Int
+  communityId   Int
+  season        Season               @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  community     Community            @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  users         UserAdministration[]
+  bets          Bet[]
+  globalBets    GlobalBet[]
+
+  @@unique([seasonId, communityId])
+}
+
+model MatchDay {
+  id         Int          @id @default(autoincrement())
+  number     Int
+  startDate  DateTime
+  seasonId   Int
+  season     Season       @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  matches    Match[]
+  playerGoal PlayerGoal[]
+  bets       Bet[]
+  goalsBets  GoalsBet[]
+
+  @@unique([seasonId, number])
+}
+
+model Team {
+  id                                Int             @id @default(autoincrement())
+  name                              String          @db.VarChar(30)
+  homeMatches                       Match[]         @relation("HomeTeam")
+  awayMatches                       Match[]         @relation("AwayTeam")
+  teamInSeasons                     TeamInSeason[]
+  winterChampionGlobalBets          GlobalBet[]     @relation("GlobalBetWinterChampion")
+  kingsCupChampionGlobalBets        GlobalBet[]     @relation("GlobalBetKingsCupChampion")
+  leagueChampionGlobalBets          GlobalBet[]     @relation("GlobalBetLeagueChampion")
+  uefaChampionGlobalBets            GlobalBet[]     @relation("GlobalBetUefaChampion")
+  championsLeagueChampionGlobalBets GlobalBet[]     @relation("GlobalBetChampionsLeagueChampion")
+  championsPositionGlobalBets       GlobalBet[]     @relation("GlobalBetChampionsPositions")
+  uefaPositionGlobalBets            GlobalBet[]     @relation("GlobalBetUefaPositions")
+  demotionPositionGlobalBets        GlobalBet[]     @relation("GlobalBetDemotionPositions")
+  winterChampionGlobalResults       GlobalResults[] @relation("GlobalResultsWinterChampion")
+  kingsCupChampionGlobalResults     GlobalResults[] @relation("GlobalResultsKingsCupChampion")
+  leagueChampionGlobalResults       GlobalResults[] @relation("GlobalResultsLeagueChampion")
+  uefaChampionGlobalResults         GlobalResults[] @relation("GlobalResultsUefaChampion")
+  championsLeagueGlobalResults      GlobalResults[] @relation("GlobalResultsChampionsLeagueChampion")
+  championsPositionGlobalResults    GlobalResults[] @relation("GlobalResultsChampionsPositions")
+  uefaPositionGlobalResults         GlobalResults[] @relation("GlobalResultsUefaPositions")
+  demotionPositionGlobalResults     GlobalResults[] @relation("GlobalResultsDemotionPositions")
+}
+
+model TeamInSeason {
+  id               Int                  @id @default(autoincrement())
+  teamId           Int
+  seasonId         Int
+  spanishLeague    Boolean              @default(true)
+  uefaLeague       Boolean              @default(false)
+  championsLeague  Boolean              @default(false)
+  kingsCup         Boolean              @default(false)
+  team             Team                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  season           Season               @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  players          PlayerBelongsToTeam[]
+
+  @@unique([teamId, seasonId])
+}
+
+model Player {
+  id                         Int                  @id @default(autoincrement())
+  name                       String               @db.VarChar(50)
+  playerTeams                PlayerBelongsToTeam[]
+  playerGoals                PlayerGoal[]
+  forwardBets                GoalsBet[]           @relation("ForwardGoalsBet")
+  midfieldBets               GoalsBet[]           @relation("MidfieldGoalsBet")
+  defenseBets                GoalsBet[]           @relation("DefenseGoalsBet")
+  bestGoalkeeperInGlobalBets GlobalBet[]          @relation("GlobalBetBestGoalkeeper")
+  bestGoalkeeperInResults    GlobalResults[]      @relation("GlobalResultsBestGoalkeeper")
+}
+
+model PlayerBelongsToTeam {
+  id             Int            @id @default(autoincrement())
+  playerId       Int
+  teamInSeasonId Int
+  seasonId       Int
+  position       PlayerPosition @default(GK)
+  player         Player         @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  teamInSeason   TeamInSeason   @relation(fields: [teamInSeasonId], references: [id], onDelete: Cascade)
+  season         Season         @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, teamInSeasonId])
+}
+
+model Match {
+  id            Int      @id @default(autoincrement())
+  homeTeamId    Int
+  foreignTeamId Int
+  matchDayId    Int
+  homeGoals     Int?
+  foreignGoals  Int?
+  homeTeam      Team     @relation("HomeTeam", fields: [homeTeamId], references: [id], onDelete: Cascade)
+  foreignTeam   Team     @relation("AwayTeam", fields: [foreignTeamId], references: [id], onDelete: Cascade)
+  matchDay      MatchDay @relation(fields: [matchDayId], references: [id], onDelete: Cascade)
+  bets          Bet[]
+}
+
+model PlayerGoal {
+  id        Int      @id @default(autoincrement())
+  playerId  Int
+  matchDayId Int
+  goals     Int
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  matchDay  MatchDay @relation(fields: [matchDayId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, matchDayId])
+}
+
+model UserAdministration {
+  id            Int         @id @default(autoincrement())
+  userId        Int
+  competitionId Int
+  isAdmin       Boolean     @default(false)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  competition   Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, competitionId])
+}
+
+model Bet {
+  id            Int         @id @default(autoincrement())
+  userId        Int
+  matchId       Int
+  matchDayId    Int
+  competitionId Int
+  homeGoals     Int?
+  foreignGoals  Int?
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  match         Match       @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  matchDay      MatchDay    @relation(fields: [matchDayId], references: [id], onDelete: Cascade)
+  competition   Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, matchId, competitionId])
+}
+
+model GoalsBet {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  matchDayId  Int
+  forwardId   Int?
+  midfieldId  Int?
+  defenseId   Int?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  matchDay    MatchDay @relation(fields: [matchDayId], references: [id], onDelete: Cascade)
+  forward     Player?  @relation("ForwardGoalsBet", fields: [forwardId], references: [id], onDelete: SetNull)
+  midfield    Player?  @relation("MidfieldGoalsBet", fields: [midfieldId], references: [id], onDelete: SetNull)
+  defense     Player?  @relation("DefenseGoalsBet", fields: [defenseId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, matchDayId])
+}
+
+model GlobalBet {
+  id                       Int       @id @default(autoincrement())
+  userId                   Int
+  competitionId            Int
+  winterChampionId         Int?
+  kingsCupChampionId       Int?
+  leagueChampionId         Int?
+  uefaChampionId           Int?
+  championsLeagueChampionId Int?
+  bestGoalkeeperId         Int?
+  user                     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  competition              Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  winterChampion           Team?     @relation("GlobalBetWinterChampion", fields: [winterChampionId], references: [id], onDelete: SetNull)
+  kingsCupChampion         Team?     @relation("GlobalBetKingsCupChampion", fields: [kingsCupChampionId], references: [id], onDelete: SetNull)
+  leagueChampion           Team?     @relation("GlobalBetLeagueChampion", fields: [leagueChampionId], references: [id], onDelete: SetNull)
+  uefaChampion             Team?     @relation("GlobalBetUefaChampion", fields: [uefaChampionId], references: [id], onDelete: SetNull)
+  championsLeagueChampion  Team?     @relation("GlobalBetChampionsLeagueChampion", fields: [championsLeagueChampionId], references: [id], onDelete: SetNull)
+  bestGoalkeeper           Player?   @relation("GlobalBetBestGoalkeeper", fields: [bestGoalkeeperId], references: [id], onDelete: SetNull)
+  championsPositions       Team[]    @relation("GlobalBetChampionsPositions")
+  uefaPositions            Team[]    @relation("GlobalBetUefaPositions")
+  demotionPositions        Team[]    @relation("GlobalBetDemotionPositions")
+
+  @@unique([userId, competitionId])
+}
+
+model GlobalResults {
+  id                       Int       @id @default(autoincrement())
+  seasonId                 Int
+  deadline                 DateTime
+  winterChampionId         Int?
+  kingsCupChampionId       Int?
+  leagueChampionId         Int?
+  uefaChampionId           Int?
+  championsLeagueChampionId Int?
+  bestGoalkeeperId         Int?
+  season                   Season    @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  winterChampion           Team?     @relation("GlobalResultsWinterChampion", fields: [winterChampionId], references: [id], onDelete: SetNull)
+  kingsCupChampion         Team?     @relation("GlobalResultsKingsCupChampion", fields: [kingsCupChampionId], references: [id], onDelete: SetNull)
+  leagueChampion           Team?     @relation("GlobalResultsLeagueChampion", fields: [leagueChampionId], references: [id], onDelete: SetNull)
+  uefaChampion             Team?     @relation("GlobalResultsUefaChampion", fields: [uefaChampionId], references: [id], onDelete: SetNull)
+  championsLeagueChampion  Team?     @relation("GlobalResultsChampionsLeagueChampion", fields: [championsLeagueChampionId], references: [id], onDelete: SetNull)
+  bestGoalkeeper           Player?   @relation("GlobalResultsBestGoalkeeper", fields: [bestGoalkeeperId], references: [id], onDelete: SetNull)
+  championsPositions       Team[]    @relation("GlobalResultsChampionsPositions")
+  uefaPositions            Team[]    @relation("GlobalResultsUefaPositions")
+  demotionPositions        Team[]    @relation("GlobalResultsDemotionPositions")
+}

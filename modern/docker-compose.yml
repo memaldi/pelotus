@@ -1,0 +1,83 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: pelotus-modern-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pelotus
+      POSTGRES_PASSWORD: pelotus
+      POSTGRES_DB: pelotus_modern
+    ports:
+      - "5432:5432"
+    volumes:
+      - pelotus-modern-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pelotus -d pelotus_modern"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: node:20-bookworm-slim
+    container_name: pelotus-modern-api
+    working_dir: /workspace
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://pelotus:pelotus@db:5432/pelotus_modern
+      DEFAULT_ADMIN_USERNAME: ${DEFAULT_ADMIN_USERNAME:-admin}
+      DEFAULT_ADMIN_EMAIL: ${DEFAULT_ADMIN_EMAIL:-admin@pelotus.local}
+      DEFAULT_ADMIN_PASSWORD: ${DEFAULT_ADMIN_PASSWORD:-admin1234}
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./:/workspace
+      - pelotus-modern-node-modules:/workspace/node_modules
+    command: sh -c "npm install && npm run db:generate && (npm run --workspace @pelotus/db prisma:push || npm run --workspace @pelotus/db prisma:push:reset) && npm run --workspace @pelotus/api dev"
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:4000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    image: node:20-bookworm-slim
+    container_name: pelotus-modern-app
+    working_dir: /workspace
+    depends_on:
+      db:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://pelotus:pelotus@db:5432/pelotus_modern
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:4000
+      INTERNAL_API_BASE_URL: http://api:4000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/workspace
+      - pelotus-modern-node-modules:/workspace/node_modules
+    command: sh -c "npm run --workspace @pelotus/web dev"
+
+  migrate:
+    image: node:20-bookworm-slim
+    working_dir: /workspace
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://pelotus:pelotus@db:5432/pelotus_modern
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:4000
+      INTERNAL_API_BASE_URL: http://api:4000
+    volumes:
+      - ./:/workspace
+      - pelotus-modern-node-modules:/workspace/node_modules
+    command: sh -c "npm install && npm run db:generate && (npm run --workspace @pelotus/db prisma:push || npm run --workspace @pelotus/db prisma:push:reset)"
+    profiles: ["setup"]
+
+volumes:
+  pelotus-modern-pg:
+  pelotus-modern-node-modules:

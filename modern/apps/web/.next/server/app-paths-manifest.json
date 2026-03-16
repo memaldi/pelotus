@@ -1,0 +1,5 @@
+{
+  "/api/backend/[...path]/route": "app/api/backend/[...path]/route.js",
+  "/admin/page": "app/admin/page.js",
+  "/admin/global-bets/page": "app/admin/global-bets/page.js"
+}

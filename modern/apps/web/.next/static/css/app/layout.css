@@ -1,0 +1,81 @@
+/*!*********************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ../../node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[2]!../../node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[10].use[3]!./app/globals.css ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************/
+:root {
+  --bg: #f6f3ec;
+  --surface: #fff9ee;
+  --ink: #1a1a19;
+  --accent: #0f766e;
+  --accent-2: #ef4444;
+  --ring: rgba(15, 118, 110, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 20% 10%, rgba(15, 118, 110, 0.12), transparent 40%),
+    radial-gradient(circle at 85% 15%, rgba(239, 68, 68, 0.1), transparent 35%),
+    linear-gradient(180deg, #fffdf7 0%, var(--bg) 100%);
+  min-height: 100vh;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid #e5ddcc;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(26, 26, 25, 0.06);
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  margin: 0 0 12px;
+}
+
+.grid {
+  display: grid;
+  grid-gap: 16px;
+  gap: 16px;
+}
+
+@media (min-width: 900px) {
+  .grid.cols-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.kicker {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.12);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
