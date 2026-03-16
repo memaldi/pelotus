@@ -2,57 +2,29 @@ import Link from "next/link";
 
 export default function AdminPage() {
   return (
-    <section className="grid cols-2">
-      <article className="card">
-        <h2>Leagues</h2>
-        <p>Create, edit and delete leagues.</p>
-        <Link className="link" href="/admin/leagues">Open leagues</Link>
-      </article>
-      <article className="card">
-        <h2>Seasons</h2>
-        <p>Create, edit and delete seasons within a league.</p>
-        <Link className="link" href="/admin/seasons">Open seasons</Link>
-      </article>
-      <article className="card">
-        <h2>Communities</h2>
-        <p>Create, edit and delete communities.</p>
-        <Link className="link" href="/admin/communities">Open communities</Link>
-      </article>
-      <article className="card">
-        <h2>Competitions</h2>
-        <p>Create, edit and delete competitions.</p>
-        <Link className="link" href="/admin/competitions">Open competitions</Link>
-      </article>
-      <article className="card">
-        <h2>Teams</h2>
-        <p>Create, edit and delete teams.</p>
-        <Link className="link" href="/admin/teams">Open teams</Link>
-      </article>
-      <article className="card">
-        <h2>Players</h2>
-        <p>Create, edit and delete players.</p>
-        <Link className="link" href="/admin/players">Open players</Link>
-      </article>
-      <article className="card">
-        <h2>Squad</h2>
-        <p>Assign players to teams within a season.</p>
-        <Link className="link" href="/admin/squad">Open squad</Link>
-      </article>
-      <article className="card">
-        <h2>Global Bets</h2>
-        <p>Manage global bets/results configuration by season.</p>
-        <Link className="link" href="/admin/global-bets">Open global bets</Link>
-      </article>
-      <article className="card">
-        <h2>Match Days</h2>
-        <p>Create, edit and delete match days.</p>
-        <Link className="link" href="/admin/match-days">Open match days</Link>
-      </article>
-      <article className="card">
-        <h2>Matches</h2>
-        <p>Create, edit and delete matches.</p>
-        <Link className="link" href="/admin/matches">Open matches</Link>
-      </article>
+    <section className="row g-3">
+      {[
+        { title: "Leagues", desc: "Define league categories that group seasons and competitions.", href: "/admin/leagues" },
+        { title: "Seasons", desc: "Set season timeline, labels, and league relationship.", href: "/admin/seasons" },
+        { title: "Communities", desc: "Create, edit and delete communities.", href: "/admin/communities" },
+        { title: "Competitions", desc: "Create, edit and delete competitions.", href: "/admin/competitions" },
+        { title: "Teams", desc: "Create, edit and delete teams.", href: "/admin/teams" },
+        { title: "Players", desc: "Create, edit and delete players.", href: "/admin/players" },
+        { title: "Squad", desc: "Enroll teams and build each squad with player roles.", href: "/admin/squad" },
+        { title: "Global Bets", desc: "Configure final outcomes used in season-wide betting.", href: "/admin/global-bets" },
+        { title: "Match Days", desc: "Create, edit and delete match days.", href: "/admin/match-days" },
+        { title: "Matches", desc: "Create, edit and delete matches.", href: "/admin/matches" },
+      ].map((item) => (
+        <article key={item.href} className="col-12 col-md-6">
+          <div className="card h-100 d-flex flex-column gap-2">
+            <h2>{item.title}</h2>
+            <p className="mb-2">{item.desc}</p>
+            <div className="mt-auto">
+              <Link className="btn btn-sm btn-warning" href={item.href}>Open {item.title.toLowerCase()}</Link>
+            </div>
+          </div>
+        </article>
+      ))}
     </section>
   );
 }

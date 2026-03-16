@@ -222,36 +222,46 @@ export function SquadCrud() {
       <h2>Squad Assignment</h2>
       <p>Select a season to manage its enrolled teams and player assignments.</p>
 
-      <div style={{ marginBottom: 16 }}>
-        <select
-          value={selectedSeasonId}
-          onChange={(e) => { setSelectedSeasonId(e.target.value === "" ? "" : Number(e.target.value)); setEnrollTeamId(""); }}
-        >
-          <option value="">— Pick a season —</option>
-          {seasons.map((s) => (
-            <option key={s.id} value={s.id}>{formatSeasonLabel(s)}</option>
-          ))}
-        </select>
+      <div className="row g-4 mb-4">
+        <div className="col-12 col-lg-8">
+          <label className="form-label">Season</label>
+          <select
+            className="form-select"
+            value={selectedSeasonId}
+            onChange={(e) => { setSelectedSeasonId(e.target.value === "" ? "" : Number(e.target.value)); setEnrollTeamId(""); }}
+          >
+            <option value="">Pick a season</option>
+            {seasons.map((s) => (
+              <option key={s.id} value={s.id}>{formatSeasonLabel(s)}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {selectedSeasonId !== "" && (
-        <div className="grid" style={{ marginBottom: 16 }}>
-          <select
-            value={enrollTeamId}
-            onChange={(e) => setEnrollTeamId(e.target.value === "" ? "" : Number(e.target.value))}
-          >
-            <option value="">— Add team to season —</option>
-            {availableToEnroll.map((t) => (
-              <option key={t.id} value={t.id}>{t.name}</option>
-            ))}
-          </select>
-          <button disabled={enrollTeamId === ""} onClick={() => void enrollTeam()}>
-            Add team
-          </button>
+        <div className="row g-2 mb-3 align-items-end">
+          <div className="col-12 col-lg-8">
+            <label className="form-label">Add team to season</label>
+            <select
+              className="form-select"
+              value={enrollTeamId}
+              onChange={(e) => setEnrollTeamId(e.target.value === "" ? "" : Number(e.target.value))}
+            >
+              <option value="">Choose a team</option>
+              {availableToEnroll.map((t) => (
+                <option key={t.id} value={t.id}>{t.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="col-12 col-lg-4 d-grid">
+            <button className="btn btn-warning" disabled={enrollTeamId === ""} onClick={() => void enrollTeam()}>
+              Add team
+            </button>
+          </div>
         </div>
       )}
 
-      <div className="grid" style={{ gap: 12 }}>
+      <div className="row g-4">
         {visibleTeams.map((tis) => {
           const form = getAddForm(tis.id);
           const flags = getTeamFlags(tis);
@@ -259,121 +269,160 @@ export function SquadCrud() {
           const available = allPlayers.filter((p) => !assignedIds.has(p.id));
 
           return (
-            <article key={tis.id} className="card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <strong>{tis.team.name}</strong>
-                <button onClick={() => void removeTeam(tis.id)}>Remove team</button>
-              </div>
-
-              <div className="grid" style={{ gap: 8, marginTop: 8 }}>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={flags.spanishLeague}
-                    onChange={(e) => setTeamFlag(tis.id, "spanishLeague", e.target.checked)}
-                  />{" "}
-                  Spanish League
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={flags.uefaLeague}
-                    onChange={(e) => setTeamFlag(tis.id, "uefaLeague", e.target.checked)}
-                  />{" "}
-                  UEFA League
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={flags.championsLeague}
-                    onChange={(e) => setTeamFlag(tis.id, "championsLeague", e.target.checked)}
-                  />{" "}
-                  Champions League
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={flags.kingsCup}
-                    onChange={(e) => setTeamFlag(tis.id, "kingsCup", e.target.checked)}
-                  />{" "}
-                  Kings Cup
-                </label>
-                <div>
-                  <button onClick={() => void saveTeamFlags(tis)}>Save team settings</button>
+            <article key={tis.id} className="col-12">
+              <div className="card">
+                <div className="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+                  <h3 className="mb-0">{tis.team.name}</h3>
+                  <button className="btn btn-outline-danger btn-sm" onClick={() => void removeTeam(tis.id)}>Remove team</button>
                 </div>
-              </div>
 
-              {tis.players.length > 0 ? (
-                <table style={{ width: "100%", borderCollapse: "collapse", margin: "8px 0" }}>
-                  <thead>
-                    <tr>
-                      <th style={{ textAlign: "left", paddingRight: 16 }}>Player</th>
-                      <th style={{ textAlign: "left", paddingRight: 16 }}>Position</th>
-                      <th />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tis.players.map((pe) => (
-                      <tr key={pe.id}>
-                        <td style={{ paddingRight: 16 }}>{pe.player.name}</td>
-                        <td style={{ paddingRight: 16 }}>
-                          <select
-                            value={getPlayerPosition(pe)}
-                            onChange={(e) =>
-                              setPlayerPositionState((prev) => ({ ...prev, [pe.id]: e.target.value }))
-                            }
-                          >
-                            {POSITIONS.map((pos) => (
-                              <option key={pos} value={pos}>{pos}</option>
-                            ))}
-                          </select>
-                        </td>
-                        <td>
-                          <button onClick={() => void savePlayerPosition(tis, pe)}>Save</button>{" "}
-                          <button onClick={() => void remove(tis.id, pe.playerId)}>Remove</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p style={{ margin: "8px 0" }}>No players assigned yet.</p>
-              )}
-
-              {available.length > 0 && (
-                <div className="grid" style={{ marginTop: 8 }}>
-                  <select
-                    multiple
-                    value={form.playerIds.map(String)}
-                    onChange={(e) => {
-                      const selected = Array.from(e.target.selectedOptions).map((opt) => Number(opt.value));
-                      setAddField(tis.id, "playerIds", selected);
-                    }}
-                  >
-                    {available.map((p) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-                  <small>Select one or more players (Ctrl/Cmd click).</small>
-                  <select
-                    value={form.position}
-                    onChange={(e) => setAddField(tis.id, "position", e.target.value)}
-                  >
-                    {POSITIONS.map((pos) => (
-                      <option key={pos} value={pos}>{pos}</option>
-                    ))}
-                  </select>
-                  <button disabled={form.playerIds.length === 0} onClick={() => void assign(tis)}>
-                    Assign selected
-                  </button>
+                <div className="row g-3 mt-3">
+                  <div className="col-12 col-md-6 col-lg-3">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={flags.spanishLeague}
+                        onChange={(e) => setTeamFlag(tis.id, "spanishLeague", e.target.checked)}
+                        id={`spanish-${tis.id}`}
+                      />
+                      <label className="form-check-label" htmlFor={`spanish-${tis.id}`}>
+                        Spanish League
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6 col-lg-3">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={flags.uefaLeague}
+                        onChange={(e) => setTeamFlag(tis.id, "uefaLeague", e.target.checked)}
+                        id={`uefa-${tis.id}`}
+                      />
+                      <label className="form-check-label" htmlFor={`uefa-${tis.id}`}>
+                        UEFA League
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6 col-lg-3">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={flags.championsLeague}
+                        onChange={(e) => setTeamFlag(tis.id, "championsLeague", e.target.checked)}
+                        id={`champions-${tis.id}`}
+                      />
+                      <label className="form-check-label" htmlFor={`champions-${tis.id}`}>
+                        Champions League
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-12 col-md-6 col-lg-3">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={flags.kingsCup}
+                        onChange={(e) => setTeamFlag(tis.id, "kingsCup", e.target.checked)}
+                        id={`kings-${tis.id}`}
+                      />
+                      <label className="form-check-label" htmlFor={`kings-${tis.id}`}>
+                        Kings Cup
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-12 d-flex justify-content-end">
+                    <button className="btn btn-warning btn-sm" onClick={() => void saveTeamFlags(tis)}>Save team settings</button>
+                  </div>
                 </div>
-              )}
+
+                {tis.players.length > 0 ? (
+                  <div className="table-responsive mt-3">
+                    <table className="table align-middle mb-0">
+                      <thead>
+                        <tr>
+                          <th>Player</th>
+                          <th style={{ minWidth: 180 }}>Position</th>
+                          <th style={{ minWidth: 180 }}>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {tis.players.map((pe) => (
+                          <tr key={pe.id}>
+                            <td>{pe.player.name}</td>
+                            <td>
+                              <select
+                                className="form-select form-select-sm"
+                                value={getPlayerPosition(pe)}
+                                onChange={(e) =>
+                                  setPlayerPositionState((prev) => ({ ...prev, [pe.id]: e.target.value }))
+                                }
+                              >
+                                {POSITIONS.map((pos) => (
+                                  <option key={pos} value={pos}>{pos}</option>
+                                ))}
+                              </select>
+                            </td>
+                            <td className="d-flex gap-2">
+                              <button className="btn btn-warning btn-sm" onClick={() => void savePlayerPosition(tis, pe)}>Save</button>
+                              <button className="btn btn-outline-danger btn-sm" onClick={() => void remove(tis.id, pe.playerId)}>Remove</button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p className="mt-3 mb-0">No players assigned yet.</p>
+                )}
+
+                {available.length > 0 && (
+                  <div className="row g-2 mt-3">
+                    <div className="col-12 col-lg-6">
+                      <label className="form-label">Available players</label>
+                      <select
+                        className="form-select"
+                        multiple
+                        value={form.playerIds.map(String)}
+                        onChange={(e) => {
+                          const selected = Array.from(e.target.selectedOptions).map((opt) => Number(opt.value));
+                          setAddField(tis.id, "playerIds", selected);
+                        }}
+                      >
+                        {available.map((p) => (
+                          <option key={p.id} value={p.id}>{p.name}</option>
+                        ))}
+                      </select>
+                      <small>Select one or more players (Ctrl/Cmd click).</small>
+                    </div>
+                    <div className="col-12 col-md-6 col-lg-3">
+                      <label className="form-label">Position</label>
+                      <select
+                        className="form-select"
+                        value={form.position}
+                        onChange={(e) => setAddField(tis.id, "position", e.target.value)}
+                      >
+                        {POSITIONS.map((pos) => (
+                          <option key={pos} value={pos}>{pos}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="col-12 col-md-6 col-lg-3 d-grid align-self-end">
+                      <button className="btn btn-warning" disabled={form.playerIds.length === 0} onClick={() => void assign(tis)}>
+                        Assign selected
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </article>
           );
         })}
       </div>
 
-      {status ? <p>{status}</p> : null}
+      {status ? <p className="mt-3 mb-0">{status}</p> : null}
     </section>
   );
 }

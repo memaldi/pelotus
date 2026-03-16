@@ -20,19 +20,19 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <section className="card" style={{ marginBottom: 16 }}>
         <span className="kicker">Admin</span>
         <h1>Administration</h1>
-        <p style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-          <Link className="link" href="/admin">Overview</Link>
-          <Link className="link" href="/admin/leagues">Leagues</Link>
-          <Link className="link" href="/admin/seasons">Seasons</Link>
-          <Link className="link" href="/admin/communities">Communities</Link>
-          <Link className="link" href="/admin/competitions">Competitions</Link>
-          <Link className="link" href="/admin/teams">Teams</Link>
-          <Link className="link" href="/admin/players">Players</Link>
-          <Link className="link" href="/admin/squad">Squad</Link>
-          <Link className="link" href="/admin/global-bets">Global Bets</Link>
-          <Link className="link" href="/admin/match-days">Match Days</Link>
-          <Link className="link" href="/admin/matches">Matches</Link>
-        </p>
+        <nav className="nav nav-pills gap-2 admin-nav" aria-label="Admin navigation">
+          <Link className="nav-link link" href="/admin">Overview</Link>
+          <Link className="nav-link link" href="/admin/leagues">Leagues</Link>
+          <Link className="nav-link link" href="/admin/seasons">Seasons</Link>
+          <Link className="nav-link link" href="/admin/communities">Communities</Link>
+          <Link className="nav-link link" href="/admin/competitions">Competitions</Link>
+          <Link className="nav-link link" href="/admin/teams">Teams</Link>
+          <Link className="nav-link link" href="/admin/players">Players</Link>
+          <Link className="nav-link link" href="/admin/squad">Squad</Link>
+          <Link className="nav-link link" href="/admin/global-bets">Global Bets</Link>
+          <Link className="nav-link link" href="/admin/match-days">Match Days</Link>
+          <Link className="nav-link link" href="/admin/matches">Matches</Link>
+        </nav>
       </section>
       {children}
     </main>

@@ -1,5 +1,8 @@
 {
   "/api/backend/[...path]/route": "app/api/backend/[...path]/route.js",
+  "/page": "app/page.js",
   "/admin/page": "app/admin/page.js",
-  "/admin/global-bets/page": "app/admin/global-bets/page.js"
+  "/admin/squad/page": "app/admin/squad/page.js",
+  "/admin/leagues/page": "app/admin/leagues/page.js",
+  "/admin/seasons/page": "app/admin/seasons/page.js"
 }

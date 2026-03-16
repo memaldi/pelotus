@@ -180,8 +180,11 @@ export function GlobalBetsCrud() {
       <h2>Global Bets Management</h2>
       <p>Configure season global bet outcomes and positions.</p>
 
-      <div className="grid" style={{ marginBottom: 16 }}>
-        <select
+      <div className="row g-4 mb-4">
+        <div className="col-12 col-lg-6">
+          <label className="form-label">Season</label>
+          <select
+            className="form-select"
           value={selectedSeasonId}
           onChange={(e) => {
             const id = e.target.value === "" ? "" : Number(e.target.value);
@@ -197,18 +200,26 @@ export function GlobalBetsCrud() {
           {seasons.map((s) => (
             <option key={s.id} value={s.id}>{formatSeasonLabel(s)}</option>
           ))}
-        </select>
+          </select>
+        </div>
 
-        <input
-          type="datetime-local"
-          value={form.deadline}
-          onChange={(e) => setForm((prev) => ({ ...prev, deadline: e.target.value }))}
-        />
+        <div className="col-12 col-lg-6">
+          <label className="form-label">Deadline</label>
+          <input
+            className="form-control"
+            type="datetime-local"
+            value={form.deadline}
+            onChange={(e) => setForm((prev) => ({ ...prev, deadline: e.target.value }))}
+          />
+        </div>
       </div>
 
       {selectedSeasonId !== "" ? (
-        <div className="grid" style={{ gap: 12 }}>
-          <select
+        <div className="row g-4">
+          <div className="col-12 col-md-6">
+            <label className="form-label">Winter champion</label>
+            <select
+            className="form-select"
             value={form.winterChampionId}
             onChange={(e) => setForm((prev) => ({ ...prev, winterChampionId: e.target.value === "" ? "" : Number(e.target.value) }))}
           >
@@ -216,9 +227,13 @@ export function GlobalBetsCrud() {
             {seasonTeams.map((t) => (
               <option key={t.id} value={t.id}>{t.name}</option>
             ))}
-          </select>
+            </select>
+          </div>
 
-          <select
+          <div className="col-12 col-md-6">
+            <label className="form-label">Kings Cup champion</label>
+            <select
+            className="form-select"
             value={form.kingsCupChampionId}
             onChange={(e) => setForm((prev) => ({ ...prev, kingsCupChampionId: e.target.value === "" ? "" : Number(e.target.value) }))}
           >
@@ -226,9 +241,13 @@ export function GlobalBetsCrud() {
             {seasonTeams.map((t) => (
               <option key={t.id} value={t.id}>{t.name}</option>
             ))}
-          </select>
+            </select>
+          </div>
 
-          <select
+          <div className="col-12 col-md-6">
+            <label className="form-label">League champion</label>
+            <select
+            className="form-select"
             value={form.leagueChampionId}
             onChange={(e) => setForm((prev) => ({ ...prev, leagueChampionId: e.target.value === "" ? "" : Number(e.target.value) }))}
           >
@@ -236,9 +255,13 @@ export function GlobalBetsCrud() {
             {seasonTeams.map((t) => (
               <option key={t.id} value={t.id}>{t.name}</option>
             ))}
-          </select>
+            </select>
+          </div>
 
-          <select
+          <div className="col-12 col-md-6">
+            <label className="form-label">UEFA champion</label>
+            <select
+            className="form-select"
             value={form.uefaChampionId}
             onChange={(e) => setForm((prev) => ({ ...prev, uefaChampionId: e.target.value === "" ? "" : Number(e.target.value) }))}
           >
@@ -246,9 +269,13 @@ export function GlobalBetsCrud() {
             {seasonTeams.map((t) => (
               <option key={t.id} value={t.id}>{t.name}</option>
             ))}
-          </select>
+            </select>
+          </div>
 
-          <select
+          <div className="col-12 col-md-6">
+            <label className="form-label">Champions League champion</label>
+            <select
+            className="form-select"
             value={form.championsLeagueChampionId}
             onChange={(e) => setForm((prev) => ({ ...prev, championsLeagueChampionId: e.target.value === "" ? "" : Number(e.target.value) }))}
           >
@@ -256,9 +283,13 @@ export function GlobalBetsCrud() {
             {seasonTeams.map((t) => (
               <option key={t.id} value={t.id}>{t.name}</option>
             ))}
-          </select>
+            </select>
+          </div>
 
-          <select
+          <div className="col-12 col-md-6">
+            <label className="form-label">Best goalkeeper</label>
+            <select
+            className="form-select"
             value={form.bestGoalkeeperId}
             onChange={(e) => setForm((prev) => ({ ...prev, bestGoalkeeperId: e.target.value === "" ? "" : Number(e.target.value) }))}
           >
@@ -266,11 +297,13 @@ export function GlobalBetsCrud() {
             {goalkeepers.map((p) => (
               <option key={p.id} value={p.id}>{p.name}</option>
             ))}
-          </select>
+            </select>
+          </div>
 
-          <label>
-            Champions positions
+          <div className="col-12 col-lg-4">
+            <label className="form-label">Champions positions</label>
             <select
+              className="form-select"
               multiple
               value={form.championsPositionIds.map(String)}
               onChange={(e) => updateMulti("championsPositionIds", e.target.selectedOptions)}
@@ -279,11 +312,12 @@ export function GlobalBetsCrud() {
                 <option key={t.id} value={t.id}>{t.name}</option>
               ))}
             </select>
-          </label>
+          </div>
 
-          <label>
-            UEFA positions
+          <div className="col-12 col-lg-4">
+            <label className="form-label">UEFA positions</label>
             <select
+              className="form-select"
               multiple
               value={form.uefaPositionIds.map(String)}
               onChange={(e) => updateMulti("uefaPositionIds", e.target.selectedOptions)}
@@ -292,11 +326,12 @@ export function GlobalBetsCrud() {
                 <option key={t.id} value={t.id}>{t.name}</option>
               ))}
             </select>
-          </label>
+          </div>
 
-          <label>
-            Demotion positions
+          <div className="col-12 col-lg-4">
+            <label className="form-label">Demotion positions</label>
             <select
+              className="form-select"
               multiple
               value={form.demotionPositionIds.map(String)}
               onChange={(e) => updateMulti("demotionPositionIds", e.target.selectedOptions)}
@@ -305,9 +340,11 @@ export function GlobalBetsCrud() {
                 <option key={t.id} value={t.id}>{t.name}</option>
               ))}
             </select>
-          </label>
+          </div>
 
-          <button onClick={() => void save()}>Save global bets/results</button>
+          <div className="col-12 d-flex justify-content-end">
+            <button className="btn btn-warning" onClick={() => void save()}>Save global bets/results</button>
+          </div>
         </div>
       ) : null}
 

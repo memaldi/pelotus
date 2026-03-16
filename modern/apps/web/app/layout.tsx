@@ -15,17 +15,25 @@ export default async function RootLayout({
 
   return (
     <html lang="es">
+      <head>
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body>
-        <header style={{ borderBottom: "1px solid #e5ddcc", background: "#fff9ee" }}>
-          <div style={{ maxWidth: 1000, margin: "0 auto", padding: "12px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Link className="link" href="/">Pelotus</Link>
+        <header className="topbar">
+          <div className="topbar-inner">
+            <Link className="brand link" href="/">Pelotus</Link>
             {user ? (
-              <nav style={{ display: "flex", gap: 12 }}>
+              <nav className="topbar-nav">
                 <span>Signed in as {user.username}</span>
                 <Link className="link" href="/logout">Logout</Link>
               </nav>
             ) : (
-              <nav style={{ display: "flex", gap: 12 }}>
+              <nav className="topbar-nav">
                 <Link className="link" href="/login">Login</Link>
                 <Link className="link" href="/join">Create account</Link>
               </nav>
