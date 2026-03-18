@@ -6,3 +6,4 @@
 .project
 .pydevproject
 .DS_Store
+modern/node_modules
