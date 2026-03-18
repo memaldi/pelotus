@@ -1,54 +1,73 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { ArrowRight, Clock } from "lucide-react";
+import { fetchMatchDay, fetchScorers } from "@/lib/api";
+import { getSessionUser } from "@/lib/session";
 import { MatchDayBetEditor } from "@/components/MatchDayBetEditor";
 import { ScorersEditor } from "@/components/ScorersEditor";
-import { fetchMatchDay, fetchScorers } from "@/lib/api";
-import { requireSessionUser } from "@/lib/session";
+import { Badge } from "@/components/ui/badge";
 
-type Props = { params: Promise<{ competitionId: string; matchDayId: string }> };
+type Props = {
+  params: Promise<{ competitionId: string; matchDayId: string }>;
+};
 
 export default async function MatchDayPage({ params }: Props) {
   const routeParams = await params;
   const competitionId = Number(routeParams.competitionId);
   const matchDayId = Number(routeParams.matchDayId);
-  await requireSessionUser();
+  const user = await getSessionUser();
+  if (!user) redirect("/login");
 
   const [matchDayData, scorersData] = await Promise.all([
     fetchMatchDay(competitionId, matchDayId),
     fetchScorers(competitionId, matchDayId),
   ]);
 
+  const startDate: string = matchDayData.matchDay.startDate;
+  const deadlinePassed =
+    Date.now() > new Date(startDate).getTime() - 3 * 60 * 60 * 1000;
+
   return (
-    <main>
-      <section className="card">
-        <span className="kicker">Match Day</span>
-        <h1>Match day {matchDayData.matchDay.number}</h1>
-        <p>
-          <Link className="link" href={`/competitions/${competitionId}/match-days/${matchDayId}/ranking`}>
-            View ranking
+    <div className="space-y-4">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-2xl font-semibold">
+          Match Day {matchDayData.matchDay.number}
+        </h1>
+        <div className="flex items-center gap-3">
+          {deadlinePassed ? (
+            <Badge variant="destructive">Deadline passed</Badge>
+          ) : (
+            <Badge className="bg-green-500 text-white">Open for bets</Badge>
+          )}
+          <Link
+            href={`/competitions/${competitionId}/match-days/${matchDayId}/ranking`}
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:underline"
+          >
+            Ranking <ArrowRight className="size-3" />
           </Link>
-        </p>
-      </section>
+        </div>
+      </div>
 
-      <section style={{ marginTop: 16 }}>
-        <MatchDayBetEditor
-          competitionId={competitionId}
-          matchDayId={matchDayId}
-          initialBets={matchDayData.bets}
-        />
-      </section>
-
-      <section className="card" style={{ marginTop: 16 }}>
-        <h2>Scorers (current selection)</h2>
-        {scorersData.goalsBet ? (
-          <ul>
-            <li>Defense: {scorersData.goalsBet.defenseName ?? "-"}</li>
-            <li>Midfield: {scorersData.goalsBet.midfieldName ?? "-"}</li>
-            <li>Forward: {scorersData.goalsBet.forwardName ?? "-"}</li>
-          </ul>
-        ) : (
-          <p>No scorer picks yet.</p>
+      <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+        <Clock className="size-3" />
+        {new Date(startDate).toLocaleDateString("en-GB", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
+        {!deadlinePassed && (
+          <span className="ml-1 text-xs">— deadline 3 h before kick-off</span>
         )}
-      </section>
+      </p>
+
+      <MatchDayBetEditor
+        competitionId={competitionId}
+        matchDayId={matchDayId}
+        initialBets={matchDayData.bets}
+        deadlinePassed={deadlinePassed}
+      />
 
       <ScorersEditor
         competitionId={competitionId}
@@ -63,7 +82,8 @@ export default async function MatchDayPage({ params }: Props) {
               }
             : null
         }
+        deadlinePassed={deadlinePassed}
       />
-    </main>
+    </div>
   );
 }

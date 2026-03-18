@@ -537,6 +537,29 @@ let AdminService = class AdminService {
         });
         return { playerGoal };
     }
+    async getPlayerGoalsForMatchDay(matchDayId) {
+        const matchDay = await this.db.matchDay.findUnique({ where: { id: matchDayId } });
+        if (!matchDay) {
+            throw new common_1.NotFoundException("Match day not found");
+        }
+        const playerGoals = await this.db.playerGoal.findMany({
+            where: { matchDayId },
+            include: {
+                player: true,
+                matchDay: true,
+            },
+            orderBy: [{ goals: "desc" }, { player: { name: "asc" } }],
+        });
+        return { playerGoals };
+    }
+    async deletePlayerGoal(playerGoalId) {
+        const playerGoal = await this.db.playerGoal.findUnique({ where: { id: playerGoalId } });
+        if (!playerGoal) {
+            throw new common_1.NotFoundException("Player goal record not found");
+        }
+        await this.db.playerGoal.delete({ where: { id: playerGoalId } });
+        return { deleted: true };
+    }
     async upsertGlobalResults(seasonId, payload) {
         const season = await this.db.season.findUnique({ where: { id: seasonId } });
         if (!season) {

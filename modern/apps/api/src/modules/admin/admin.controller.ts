@@ -405,6 +405,24 @@ export class AdminController {
     return this.adminService.setPlayerGoals(matchDayId, payload);
   }
 
+  @Get("match-days/:matchDayId/player-goals")
+  async getPlayerGoalsForMatchDay(
+    @Headers("authorization") authorization: string | undefined,
+    @Param("matchDayId", ParseIntPipe) matchDayId: number,
+  ) {
+    await this.authService.requirePlatformAdminFromAuthorizationHeader(authorization);
+    return this.adminService.getPlayerGoalsForMatchDay(matchDayId);
+  }
+
+  @Delete("player-goals/:playerGoalId")
+  async deletePlayerGoal(
+    @Headers("authorization") authorization: string | undefined,
+    @Param("playerGoalId", ParseIntPipe) playerGoalId: number,
+  ) {
+    await this.authService.requirePlatformAdminFromAuthorizationHeader(authorization);
+    return this.adminService.deletePlayerGoal(playerGoalId);
+  }
+
   @Put("seasons/:seasonId/global-results")
   async upsertGlobalResults(
     @Headers("authorization") authorization: string | undefined,

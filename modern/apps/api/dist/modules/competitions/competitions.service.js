@@ -24,6 +24,28 @@ let CompetitionsService = class CompetitionsService {
     formatSeasonLabel(season) {
         return season.league ? `${season.league.name} / ${season.name}` : season.name;
     }
+    async getMyCompetitions(userId) {
+        const administrations = await this.db.userAdministration.findMany({
+            where: { userId },
+            include: {
+                competition: {
+                    include: {
+                        community: true,
+                        season: { include: { league: true } },
+                    },
+                },
+            },
+            orderBy: { id: "asc" },
+        });
+        return {
+            competitions: administrations.map((a) => ({
+                id: a.competition.id,
+                communityName: a.competition.community.name,
+                seasonName: this.formatSeasonLabel(a.competition.season),
+                isAdmin: a.isAdmin,
+            })),
+        };
+    }
     async getCompetitionOrThrow(competitionId) {
         const competition = await this.db.competition.findUnique({
             where: { id: competitionId },

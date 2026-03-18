@@ -189,6 +189,14 @@ let AdminController = class AdminController {
         await this.authService.requirePlatformAdminFromAuthorizationHeader(authorization);
         return this.adminService.setPlayerGoals(matchDayId, payload);
     }
+    async getPlayerGoalsForMatchDay(authorization, matchDayId) {
+        await this.authService.requirePlatformAdminFromAuthorizationHeader(authorization);
+        return this.adminService.getPlayerGoalsForMatchDay(matchDayId);
+    }
+    async deletePlayerGoal(authorization, playerGoalId) {
+        await this.authService.requirePlatformAdminFromAuthorizationHeader(authorization);
+        return this.adminService.deletePlayerGoal(playerGoalId);
+    }
     async upsertGlobalResults(authorization, seasonId, payload) {
         await this.authService.requirePlatformAdminFromAuthorizationHeader(authorization);
         return this.adminService.upsertGlobalResults(seasonId, payload);
@@ -541,6 +549,22 @@ __decorate([
     __metadata("design:paramtypes", [Object, Number, Object]),
     __metadata("design:returntype", Promise)
 ], AdminController.prototype, "setPlayerGoals", null);
+__decorate([
+    (0, common_1.Get)("match-days/:matchDayId/player-goals"),
+    __param(0, (0, common_1.Headers)("authorization")),
+    __param(1, (0, common_1.Param)("matchDayId", common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "getPlayerGoalsForMatchDay", null);
+__decorate([
+    (0, common_1.Delete)("player-goals/:playerGoalId"),
+    __param(0, (0, common_1.Headers)("authorization")),
+    __param(1, (0, common_1.Param)("playerGoalId", common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number]),
+    __metadata("design:returntype", Promise)
+], AdminController.prototype, "deletePlayerGoal", null);
 __decorate([
     (0, common_1.Put)("seasons/:seasonId/global-results"),
     __param(0, (0, common_1.Headers)("authorization")),

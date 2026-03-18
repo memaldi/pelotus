@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, CalendarDays, ShieldAlert, Swords, Trophy, Users } from "lucide-react";
+import { ArrowLeft, Award, CalendarDays, ShieldAlert, Swords, Trophy, Users } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -183,6 +183,12 @@ export function LeagueWorkspace({ leagueId }: { leagueId: number }) {
               <Link href={`/admin/matches?leagueId=${selectedLeague.id}`}>
                 <Swords className="mr-2 size-4" />
                 Matches
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="justify-start">
+              <Link href="/admin/player-goals">
+                <Award className="mr-2 size-4" />
+                Player Goals
               </Link>
             </Button>
           </CardContent>

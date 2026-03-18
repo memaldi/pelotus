@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { notFound } from "next/navigation";
 
 const API_BASE_URL =
   process.env.INTERNAL_API_BASE_URL ??
@@ -55,6 +56,23 @@ export async function fetchUserMatchDayPoints(params: {
   return (await res.json()) as { points: number };
 }
 
+export async function fetchUserCompetitions() {
+  const headers = await createAuthHeaders();
+  const res = await fetch(`${API_BASE_URL}/api/competitions/mine`, {
+    cache: "no-store",
+    headers,
+  });
+  if (!res.ok) throw new Error(`API request failed with ${res.status}`);
+  return res.json() as Promise<{
+    competitions: {
+      id: number;
+      communityName: string;
+      seasonName: string;
+      isAdmin: boolean;
+    }[];
+  }>;
+}
+
 export async function fetchDashboard(competitionId: number) {
   const headers = await createAuthHeaders();
   const res = await fetch(`${API_BASE_URL}/api/competitions/${competitionId}/dashboard`, {
@@ -62,6 +80,7 @@ export async function fetchDashboard(competitionId: number) {
     headers,
   });
 
+  if (res.status === 404) notFound();
   if (!res.ok) {
     throw new Error(`API request failed with ${res.status}`);
   }
@@ -76,6 +95,7 @@ export async function fetchMatchDays(competitionId: number) {
     headers,
   });
 
+  if (res.status === 404) notFound();
   if (!res.ok) {
     throw new Error(`API request failed with ${res.status}`);
   }
@@ -90,6 +110,7 @@ export async function fetchMatchDay(competitionId: number, matchDayId: number) {
     headers,
   });
 
+  if (res.status === 404) notFound();
   if (!res.ok) {
     throw new Error(`API request failed with ${res.status}`);
   }
@@ -118,6 +139,7 @@ export async function fetchGlobalBets(competitionId: number) {
     headers,
   });
 
+  if (res.status === 404) notFound();
   if (!res.ok) {
     throw new Error(`API request failed with ${res.status}`);
   }
@@ -132,6 +154,7 @@ export async function fetchMatchDayRanking(competitionId: number, matchDayId: nu
     { cache: "no-store", headers },
   );
 
+  if (res.status === 404) notFound();
   if (!res.ok) {
     throw new Error(`API request failed with ${res.status}`);
   }
@@ -146,6 +169,7 @@ export async function fetchGlobalRanking(competitionId: number) {
     headers,
   });
 
+  if (res.status === 404) notFound();
   if (!res.ok) {
     throw new Error(`API request failed with ${res.status}`);
   }

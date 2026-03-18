@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { ComponentType } from "react";
 import {
   Blocks,
+  Award,
   CalendarDays,
   Crown,
   Gauge,
@@ -68,6 +69,7 @@ const navGroups: NavGroup[] = [
     items: [
       { href: "/admin/match-days", label: "Match Days", icon: CalendarDays },
       { href: "/admin/matches", label: "Matches", icon: Swords },
+      { href: "/admin/player-goals", label: "Player Goals", icon: Award },
     ],
   },
 ];

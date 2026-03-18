@@ -7,6 +7,9 @@ export declare class CompetitionsController {
     private readonly competitionsService;
     private readonly authService;
     constructor(competitionsService: CompetitionsService, authService: AuthService);
+    getMyCompetitions(authorization?: string): Promise<{
+        competitions: any;
+    }>;
     getDashboard(competitionId: number, authorization?: string): Promise<{
         competition: {
             id: any;

@@ -219,6 +219,12 @@ export declare class AdminService {
     }): Promise<{
         playerGoal: any;
     }>;
+    getPlayerGoalsForMatchDay(matchDayId: number): Promise<{
+        playerGoals: any;
+    }>;
+    deletePlayerGoal(playerGoalId: number): Promise<{
+        deleted: boolean;
+    }>;
     upsertGlobalResults(seasonId: number, payload: {
         deadline: string;
         winterChampionId?: number | null;

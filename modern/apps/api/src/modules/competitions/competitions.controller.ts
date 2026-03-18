@@ -20,6 +20,15 @@ export class CompetitionsController {
     private readonly authService: AuthService,
   ) {}
 
+  @Get("mine")
+  getMyCompetitions(@Headers("authorization") authorization?: string) {
+    const userId =
+      this.authService.requireSessionFromAuthorizationHeader(
+        authorization,
+      ).user.id;
+    return this.competitionsService.getMyCompetitions(userId);
+  }
+
   @Get(":competitionId/dashboard")
   getDashboard(
     @Param("competitionId", ParseIntPipe) competitionId: number,

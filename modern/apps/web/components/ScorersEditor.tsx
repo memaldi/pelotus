@@ -1,6 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { Shield, Target, Zap, Save } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type Candidate = { id: number; name: string };
 
@@ -17,83 +30,100 @@ type Props = {
     midfieldId: number | null;
     forwardId: number | null;
   } | null;
+  deadlinePassed: boolean;
 };
 
-export function ScorersEditor({
-  competitionId,
-  matchDayId,
-  candidates,
-  initial,
-}: Props) {
-  const [defenseId, setDefenseId] = useState<number | "">(initial?.defenseId ?? "");
-  const [midfieldId, setMidfieldId] = useState<number | "">(initial?.midfieldId ?? "");
-  const [forwardId, setForwardId] = useState<number | "">(initial?.forwardId ?? "");
-  const [status, setStatus] = useState<string>("");
+const POSITIONS = [
+  { key: "defense", label: "Defender", icon: Shield, multiplier: "×5", color: "text-blue-500" },
+  { key: "midfield", label: "Midfielder", icon: Zap, multiplier: "×3", color: "text-amber-500" },
+  { key: "forward", label: "Forward", icon: Target, multiplier: "×1", color: "text-red-500" },
+] as const;
+
+export function ScorersEditor({ competitionId, matchDayId, candidates, initial, deadlinePassed }: Props) {
+  const [defenseId, setDefenseId] = useState<string>(initial?.defenseId ? String(initial.defenseId) : "");
+  const [midfieldId, setMidfieldId] = useState<string>(initial?.midfieldId ? String(initial.midfieldId) : "");
+  const [forwardId, setForwardId] = useState<string>(initial?.forwardId ? String(initial.forwardId) : "");
+  const [status, setStatus] = useState("");
+
+  const candidateMap = {
+    defense: candidates.defenders,
+    midfield: candidates.midfielders,
+    forward: candidates.forwards,
+  };
+  const valueMap = { defense: defenseId, midfield: midfieldId, forward: forwardId };
+  const setterMap = { defense: setDefenseId, midfield: setMidfieldId, forward: setForwardId };
 
   async function save() {
     setStatus("Saving...");
-    const payload = {
-      defenseId: defenseId === "" ? null : defenseId,
-      midfieldId: midfieldId === "" ? null : midfieldId,
-      forwardId: forwardId === "" ? null : forwardId,
-    };
-
     const res = await fetch(
       `/api/backend/api/competitions/${competitionId}/match-days/${matchDayId}/scorers`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          defenseId: defenseId ? Number(defenseId) : null,
+          midfieldId: midfieldId ? Number(midfieldId) : null,
+          forwardId: forwardId ? Number(forwardId) : null,
+        }),
       },
     );
-
-    setStatus(res.ok ? "Saved" : "Save failed");
+    setStatus(res.ok ? "Scorer picks saved" : "Failed to save picks");
   }
 
   return (
-    <div className="card" style={{ marginTop: 16 }}>
-      <h2>Edit Scorers</h2>
-
-      <label>
-        Defense
-        <select value={defenseId} onChange={(e) => setDefenseId(e.target.value === "" ? "" : Number(e.target.value))}>
-          <option value="">-</option>
-          {candidates.defenders.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name}
-            </option>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between">
+          <span>Scorer Picks</span>
+          {deadlinePassed && <Badge variant="destructive">Deadline passed — read only</Badge>}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-sm text-muted-foreground">
+          Pick one player per position who you think will score. Goals count: defender ×5 pts, midfielder ×3 pts, forward ×1 pt.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {POSITIONS.map(({ key, label, icon: Icon, multiplier, color }) => (
+            <div key={key} className="space-y-2">
+              <Label className="flex items-center gap-1.5">
+                <Icon className={`size-4 ${color}`} />
+                {label}
+                <span className="ml-auto text-xs text-muted-foreground">{multiplier}</span>
+              </Label>
+              <Select
+                value={valueMap[key]}
+                onValueChange={setterMap[key]}
+                disabled={deadlinePassed}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Pick player..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">— none —</SelectItem>
+                  {candidateMap[key].map((p) => (
+                    <SelectItem key={p.id} value={String(p.id)}>
+                      {p.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           ))}
-        </select>
-      </label>
+        </div>
 
-      <label style={{ marginLeft: 12 }}>
-        Midfield
-        <select value={midfieldId} onChange={(e) => setMidfieldId(e.target.value === "" ? "" : Number(e.target.value))}>
-          <option value="">-</option>
-          {candidates.midfielders.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </label>
+        {!deadlinePassed && (
+          <Button onClick={save} disabled={status === "Saving..."} className="w-full sm:w-auto">
+            <Save className="mr-2 size-4" />
+            {status === "Saving..." ? "Saving..." : "Save picks"}
+          </Button>
+        )}
 
-      <label style={{ marginLeft: 12 }}>
-        Forward
-        <select value={forwardId} onChange={(e) => setForwardId(e.target.value === "" ? "" : Number(e.target.value))}>
-          <option value="">-</option>
-          {candidates.forwards.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.name}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <div>
-        <button onClick={save} style={{ marginTop: 12 }}>Save scorers</button>
-        {status ? <p>{status}</p> : null}
-      </div>
-    </div>
+        {status && status !== "Saving..." && (
+          <Alert variant={status.includes("Failed") ? "destructive" : "default"}>
+            <AlertDescription>{status}</AlertDescription>
+          </Alert>
+        )}
+      </CardContent>
+    </Card>
   );
 }

@@ -217,6 +217,12 @@ export declare class AdminController {
     }): Promise<{
         playerGoal: any;
     }>;
+    getPlayerGoalsForMatchDay(authorization: string | undefined, matchDayId: number): Promise<{
+        playerGoals: any;
+    }>;
+    deletePlayerGoal(authorization: string | undefined, playerGoalId: number): Promise<{
+        deleted: boolean;
+    }>;
     upsertGlobalResults(authorization: string | undefined, seasonId: number, payload: {
         deadline: string;
         winterChampionId?: number | null;

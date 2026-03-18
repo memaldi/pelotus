@@ -21,6 +21,10 @@ let CompetitionsController = class CompetitionsController {
         this.competitionsService = competitionsService;
         this.authService = authService;
     }
+    getMyCompetitions(authorization) {
+        const userId = this.authService.requireSessionFromAuthorizationHeader(authorization).user.id;
+        return this.competitionsService.getMyCompetitions(userId);
+    }
     getDashboard(competitionId, authorization) {
         const userId = this.authService.requireSessionFromAuthorizationHeader(authorization).user.id;
         return this.competitionsService.getDashboard(competitionId, userId);
@@ -60,6 +64,13 @@ let CompetitionsController = class CompetitionsController {
     }
 };
 exports.CompetitionsController = CompetitionsController;
+__decorate([
+    (0, common_1.Get)("mine"),
+    __param(0, (0, common_1.Headers)("authorization")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], CompetitionsController.prototype, "getMyCompetitions", null);
 __decorate([
     (0, common_1.Get)(":competitionId/dashboard"),
     __param(0, (0, common_1.Param)("competitionId", common_1.ParseIntPipe)),

@@ -9,6 +9,9 @@ export declare class CompetitionsService {
     constructor(prisma: PrismaService, scoringService: ScoringService);
     private get db();
     private formatSeasonLabel;
+    getMyCompetitions(userId: number): Promise<{
+        competitions: any;
+    }>;
     getCompetitionOrThrow(competitionId: number): Promise<any>;
     getMatchDays(competitionId: number): Promise<{
         competition: {
