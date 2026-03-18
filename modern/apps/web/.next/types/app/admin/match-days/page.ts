@@ -1,8 +1,8 @@
-// File: /workspace/apps/web/app/admin/global-bets/page.tsx
-import * as entry from '../../../../../app/admin/global-bets/page.js'
+// File: /workspace/apps/web/app/admin/match-days/page.tsx
+import * as entry from '../../../../../app/admin/match-days/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
-type TEntry = typeof import('../../../../../app/admin/global-bets/page.js')
+type TEntry = typeof import('../../../../../app/admin/match-days/page.js')
 
 type SegmentParams<T extends Object = any> = T extends Record<string, any>
   ? { [K in keyof T]: T[K] extends string ? string | string[] | undefined : never }
