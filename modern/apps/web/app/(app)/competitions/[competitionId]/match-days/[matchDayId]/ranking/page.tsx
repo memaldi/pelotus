@@ -1,12 +1,13 @@
 import { fetchMatchDayRanking } from "@/lib/api";
 import { requireSessionUser } from "@/lib/session";
 
-type Props = { params: { competitionId: string; matchDayId: string } };
+type Props = { params: Promise<{ competitionId: string; matchDayId: string }> };
 
 export default async function MatchDayRankingPage({ params }: Props) {
   await requireSessionUser();
-  const competitionId = Number(params.competitionId);
-  const matchDayId = Number(params.matchDayId);
+  const routeParams = await params;
+  const competitionId = Number(routeParams.competitionId);
+  const matchDayId = Number(routeParams.matchDayId);
   const data = await fetchMatchDayRanking(competitionId, matchDayId);
 
   return (

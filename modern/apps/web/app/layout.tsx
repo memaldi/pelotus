@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getSessionUser } from "@/lib/session";
+import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
   title: "Pelotus Modern",
@@ -15,27 +16,19 @@ export default async function RootLayout({
 
   return (
     <html lang="es">
-      <head>
-        <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-          crossOrigin="anonymous"
-        />
-      </head>
-      <body>
-        <header className="topbar">
-          <div className="topbar-inner">
-            <Link className="brand link" href="/">Pelotus</Link>
+      <body className="min-h-screen bg-background text-foreground antialiased">
+        <header className="sticky top-0 z-50 border-b border-border/70 bg-background/90 backdrop-blur">
+          <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 md:px-6">
+            <Link className="text-lg font-semibold tracking-tight" href="/">Pelotus</Link>
             {user ? (
-              <nav className="topbar-nav">
-                <span>Signed in as {user.username}</span>
-                <Link className="link" href="/logout">Logout</Link>
+              <nav className="flex items-center gap-3 text-sm text-muted-foreground">
+                <Badge variant="outline">{user.username}</Badge>
+                <Link className="font-medium text-foreground/90 hover:text-foreground" href="/logout">Logout</Link>
               </nav>
             ) : (
-              <nav className="topbar-nav">
-                <Link className="link" href="/login">Login</Link>
-                <Link className="link" href="/join">Create account</Link>
+              <nav className="flex items-center gap-4 text-sm">
+                <Link className="font-medium text-foreground/80 hover:text-foreground" href="/login">Login</Link>
+                <Link className="font-medium text-foreground/80 hover:text-foreground" href="/join">Create account</Link>
               </nav>
             )}
           </div>

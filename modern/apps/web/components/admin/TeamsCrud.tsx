@@ -1,6 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Plus, Save, Trash } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type Team = {
   id: number;
@@ -18,7 +31,7 @@ export function TeamsCrud() {
       setStatus("Failed to load teams");
       return;
     }
-    const payload = await res.json();
+    const payload = (await res.json()) as { teams?: Team[] };
     setItems(payload.teams ?? []);
   }
 
@@ -62,31 +75,75 @@ export function TeamsCrud() {
     }
   }
 
-  return (
-    <section className="card">
-      <h2>Teams</h2>
-      <div className="grid" style={{ marginBottom: 16 }}>
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
-        <button onClick={() => void createItem()}>Create team</button>
-      </div>
+  const isError = status.toLowerCase().includes("failed");
 
-      <div className="grid" style={{ gap: 12 }}>
-        {items.map((item) => (
-          <article key={item.id} className="card">
-            <input
-              value={item.name}
-              onChange={(e) =>
-                setItems((prev) => prev.map((x) => (x.id === item.id ? { ...x, name: e.target.value } : x)))
-              }
+  return (
+    <section className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Teams</CardTitle>
+          <CardDescription>Manage the full team catalog.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4 md:grid-cols-12">
+          <div className="space-y-2 md:col-span-9">
+            <Label htmlFor="team-name">Team name</Label>
+            <Input
+              id="team-name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Real Madrid"
             />
-            <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={() => void updateItem(item)}>Save</button>
-              <button onClick={() => void deleteItem(item.id)}>Delete</button>
-            </div>
-          </article>
+          </div>
+          <div className="md:col-span-3 md:self-end">
+            <Button className="w-full" onClick={() => void createItem()}>
+              <Plus className="mr-2 size-4" />
+              Create
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        {items.map((item) => (
+          <Card key={item.id}>
+            <CardContent className="space-y-4 pt-6">
+              <Badge variant="secondary">Team #{item.id}</Badge>
+              <div className="space-y-2">
+                <Label>Name</Label>
+                <Input
+                  value={item.name}
+                  onChange={(event) =>
+                    setItems((prev) =>
+                      prev.map((x) => (x.id === item.id ? { ...x, name: event.target.value } : x)),
+                    )
+                  }
+                />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button size="sm" onClick={() => void updateItem(item)}>
+                  <Save className="mr-2 size-4" />
+                  Save
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => void deleteItem(item.id)}
+                >
+                  <Trash className="mr-2 size-4" />
+                  Delete
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
-      {status ? <p>{status}</p> : null}
+
+      {status ? (
+        <Alert variant={isError ? "destructive" : "default"}>
+          <AlertTitle>Status</AlertTitle>
+          <AlertDescription>{status}</AlertDescription>
+        </Alert>
+      ) : null}
     </section>
   );
 }

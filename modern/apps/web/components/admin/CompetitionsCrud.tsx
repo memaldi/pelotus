@@ -1,9 +1,39 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Save, Swords, Trash2 } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-type Season = { id: number; name: string; league: { name: string } };
-type Community = { id: number; name: string };
+type Season = {
+  id: number;
+  leagueId: number;
+  name: string;
+  league: { id: number; name: string };
+};
+
+type Community = {
+  id: number;
+  name: string;
+};
+
 type Competition = {
   id: number;
   seasonId: number;
@@ -17,10 +47,14 @@ function formatSeasonLabel(season: Season | Competition["season"]) {
 }
 
 export function CompetitionsCrud() {
+  const searchParams = useSearchParams();
+  const requestedLeagueId = searchParams.get("leagueId");
+
   const [items, setItems] = useState<Competition[]>([]);
   const [seasons, setSeasons] = useState<Season[]>([]);
   const [communities, setCommunities] = useState<Community[]>([]);
   const [status, setStatus] = useState("");
+
   const [seasonId, setSeasonId] = useState<number | "">("");
   const [communityId, setCommunityId] = useState<number | "">("");
 
@@ -36,9 +70,9 @@ export function CompetitionsCrud() {
       return;
     }
 
-    const competitionsPayload = await competitionsRes.json();
-    const seasonsPayload = await seasonsRes.json();
-    const communitiesPayload = await communitiesRes.json();
+    const competitionsPayload = (await competitionsRes.json()) as { competitions?: Competition[] };
+    const seasonsPayload = (await seasonsRes.json()) as { seasons?: Season[] };
+    const communitiesPayload = (await communitiesRes.json()) as { communities?: Community[] };
 
     setItems(competitionsPayload.competitions ?? []);
     setSeasons(seasonsPayload.seasons ?? []);
@@ -49,8 +83,27 @@ export function CompetitionsCrud() {
     void load();
   }, []);
 
+  const visibleSeasons = requestedLeagueId
+    ? seasons.filter((season) => season.leagueId === Number(requestedLeagueId))
+    : seasons;
+
+  const filteredSeasonIds = new Set(visibleSeasons.map((season) => season.id));
+  const filteredItems = requestedLeagueId ? items.filter((item) => filteredSeasonIds.has(item.seasonId)) : items;
+
+  useEffect(() => {
+    if (!requestedLeagueId || seasonId !== "") {
+      return;
+    }
+
+    const firstSeason = visibleSeasons[0];
+    if (firstSeason) {
+      setSeasonId(firstSeason.id);
+    }
+  }, [requestedLeagueId, visibleSeasons, seasonId]);
+
   async function createItem() {
     if (seasonId === "" || communityId === "") {
+      setStatus("Season and community are required");
       return;
     }
 
@@ -60,9 +113,10 @@ export function CompetitionsCrud() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ seasonId, communityId }),
     });
+
     setStatus(res.ok ? "Saved" : "Save failed");
     if (res.ok) {
-      setSeasonId("");
+      setSeasonId(requestedLeagueId && visibleSeasons[0] ? visibleSeasons[0].id : "");
       setCommunityId("");
       await load();
     }
@@ -75,6 +129,7 @@ export function CompetitionsCrud() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ seasonId: item.seasonId, communityId: item.communityId }),
     });
+
     setStatus(res.ok ? "Saved" : "Save failed");
     if (res.ok) {
       await load();
@@ -84,71 +139,164 @@ export function CompetitionsCrud() {
   async function deleteItem(id: number) {
     setStatus("Deleting...");
     const res = await fetch(`/api/backend/api/admin/competitions/${id}`, { method: "DELETE" });
+
     setStatus(res.ok ? "Deleted" : "Delete failed");
     if (res.ok) {
       await load();
     }
   }
 
-  return (
-    <section className="card">
-      <h2>Competitions</h2>
-      <div className="grid" style={{ marginBottom: 16 }}>
-        <select value={seasonId} onChange={(e) => setSeasonId(e.target.value === "" ? "" : Number(e.target.value))}>
-          <option value="">Season</option>
-          {seasons.map((s) => (
-            <option key={s.id} value={s.id}>{formatSeasonLabel(s)}</option>
-          ))}
-        </select>
-        <select value={communityId} onChange={(e) => setCommunityId(e.target.value === "" ? "" : Number(e.target.value))}>
-          <option value="">Community</option>
-          {communities.map((c) => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-        </select>
-        <button onClick={() => void createItem()}>Create competition</button>
-      </div>
+  const isError = status.toLowerCase().includes("failed") || status.toLowerCase().includes("required");
 
-      <div className="grid" style={{ gap: 12 }}>
-        {items.map((item) => (
-          <article key={item.id} className="card">
-            <p>Competition #{item.id}: {item.community.name} ({formatSeasonLabel(item.season)})</p>
-            <select
-              value={item.seasonId}
-              onChange={(e) =>
-                setItems((prev) =>
-                  prev.map((x) =>
-                    x.id === item.id ? { ...x, seasonId: Number(e.target.value) } : x,
-                  ),
-                )
-              }
+  return (
+    <section className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Swords className="size-5 text-primary" />
+            Competitions
+          </CardTitle>
+          <CardDescription>
+            {requestedLeagueId
+              ? "Managing competitions inside the selected league."
+              : "Link each season to its competition community."}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4 md:grid-cols-12">
+          <div className="space-y-2 md:col-span-5">
+            <Label>Season</Label>
+            <Select
+              value={seasonId === "" ? undefined : String(seasonId)}
+              onValueChange={(value) => setSeasonId(Number(value))}
             >
-              {seasons.map((s) => (
-                <option key={s.id} value={s.id}>{formatSeasonLabel(s)}</option>
-              ))}
-            </select>
-            <select
-              value={item.communityId}
-              onChange={(e) =>
-                setItems((prev) =>
-                  prev.map((x) =>
-                    x.id === item.id ? { ...x, communityId: Number(e.target.value) } : x,
-                  ),
-                )
-              }
+              <SelectTrigger>
+                <SelectValue placeholder="Choose season" />
+              </SelectTrigger>
+              <SelectContent>
+                {visibleSeasons.map((season) => (
+                  <SelectItem key={season.id} value={String(season.id)}>
+                    {formatSeasonLabel(season)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2 md:col-span-5">
+            <Label>Community</Label>
+            <Select
+              value={communityId === "" ? undefined : String(communityId)}
+              onValueChange={(value) => setCommunityId(Number(value))}
             >
-              {communities.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={() => void updateItem(item)}>Save</button>
-              <button onClick={() => void deleteItem(item.id)}>Delete</button>
-            </div>
-          </article>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose community" />
+              </SelectTrigger>
+              <SelectContent>
+                {communities.map((community) => (
+                  <SelectItem key={community.id} value={String(community.id)}>
+                    {community.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="md:col-span-2 md:self-end">
+            <Button className="w-full" onClick={() => void createItem()}>
+              Create
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-3">
+        {filteredItems.map((item) => (
+          <Card key={item.id}>
+            <CardContent className="space-y-4 pt-6">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <Badge variant="secondary">Competition #{item.id}</Badge>
+                <span className="text-sm text-muted-foreground">
+                  {item.community.name} · {formatSeasonLabel(item.season)}
+                </span>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-12">
+                <div className="space-y-2 md:col-span-5">
+                  <Label>Season</Label>
+                  <Select
+                    value={String(item.seasonId)}
+                    onValueChange={(value) =>
+                      setItems((prev) =>
+                        prev.map((x) =>
+                          x.id === item.id ? { ...x, seasonId: Number(value) } : x,
+                        ),
+                      )
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {visibleSeasons.map((season) => (
+                        <SelectItem key={season.id} value={String(season.id)}>
+                          {formatSeasonLabel(season)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2 md:col-span-4">
+                  <Label>Community</Label>
+                  <Select
+                    value={String(item.communityId)}
+                    onValueChange={(value) =>
+                      setItems((prev) =>
+                        prev.map((x) =>
+                          x.id === item.id ? { ...x, communityId: Number(value) } : x,
+                        ),
+                      )
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {communities.map((community) => (
+                        <SelectItem key={community.id} value={String(community.id)}>
+                          {community.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex flex-wrap gap-2 md:col-span-3 md:self-end">
+                  <Button size="sm" onClick={() => void updateItem(item)}>
+                    <Save className="mr-2 size-4" />
+                    Save
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => void deleteItem(item.id)}
+                  >
+                    <Trash2 className="mr-2 size-4" />
+                    Delete
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
-      {status ? <p>{status}</p> : null}
+
+      {status ? (
+        <Alert variant={isError ? "destructive" : "default"}>
+          <AlertTitle>Status</AlertTitle>
+          <AlertDescription>{status}</AlertDescription>
+        </Alert>
+      ) : null}
     </section>
   );
 }

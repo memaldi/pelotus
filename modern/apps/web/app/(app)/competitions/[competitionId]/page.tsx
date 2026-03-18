@@ -3,11 +3,12 @@ import { fetchPlayersByTeamSeasonPosition, fetchUserMatchDayPoints } from "@/lib
 import { requireSessionUser } from "@/lib/session";
 
 type CompetitionPageProps = {
-  params: { competitionId: string };
+  params: Promise<{ competitionId: string }>;
 };
 
 export default async function CompetitionPage({ params }: CompetitionPageProps) {
-  const competitionId = Number(params.competitionId);
+  const routeParams = await params;
+  const competitionId = Number(routeParams.competitionId);
   await requireSessionUser();
 
   let goalkeepers: { id: number; name: string }[] = [];

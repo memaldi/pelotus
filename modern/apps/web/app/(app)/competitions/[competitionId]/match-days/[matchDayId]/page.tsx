@@ -4,11 +4,12 @@ import { ScorersEditor } from "@/components/ScorersEditor";
 import { fetchMatchDay, fetchScorers } from "@/lib/api";
 import { requireSessionUser } from "@/lib/session";
 
-type Props = { params: { competitionId: string; matchDayId: string } };
+type Props = { params: Promise<{ competitionId: string; matchDayId: string }> };
 
 export default async function MatchDayPage({ params }: Props) {
-  const competitionId = Number(params.competitionId);
-  const matchDayId = Number(params.matchDayId);
+  const routeParams = await params;
+  const competitionId = Number(routeParams.competitionId);
+  const matchDayId = Number(routeParams.matchDayId);
   await requireSessionUser();
 
   const [matchDayData, scorersData] = await Promise.all([

@@ -1,6 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Plus, Save, Trash } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type Community = {
   id: number;
@@ -20,7 +33,7 @@ export function CommunitiesCrud() {
       setStatus("Failed to load communities");
       return;
     }
-    const payload = await res.json();
+    const payload = (await res.json()) as { communities?: Community[] };
     setItems(payload.communities ?? []);
   }
 
@@ -65,40 +78,101 @@ export function CommunitiesCrud() {
     }
   }
 
-  return (
-    <section className="card">
-      <h2>Communities</h2>
-      <div className="grid" style={{ marginBottom: 16 }}>
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
-        <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
-        <button onClick={() => void createItem()}>Create community</button>
-      </div>
+  const isError = status.toLowerCase().includes("failed");
 
-      <div className="grid" style={{ gap: 12 }}>
+  return (
+    <section className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Communities</CardTitle>
+          <CardDescription>
+            Manage community records used by competition assignments.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4 md:grid-cols-12">
+          <div className="space-y-2 md:col-span-4">
+            <Label htmlFor="community-name">Name</Label>
+            <Input
+              id="community-name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="La Liga Fans"
+            />
+          </div>
+          <div className="space-y-2 md:col-span-6">
+            <Label htmlFor="community-description">Description</Label>
+            <Input
+              id="community-description"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              placeholder="Official supporters community"
+            />
+          </div>
+          <div className="md:col-span-2 md:self-end">
+            <Button className="w-full" onClick={() => void createItem()}>
+              <Plus className="mr-2 size-4" />
+              Create
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-3">
         {items.map((item) => (
-          <article key={item.id} className="card">
-            <input
-              value={item.name}
-              onChange={(e) =>
-                setItems((prev) => prev.map((x) => (x.id === item.id ? { ...x, name: e.target.value } : x)))
-              }
-            />
-            <input
-              value={item.description}
-              onChange={(e) =>
-                setItems((prev) =>
-                  prev.map((x) => (x.id === item.id ? { ...x, description: e.target.value } : x)),
-                )
-              }
-            />
-            <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={() => void updateItem(item)}>Save</button>
-              <button onClick={() => void deleteItem(item.id)}>Delete</button>
-            </div>
-          </article>
+          <Card key={item.id}>
+            <CardContent className="space-y-4 pt-6">
+              <Badge variant="secondary">Community #{item.id}</Badge>
+              <div className="grid gap-4 md:grid-cols-12">
+                <div className="space-y-2 md:col-span-4">
+                  <Label>Name</Label>
+                  <Input
+                    value={item.name}
+                    onChange={(event) =>
+                      setItems((prev) =>
+                        prev.map((x) => (x.id === item.id ? { ...x, name: event.target.value } : x)),
+                      )
+                    }
+                  />
+                </div>
+                <div className="space-y-2 md:col-span-5">
+                  <Label>Description</Label>
+                  <Input
+                    value={item.description}
+                    onChange={(event) =>
+                      setItems((prev) =>
+                        prev.map((x) =>
+                          x.id === item.id ? { ...x, description: event.target.value } : x,
+                        ),
+                      )
+                    }
+                  />
+                </div>
+                <div className="flex flex-wrap gap-2 md:col-span-3 md:self-end">
+                  <Button size="sm" onClick={() => void updateItem(item)}>
+                    <Save className="mr-2 size-4" />
+                    Save
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => void deleteItem(item.id)}
+                  >
+                    <Trash className="mr-2 size-4" />
+                    Delete
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
-      {status ? <p>{status}</p> : null}
+
+      {status ? (
+        <Alert variant={isError ? "destructive" : "default"}>
+          <AlertTitle>Status</AlertTitle>
+          <AlertDescription>{status}</AlertDescription>
+        </Alert>
+      ) : null}
     </section>
   );
 }

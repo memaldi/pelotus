@@ -1,11 +1,12 @@
 import { fetchGlobalRanking } from "@/lib/api";
 import { requireSessionUser } from "@/lib/session";
 
-type Props = { params: { competitionId: string } };
+type Props = { params: Promise<{ competitionId: string }> };
 
 export default async function GlobalRankingPage({ params }: Props) {
   await requireSessionUser();
-  const competitionId = Number(params.competitionId);
+  const routeParams = await params;
+  const competitionId = Number(routeParams.competitionId);
   const data = await fetchGlobalRanking(competitionId);
 
   return (

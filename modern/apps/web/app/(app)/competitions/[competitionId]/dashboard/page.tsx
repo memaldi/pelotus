@@ -2,10 +2,11 @@ import Link from "next/link";
 import { fetchDashboard } from "@/lib/api";
 import { requireSessionUser } from "@/lib/session";
 
-type Props = { params: { competitionId: string } };
+type Props = { params: Promise<{ competitionId: string }> };
 
 export default async function DashboardPage({ params }: Props) {
-  const competitionId = Number(params.competitionId);
+  const routeParams = await params;
+  const competitionId = Number(routeParams.competitionId);
   await requireSessionUser();
   const data = await fetchDashboard(competitionId);
 

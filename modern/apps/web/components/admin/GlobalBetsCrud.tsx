@@ -1,6 +1,27 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { Crown, Save } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 type League = { id: number; name: string };
 type Season = { id: number; name: string; league: League };
@@ -62,10 +83,61 @@ function emptyForm(): FormState {
   };
 }
 
+function toLocalDateTime(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
+
+function MultiSelectField({
+  id,
+  label,
+  options,
+  values,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  options: Team[];
+  values: number[];
+  onChange: (ids: number[]) => void;
+}) {
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={id}>{label}</Label>
+      <select
+        id={id}
+        className="h-36 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+        multiple
+        value={values.map(String)}
+        onChange={(event) => {
+          const ids = Array.from(event.target.selectedOptions).map((x) => Number(x.value));
+          onChange(ids);
+        }}
+      >
+        {options.map((team) => (
+          <option key={team.id} value={team.id}>
+            {team.name}
+          </option>
+        ))}
+      </select>
+      <p className="text-xs text-muted-foreground">Use Ctrl/Cmd to pick multiple teams.</p>
+    </div>
+  );
+}
+
 export function GlobalBetsCrud() {
+  const searchParams = useSearchParams();
+  const requestedLeagueId = searchParams.get("leagueId");
+
   const [seasons, setSeasons] = useState<Season[]>([]);
   const [teamInSeasons, setTeamInSeasons] = useState<TeamInSeason[]>([]);
   const [globalResults, setGlobalResults] = useState<GlobalResults[]>([]);
+
   const [selectedSeasonId, setSelectedSeasonId] = useState<number | "">("");
   const [form, setForm] = useState<FormState>(emptyForm());
   const [status, setStatus] = useState("");
@@ -78,15 +150,15 @@ export function GlobalBetsCrud() {
     ]);
 
     if (sRes.ok) {
-      const d = (await sRes.json()) as { seasons: Season[] };
+      const d = (await sRes.json()) as { seasons?: Season[] };
       setSeasons(d.seasons ?? []);
     }
     if (tisRes.ok) {
-      const d = (await tisRes.json()) as { teamInSeasons: TeamInSeason[] };
+      const d = (await tisRes.json()) as { teamInSeasons?: TeamInSeason[] };
       setTeamInSeasons(d.teamInSeasons ?? []);
     }
     if (grRes.ok) {
-      const d = (await grRes.json()) as { globalResults: GlobalResults[] };
+      const d = (await grRes.json()) as { globalResults?: GlobalResults[] };
       setGlobalResults(d.globalResults ?? []);
     }
   }
@@ -95,24 +167,54 @@ export function GlobalBetsCrud() {
     void load();
   }, []);
 
+  const visibleSeasons = requestedLeagueId
+    ? seasons.filter((season) => season.league.id === Number(requestedLeagueId))
+    : seasons;
+
+  useEffect(() => {
+    if (!requestedLeagueId || selectedSeasonId !== "") {
+      return;
+    }
+
+    const firstSeason = seasons.find((season) => season.league.id === Number(requestedLeagueId));
+    if (firstSeason) {
+      setSelectedSeasonId(firstSeason.id);
+      loadSeasonForm(firstSeason.id);
+    }
+  }, [requestedLeagueId, seasons, selectedSeasonId]);
+
   const seasonTeams = useMemo(() => {
-    if (selectedSeasonId === "") return [] as Team[];
+    if (selectedSeasonId === "") {
+      return [] as Team[];
+    }
+
     const map = new Map<number, Team>();
     for (const row of teamInSeasons) {
-      if (row.seasonId === selectedSeasonId) map.set(row.team.id, row.team);
+      if (row.seasonId === selectedSeasonId) {
+        map.set(row.team.id, row.team);
+      }
     }
+
     return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
   }, [teamInSeasons, selectedSeasonId]);
 
   const goalkeepers = useMemo(() => {
-    if (selectedSeasonId === "") return [] as Player[];
+    if (selectedSeasonId === "") {
+      return [] as Player[];
+    }
+
     const map = new Map<number, Player>();
     for (const row of teamInSeasons) {
-      if (row.seasonId !== selectedSeasonId) continue;
+      if (row.seasonId !== selectedSeasonId) {
+        continue;
+      }
       for (const entry of row.players) {
-        if (entry.position === "GK") map.set(entry.player.id, entry.player);
+        if (entry.position === "GK") {
+          map.set(entry.player.id, entry.player);
+        }
       }
     }
+
     return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
   }, [teamInSeasons, selectedSeasonId]);
 
@@ -124,7 +226,7 @@ export function GlobalBetsCrud() {
     }
 
     setForm({
-      deadline: new Date(current.deadline).toISOString().slice(0, 16),
+      deadline: toLocalDateTime(current.deadline),
       winterChampionId: current.winterChampionId ?? "",
       kingsCupChampionId: current.kingsCupChampionId ?? "",
       leagueChampionId: current.leagueChampionId ?? "",
@@ -153,7 +255,8 @@ export function GlobalBetsCrud() {
         kingsCupChampionId: form.kingsCupChampionId === "" ? null : form.kingsCupChampionId,
         leagueChampionId: form.leagueChampionId === "" ? null : form.leagueChampionId,
         uefaChampionId: form.uefaChampionId === "" ? null : form.uefaChampionId,
-        championsLeagueChampionId: form.championsLeagueChampionId === "" ? null : form.championsLeagueChampionId,
+        championsLeagueChampionId:
+          form.championsLeagueChampionId === "" ? null : form.championsLeagueChampionId,
         bestGoalkeeperId: form.bestGoalkeeperId === "" ? null : form.bestGoalkeeperId,
         championsPositionIds: form.championsPositionIds,
         uefaPositionIds: form.uefaPositionIds,
@@ -167,188 +270,238 @@ export function GlobalBetsCrud() {
     }
   }
 
-  function updateMulti(
-    key: "championsPositionIds" | "uefaPositionIds" | "demotionPositionIds",
-    selectedOptions: HTMLCollectionOf<HTMLOptionElement>,
-  ) {
-    const ids = Array.from(selectedOptions).map((x) => Number(x.value));
-    setForm((prev) => ({ ...prev, [key]: ids }));
-  }
+  const isError = status.toLowerCase().includes("failed") || status.toLowerCase().includes("required");
 
   return (
-    <section className="card">
-      <h2>Global Bets Management</h2>
-      <p>Configure season global bet outcomes and positions.</p>
+    <section className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Crown className="size-5 text-primary" />
+            Global Bets
+          </CardTitle>
+          <CardDescription>
+            Configure season-wide predictions, champions, and rank outcomes.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4 md:grid-cols-12">
+          <div className="space-y-2 md:col-span-7">
+            <Label>Season</Label>
+            <Select
+              value={selectedSeasonId === "" ? undefined : String(selectedSeasonId)}
+              onValueChange={(value) => {
+                const parsed = Number(value);
+                setSelectedSeasonId(parsed);
+                loadSeasonForm(parsed);
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Choose season" />
+              </SelectTrigger>
+              <SelectContent>
+                {visibleSeasons.map((season) => (
+                  <SelectItem key={season.id} value={String(season.id)}>
+                    {formatSeasonLabel(season)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-      <div className="row g-4 mb-4">
-        <div className="col-12 col-lg-6">
-          <label className="form-label">Season</label>
-          <select
-            className="form-select"
-          value={selectedSeasonId}
-          onChange={(e) => {
-            const id = e.target.value === "" ? "" : Number(e.target.value);
-            setSelectedSeasonId(id);
-            if (id === "") {
-              setForm(emptyForm());
-            } else {
-              loadSeasonForm(id);
-            }
-          }}
-        >
-          <option value="">Season</option>
-          {seasons.map((s) => (
-            <option key={s.id} value={s.id}>{formatSeasonLabel(s)}</option>
-          ))}
-          </select>
-        </div>
-
-        <div className="col-12 col-lg-6">
-          <label className="form-label">Deadline</label>
-          <input
-            className="form-control"
-            type="datetime-local"
-            value={form.deadline}
-            onChange={(e) => setForm((prev) => ({ ...prev, deadline: e.target.value }))}
-          />
-        </div>
-      </div>
+          <div className="space-y-2 md:col-span-5">
+            <Label htmlFor="deadline">Deadline</Label>
+            <Input
+              id="deadline"
+              type="datetime-local"
+              value={form.deadline}
+              onChange={(event) =>
+                setForm((prev) => ({ ...prev, deadline: event.target.value }))
+              }
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {selectedSeasonId !== "" ? (
-        <div className="row g-4">
-          <div className="col-12 col-md-6">
-            <label className="form-label">Winter champion</label>
-            <select
-            className="form-select"
-            value={form.winterChampionId}
-            onChange={(e) => setForm((prev) => ({ ...prev, winterChampionId: e.target.value === "" ? "" : Number(e.target.value) }))}
-          >
-            <option value="">Winter champion</option>
-            {seasonTeams.map((t) => (
-              <option key={t.id} value={t.id}>{t.name}</option>
-            ))}
-            </select>
-          </div>
+        <Card>
+          <CardContent className="space-y-6 pt-6">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Winter champion</Label>
+                <Select
+                  value={form.winterChampionId === "" ? undefined : String(form.winterChampionId)}
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, winterChampionId: Number(value) }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select team" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {seasonTeams.map((team) => (
+                      <SelectItem key={team.id} value={String(team.id)}>
+                        {team.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <div className="col-12 col-md-6">
-            <label className="form-label">Kings Cup champion</label>
-            <select
-            className="form-select"
-            value={form.kingsCupChampionId}
-            onChange={(e) => setForm((prev) => ({ ...prev, kingsCupChampionId: e.target.value === "" ? "" : Number(e.target.value) }))}
-          >
-            <option value="">Kings Cup champion</option>
-            {seasonTeams.map((t) => (
-              <option key={t.id} value={t.id}>{t.name}</option>
-            ))}
-            </select>
-          </div>
+              <div className="space-y-2">
+                <Label>Kings Cup champion</Label>
+                <Select
+                  value={form.kingsCupChampionId === "" ? undefined : String(form.kingsCupChampionId)}
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, kingsCupChampionId: Number(value) }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select team" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {seasonTeams.map((team) => (
+                      <SelectItem key={team.id} value={String(team.id)}>
+                        {team.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <div className="col-12 col-md-6">
-            <label className="form-label">League champion</label>
-            <select
-            className="form-select"
-            value={form.leagueChampionId}
-            onChange={(e) => setForm((prev) => ({ ...prev, leagueChampionId: e.target.value === "" ? "" : Number(e.target.value) }))}
-          >
-            <option value="">League champion</option>
-            {seasonTeams.map((t) => (
-              <option key={t.id} value={t.id}>{t.name}</option>
-            ))}
-            </select>
-          </div>
+              <div className="space-y-2">
+                <Label>League champion</Label>
+                <Select
+                  value={form.leagueChampionId === "" ? undefined : String(form.leagueChampionId)}
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, leagueChampionId: Number(value) }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select team" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {seasonTeams.map((team) => (
+                      <SelectItem key={team.id} value={String(team.id)}>
+                        {team.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <div className="col-12 col-md-6">
-            <label className="form-label">UEFA champion</label>
-            <select
-            className="form-select"
-            value={form.uefaChampionId}
-            onChange={(e) => setForm((prev) => ({ ...prev, uefaChampionId: e.target.value === "" ? "" : Number(e.target.value) }))}
-          >
-            <option value="">UEFA champion</option>
-            {seasonTeams.map((t) => (
-              <option key={t.id} value={t.id}>{t.name}</option>
-            ))}
-            </select>
-          </div>
+              <div className="space-y-2">
+                <Label>UEFA champion</Label>
+                <Select
+                  value={form.uefaChampionId === "" ? undefined : String(form.uefaChampionId)}
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, uefaChampionId: Number(value) }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select team" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {seasonTeams.map((team) => (
+                      <SelectItem key={team.id} value={String(team.id)}>
+                        {team.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <div className="col-12 col-md-6">
-            <label className="form-label">Champions League champion</label>
-            <select
-            className="form-select"
-            value={form.championsLeagueChampionId}
-            onChange={(e) => setForm((prev) => ({ ...prev, championsLeagueChampionId: e.target.value === "" ? "" : Number(e.target.value) }))}
-          >
-            <option value="">Champions League champion</option>
-            {seasonTeams.map((t) => (
-              <option key={t.id} value={t.id}>{t.name}</option>
-            ))}
-            </select>
-          </div>
+              <div className="space-y-2">
+                <Label>Champions League champion</Label>
+                <Select
+                  value={
+                    form.championsLeagueChampionId === ""
+                      ? undefined
+                      : String(form.championsLeagueChampionId)
+                  }
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, championsLeagueChampionId: Number(value) }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select team" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {seasonTeams.map((team) => (
+                      <SelectItem key={team.id} value={String(team.id)}>
+                        {team.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <div className="col-12 col-md-6">
-            <label className="form-label">Best goalkeeper</label>
-            <select
-            className="form-select"
-            value={form.bestGoalkeeperId}
-            onChange={(e) => setForm((prev) => ({ ...prev, bestGoalkeeperId: e.target.value === "" ? "" : Number(e.target.value) }))}
-          >
-            <option value="">Best goalkeeper</option>
-            {goalkeepers.map((p) => (
-              <option key={p.id} value={p.id}>{p.name}</option>
-            ))}
-            </select>
-          </div>
+              <div className="space-y-2">
+                <Label>Best goalkeeper</Label>
+                <Select
+                  value={
+                    form.bestGoalkeeperId === ""
+                      ? undefined
+                      : String(form.bestGoalkeeperId)
+                  }
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, bestGoalkeeperId: Number(value) }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select goalkeeper" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {goalkeepers.map((player) => (
+                      <SelectItem key={player.id} value={String(player.id)}>
+                        {player.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
-          <div className="col-12 col-lg-4">
-            <label className="form-label">Champions positions</label>
-            <select
-              className="form-select"
-              multiple
-              value={form.championsPositionIds.map(String)}
-              onChange={(e) => updateMulti("championsPositionIds", e.target.selectedOptions)}
-            >
-              {seasonTeams.map((t) => (
-                <option key={t.id} value={t.id}>{t.name}</option>
-              ))}
-            </select>
-          </div>
+            <div className="grid gap-4 lg:grid-cols-3">
+              <MultiSelectField
+                id="champions-positions"
+                label="Champions positions"
+                options={seasonTeams}
+                values={form.championsPositionIds}
+                onChange={(ids) => setForm((prev) => ({ ...prev, championsPositionIds: ids }))}
+              />
+              <MultiSelectField
+                id="uefa-positions"
+                label="UEFA positions"
+                options={seasonTeams}
+                values={form.uefaPositionIds}
+                onChange={(ids) => setForm((prev) => ({ ...prev, uefaPositionIds: ids }))}
+              />
+              <MultiSelectField
+                id="demotion-positions"
+                label="Demotion positions"
+                options={seasonTeams}
+                values={form.demotionPositionIds}
+                onChange={(ids) => setForm((prev) => ({ ...prev, demotionPositionIds: ids }))}
+              />
+            </div>
 
-          <div className="col-12 col-lg-4">
-            <label className="form-label">UEFA positions</label>
-            <select
-              className="form-select"
-              multiple
-              value={form.uefaPositionIds.map(String)}
-              onChange={(e) => updateMulti("uefaPositionIds", e.target.selectedOptions)}
-            >
-              {seasonTeams.map((t) => (
-                <option key={t.id} value={t.id}>{t.name}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="col-12 col-lg-4">
-            <label className="form-label">Demotion positions</label>
-            <select
-              className="form-select"
-              multiple
-              value={form.demotionPositionIds.map(String)}
-              onChange={(e) => updateMulti("demotionPositionIds", e.target.selectedOptions)}
-            >
-              {seasonTeams.map((t) => (
-                <option key={t.id} value={t.id}>{t.name}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="col-12 d-flex justify-content-end">
-            <button className="btn btn-warning" onClick={() => void save()}>Save global bets/results</button>
-          </div>
-        </div>
+            <div className="flex items-center justify-between gap-3 rounded-md border border-border p-3">
+              <Badge variant="secondary">Season #{selectedSeasonId}</Badge>
+              <Button onClick={() => void save()}>
+                <Save className="mr-2 size-4" />
+                Save global bets
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       ) : null}
 
-      {status ? <p>{status}</p> : null}
+      {status ? (
+        <Alert variant={isError ? "destructive" : "default"}>
+          <AlertTitle>Status</AlertTitle>
+          <AlertDescription>{status}</AlertDescription>
+        </Alert>
+      ) : null}
     </section>
   );
 }

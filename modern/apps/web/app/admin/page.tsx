@@ -1,30 +1,23 @@
-import Link from "next/link";
+import { LeagueControlCenter } from "@/components/admin/LeagueControlCenter";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function AdminPage() {
   return (
-    <section className="row g-3">
-      {[
-        { title: "Leagues", desc: "Define league categories that group seasons and competitions.", href: "/admin/leagues" },
-        { title: "Seasons", desc: "Set season timeline, labels, and league relationship.", href: "/admin/seasons" },
-        { title: "Communities", desc: "Create, edit and delete communities.", href: "/admin/communities" },
-        { title: "Competitions", desc: "Create, edit and delete competitions.", href: "/admin/competitions" },
-        { title: "Teams", desc: "Create, edit and delete teams.", href: "/admin/teams" },
-        { title: "Players", desc: "Create, edit and delete players.", href: "/admin/players" },
-        { title: "Squad", desc: "Enroll teams and build each squad with player roles.", href: "/admin/squad" },
-        { title: "Global Bets", desc: "Configure final outcomes used in season-wide betting.", href: "/admin/global-bets" },
-        { title: "Match Days", desc: "Create, edit and delete match days.", href: "/admin/match-days" },
-        { title: "Matches", desc: "Create, edit and delete matches.", href: "/admin/matches" },
-      ].map((item) => (
-        <article key={item.href} className="col-12 col-md-6">
-          <div className="card h-100 d-flex flex-column gap-2">
-            <h2>{item.title}</h2>
-            <p className="mb-2">{item.desc}</p>
-            <div className="mt-auto">
-              <Link className="btn btn-sm btn-warning" href={item.href}>Open {item.title.toLowerCase()}</Link>
-            </div>
+    <section className="space-y-6">
+      <Card className="border-primary/20 bg-linear-to-r from-primary/10 via-card to-accent/40">
+        <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <CardTitle className="text-2xl">Admin Dashboard</CardTitle>
+            <CardDescription>
+              League-first control center for seasons, squads, fixtures, and outcomes.
+            </CardDescription>
           </div>
-        </article>
-      ))}
+          <Badge className="bg-primary text-primary-foreground">Live Control</Badge>
+        </CardHeader>
+      </Card>
+
+      <LeagueControlCenter />
     </section>
   );
 }

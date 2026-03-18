@@ -2,10 +2,11 @@ import { GlobalBetEditor } from "@/components/GlobalBetEditor";
 import { fetchGlobalBets } from "@/lib/api";
 import { requireSessionUser } from "@/lib/session";
 
-type Props = { params: { competitionId: string } };
+type Props = { params: Promise<{ competitionId: string }> };
 
 export default async function GlobalBetsPage({ params }: Props) {
-  const competitionId = Number(params.competitionId);
+  const routeParams = await params;
+  const competitionId = Number(routeParams.competitionId);
   await requireSessionUser();
   const data = await fetchGlobalBets(competitionId);
 
